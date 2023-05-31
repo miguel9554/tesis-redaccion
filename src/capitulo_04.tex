@@ -2,24 +2,44 @@
 
 \subsection{Instrumental utilizado}
 
-Para las mediciones se utilizó un osciloscopio XXXXX, en la figura
-\ref{fig:osciloscopio} puede observarse el mismo. Este osciloscopio posee
-XXX GHz de ancho de banda.
+Para las mediciones se utilizó un osciloscopio \textit{Tektronix MSO 70404C},
+en la figura \ref{fig:osciloscopio} puede observarse el mismo. El instrumento 
+posee \qty{4}{\giga\hertz} de ancho de banda analógico, y una tasa de muestreo
+de \qty[per-mode=symbol]{25}{\giga\siemens\per\second} \cite{oscilloscope_datasheet}.
 
-Su impedancia de entrada es de \qty{50}{\ohm} y cumplía el rol de carga del
-circuito. Dado que la señal aplicada sobre la carga era el tren de pulsos
-generado, la potencia disipada era mínima.
+\subsubsection{Seguridad del instrumento}
 
-Dado el gran costo del instrumento, fue necesario contemplar consideraciones de
-seguridad, para evitar dañar el equipo.
+La impedancia de entrada de entrada del instrumento es de \qty{50}{\ohm} y cumplía 
+el rol de carga para el generador de pulsos. Dado el cuantioso costo del
+instrumento, era fundamental garantizar que el circuito bajo ninguna condición
+fuera a entregar una potencia potencialmente peligrosa para el mismo.
 
-En condiciones normales de funcionamiento, la salida esperada no disipaba
-potencia prácticamente, ya que consiste en una serie de pulsos ultracortos.
+El osciloscopio tiene especificada una tensión de entrada máxima de $5 \ V_{RMS}$
+para una resolución $\geq \ 100 \ mV/div$ y $1 \ V_{RMS}$ para una resolución
+$< \ 100 \ mV/div$.
 
-En caso de una falla, el generador de pulsos nunca podría generar una señal
-distinta a esta, ya que analizando su salida, es un diodo seguido de una puesta
-a tierra impuesta por el \textit{stub}. Este stub solo permitiría a la salida
-señales excesivamente rápidas.
+En condiciones normales de funcionamiento, la potencia disipada por la carga es
+mínima, ya que es la potencia que disipa el tren de pulsos en un carga de
+\qty{50}{\ohm}. \textcolor{red}{REFERENCIAR ACÁ LA SECCIÓN DONDE SE DESARROLLA
+ESTA EXPRESIÓN}.
+
+No solo es necesario analizar la disipación de potencia en condiciones normales
+de funcionamiento, sino también para el caso de una falla, ya que el principal
+objetivo es garantizar la integridad del instrumento en cualquier condición.
+
+En caso de haber alguna falla con algún componente del circuito, el \textit{stub}
+de salida provee una función de protección. Este componente, para señales con
+una variación temporal mucho mayor al largo del mismo, actúa como una puesta a
+tierra.
+
+Entonces, la componente de continua a la salida del generador de pulsos tiene un
+valor esperado de \qty{0}{\volt}, tanto para condiciones normales de 
+funcionamiento como en presencia de fallas.
+
+En cuanto a la componente alterna de la salida, su valor esperado es
+extremadamente bajo, ya que únicamente señales de gran ancho de banda pueden ser
+filtradas y permanecer con una amplitud considerable a la salida del 
+\textit{stub}.
 
 \begin{figure}
   \centering
@@ -27,7 +47,6 @@ señales excesivamente rápidas.
     \caption{Osciloscopio XXXX}
     \label{fig:osciloscopio}
 \end{figure}
-
 
 \subsection{Banco de medición}
 
@@ -181,7 +200,7 @@ En la tabla \ref{tab:mediciones_resultados} pueden observarse los resultados obt
 \begin{tabular}{ccccccc}
 \hline
 $V_{cc}$ [\unit{\volt}] & $D$ [\unit{\percent}] & $A$ [\unit{\volt}] &
-    $FWHM$ [\unit{\pico\second}] & $B-\qty{3}{\dB}$ [\unit{\giga\hertz}]& $t_r$
+    $FWHM$ [\unit{\pico\second}] & $\qty{3}{\dB} \ B$ [\unit{\giga\hertz}]& $t_r$
     [\unit{\pico\second}]& $t_f$ [\unit{\pico\second}]\\
 \hline
 5 & 50 & 0.380 & 159 & 7.5 & 93 & 88 \\
@@ -200,6 +219,38 @@ $V_{cc}$ [\unit{\volt}] & $D$ [\unit{\percent}] & $A$ [\unit{\volt}] &
 En las figuras pueden observarse los resultados de las mediciones obtenidas
 superpuestos con los resultados de simulación para las mismas condiciones de
 trabajo (amplitud de alimentación y ciclo de trabajo).
+
+Para las simulaciones, se toman dos resultados: el de una simulación "ideal", 
+indicada como "esquemático ideal" en las leyendas, que se corresponde a una simulación
+sin contemplar parásitos de ningún tipo. El otro resultado corresponde a una simulación
+mas completa, en las leyendas "Layout", es una simulación en la que se extrajeron
+previamente los efectos parásitos del PCB, y se incorporaron en la simulación
+del pulso.
+
+Se realizan las comparaciones en el dominio del tiempo y de la frecuencia.
+
+En el dominio del tiempo, se observa una buena coincidencia entre la amplitud
+de los pulsos y el ancho. Se observa una diferencia en el \textit{ringing} de ambos.
+Las simulaciones prácticamente no presentan oscilaciones alrededor del pulso,
+mientras que las mediciones las presentan tanto previa como posteriormente.
+También se observa un segundo pulso de menor amplitud siguiendo al primero.
+
+Como causa de estas discrepancias, se descarta un efecto del PCB no modelado, 
+ya que los parásitos de esta estructura fueron extraídos por una simulación 
+electromagnética, y sus efectos contemplados en las simulaciones del \textit{layout}.
+
+Estas  discrepancias sugieren una limitación en el modelado de alguno de los 
+dispositivos, tanto el SRD como el Schottky. Las simulaciones predijeron correctamente
+la amplitud y el ancho de los pulsos resultantes, pero fallaron en predecir 
+el ringing y el pulso secundario.
+
+\textcolor{red}{  
+En el dominio de la frecuencia, se observa coincidencia entre los anchos de banda de los
+pulsos.
+EN REALIDAD NO, SE VE QUE EL PULSO 5V@50D TIENE UN ANCHO DE BANDA *MUCHO* MAYOR A 
+LAS SIMULACIONES Y A LAS DEMÁS MEDICIONES.
+HAY Q VER Q PASÓ AHÍ
+}
 
 \begin{figure}
   \centering
@@ -271,4 +322,4 @@ trabajo (amplitud de alimentación y ciclo de trabajo).
     \label{fig:psd_7v_70}
 \end{figure}
 
-\subsection{Comparación contra resultados previos}
+\subsection{Comparación con resultados de la literatura}
