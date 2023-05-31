@@ -1,0 +1,2 @@
+#!/bin/sh
+latexmk -auxdir=./aux -emulate-aux-dir -pdf src/main.tex

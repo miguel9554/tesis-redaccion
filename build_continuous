@@ -1,0 +1,2 @@
+#!/bin/sh
+latexmk -pvc -auxdir=./aux -jobname=tesis -emulate-aux-dir -pdf src/main.tex
