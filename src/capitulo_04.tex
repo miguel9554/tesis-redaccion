@@ -323,3 +323,27 @@ HAY Q VER Q PASÓ AHÍ
 \end{figure}
 
 \subsection{Comparación con resultados de la literatura}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Resultados reportados en la literatura}
+    \label{tab:mytable}
+    {\small
+    \begin{tabular}{ccccccccc}
+        \hline
+        Referencia & $A$ [\unit{\volt}] & $FWHM$ [\unit{\pico\second}] &
+        Bal & Bias & Dispositivos & $V_{cc} [\unit{\volt}] & $V_{in}$ [\unit{\volt}] & $PRF$ [\unit{\mega\hertz}] \\
+        \hline
+        % agregar nota diciendo q resultados corresponden a lumped y distributed
+        \cite{rulikowski2004} & \num{\pm 0.896}, \num{\pm 1.6} & 335, 511 & Sí & Int & SRD & +5 & TTL & 50 \\
+        \cite{protiva2009} & \num{7.5} & 110 & No & Ext & SRD+3TBJ+SD & +12 & TTL & 5 \\
+        \cite{kamal2014} & \num{0.8} & 170 & No & Int & SRD & +4 & 4 & 10 \\
+        % \cite{hyunseok2005} & \num{0.8} & 170 & No & Int & SRD & +4 & 4 & 10 \\
+        \cite{han2002} & \num{200} & 300 & No & Ext & SRD+2SD & ? & ? & 10 \\
+        % agregar nota diciendo q resultados corresponden a shunt y series
+        \cite{han2005} & \num{+6}, \num{+4} & 150 & No & Int & SRD+L & ? & 5 & 12 \\
+        % agregar q es el mejor resultado, usa senoidal en lugar de cuadrada
+        \cite{oloumi2018} & \num{1.27} & 286 & No & Int & 2SRD+L & 10 & 10 & ? \\
+    \end{tabular}
+    }
+\end{table}
