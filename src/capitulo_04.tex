@@ -54,15 +54,18 @@ En la figura \ref{fig:banco_medicion} puede observarse el esquema del banco de
 medición. Consistió de
 
 \begin{itemize}
-    \item{Placa FPGA: consistía de una FPGA XXXX. Esta generaba el pulso
+    \item Placa FPGA: consistía de una FPGA XXXX. Esta generaba el pulso
         cuadrado de control del driver. Este componente determina el ciclo de
-        trabajo.}
-    \item{Fuente de alimentación: provee DC para el driver. La amplitud de esta
-        fuente determina la amplitud del pulso unipolar del driver.}
-    \item{Driver: tiene tres funciones: actuar como buffer para la FPGA, de
+        trabajo.
+    \item Fuente de alimentación: provee DC para el driver. La amplitud de esta
+        fuente determina la amplitud del pulso unipolar del driver.
+    \item Driver: tiene tres funciones: actuar como buffer para la FPGA, de
         manera que la carga exigida sea baja, convertir la amplitud digital del
         pulso de la FPGA a la amplitud de la fuente de alimentación, y convertir
-        el pulso unipolar en uno bipolar.}
+        el pulso unipolar en uno bipolar.
+    \item Pulser: el \textit{DUT}, genera los pulsos en base a la salida del driver.
+    \item Osciloscopio: instrumento de medición del experimento. Actúa como
+      carga con su impedancia de entrada de \qty{50}{\ohm}.
 \end{itemize}
 
 \subsubsection{Fuente de alimentación}
@@ -84,10 +87,33 @@ límites de consumo obtenidos en las simulaciones anteriores.
 
 \subsubsection{FPGA}
 
-La FPGA XXXXx generaba un pulso cuadrado. La misma puede observarse en la figura
-\ref{fig:mediciones_fpga}.
+La \textit{FPGA} cumplía el rol de excitación del sistema. Generaba el pulso
+unipolar cuadrado de entrada. Se utilizo una XXXXX. En la figura
+\ref{fig:mediciones_fpga} puede observarse la misma. 
 
-La FPGA tenía la limitación de pasos de a 10\% para el duty.
+Las variables de ajuste del pulso unipolar eran las siguientes
+
+\begin{itemize}
+  \item Frecuencia: la frecuencia de la señal cuadrada de entrada es igual a la
+    frecuencia de repetición de pulsos ($PRF$) del sistema. 
+  \item Ciclo de trabajo: el ciclo de trabajo de la señal cuadrada unipolar
+    determina los extremos de la señal cuadrada unipolar. A mayor ciclo de
+    trabajo, valores más negativos.
+\end{itemize}
+
+Como fuera explicado anteriormente, a mayor tensión en la porción negativa del
+pulso bipolar, mayor amplitud de pulso a la salida. Por lo tanto, para poder
+medir las mayores amplitudes de pulso posibles era necesario para el pulso de
+entrada alcanzar el mayor ciclo de trabajo posible.
+
+El circuito programado en la FPGA consistía en un generador de cuadrada con
+ciclo de trabajo variable. Mediante dos botones externos, disponibles en la
+placa, se podía subir y bajar el ciclo de trabajo.
+
+Debido a la implementación del circuito, con un contador, el paso de estas
+variaciones era de un \qty{10}{\percent}.
+
+En el anexo \ref{app:verilog} puede inspeccionarse el \textit{HDL} del circuito utilizado.
 
 \begin{figure}
   \centering
@@ -95,7 +121,6 @@ La FPGA tenía la limitación de pasos de a 10\% para el duty.
     \caption{Banco de medición}
     \label{fig:mediciones_fpga}
 \end{figure}
-
 
 \subsection{Mediciones realizadas}
 
@@ -112,11 +137,11 @@ de alimentación distintos valores de tensión.
         \qty{7}{\volt}.
         \begin{itemize}
             \item \qty{5}{\volt} por ser un valor fácilmente obtenible en los
-                sistemas UWB de referencia.
+                sistemas \textit{UWB} de referencia.
             \item \qty{7}{\volt} por ser la máxima amplitud tolerable por el circuito.
                 Tensiones de alimentación mayores a estas resultan en corrientes de
                 polarización mayores a las máximas admisibles dado los
-                dimensionamientos de las pistas de los PCBs.
+                dimensionamientos de las pistas de los \textit{PCBs}.
         \end{itemize}
     \item El ciclo de trabajo se barrió entre \qty{50}{\percent} y
         \qty{70}{\percent}.
@@ -324,26 +349,38 @@ HAY Q VER Q PASÓ AHÍ
 
 \subsection{Comparación con resultados de la literatura}
 
-\begin{table}[htbp]
-    \centering
-    \caption{Resultados reportados en la literatura}
+En la tabla \ref{tab:resultados_literatura} se resumen resultados reportados
+para generadores de pulsos \textit{UWB} en la literatura.
+
+\begin{table}
+  \begin{threeparttable}[b]
     \label{tab:mytable}
+    \caption{Resultados reportados en la literatura}
     {\small
     \begin{tabular}{ccccccccc}
         \hline
         Referencia & $A$ [\unit{\volt}] & $FWHM$ [\unit{\pico\second}] &
-        Bal & Bias & Dispositivos & $V_{cc}$ [\unit{\volt}] & $V_{in}$ [\unit{\volt}] & $PRF$ [\unit{\mega\hertz}] \\
+        Bal \tnote{a} & Bias & Dispositivos & $V_{cc}$ [\unit{\volt}] & $V_{in}$ [\unit{\volt}] & $PRF$ [\unit{\mega\hertz}] \\
         \hline
         % agregar nota diciendo q resultados corresponden a lumped y distributed
-        \cite{rulikowski2004} & \num{\pm 0.896}, \num{\pm 1.6} & 335, 511 & Sí & Int & SRD & +5 & TTL & 50 \\
+        \cite{rulikowski2004} & \num{\pm 0.896}, \num{\pm 1.6} \tnote{b} & 335, 511 & Sí & Int & SRD & +5 & TTL & 50 \\
         \cite{protiva2009} & \num{7.5} & 110 & No & Ext & SRD+3TBJ+SD & +12 & TTL & 5 \\
         \cite{kamal2014} & \num{0.8} & 170 & No & Int & SRD & +4 & 4 & 10 \\
         % \cite{hyunseok2005} & \num{0.8} & 170 & No & Int & SRD & +4 & 4 & 10 \\
         \cite{han2002} & \num{200} & 300 & No & Ext & SRD+2SD & ? & ? & 10 \\
         % agregar nota diciendo q resultados corresponden a shunt y series
         \cite{han2005} & \num{+6}, \num{+4} & 150 & No & Int & SRD+L & ? & 5 & 12 \\
-        % agregar q es el mejor resultado, usa senoidal en lugar de cuadrada
-        \cite{oloumi2018} & \num{1.27} & 286 & No & Int & 2SRD+L & 10 & 10 & ? \\
+        \cite{oloumi2018} & \num{1.27} \tnote{c} & 286 & No & Int & 2SRD+L &
+        10 & 10 \tnote{d} & ? \\
     \end{tabular}
-    }
+}
+   \begin{tablenotes}
+     \item [a] \texit{Balanceado}.
+     \item [b] la publicación presenta dos resultados, correspondientes a
+       circuitos con componentes concentrados y distribuidos.
+     \item [c] la publicación presenta múltiples resultados, se muestran
+       los mejores.
+     \item [d] la señal de entrada es senoidal.
+   \end{tablenotes}
+  \end{threeparttable}
 \end{table}
