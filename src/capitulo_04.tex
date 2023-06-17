@@ -43,8 +43,8 @@ filtradas y permanecer con una amplitud considerable a la salida del
 
 \begin{figure}
   \centering
-    \includegraphics[width=0.6\textwidth]{images/osciloscopio.png}
-    \caption{Osciloscopio XXXX}
+    \includegraphics[width=0.5\textwidth]{images/osciloscopio.png}
+    \caption{Osciloscopio \textit{Tektronix MSO 70404C}}
     \label{fig:osciloscopio}
 \end{figure}
 
@@ -54,9 +54,9 @@ En la figura \ref{fig:banco_medicion} puede observarse el esquema del banco de
 medición. Consistió de
 
 \begin{itemize}
-    \item Placa FPGA: consistía de una FPGA XXXX. Esta generaba el pulso
-        cuadrado de control del driver. Este componente determina el ciclo de
-        trabajo.
+    \item Placa FPGA: consistía de una placa de desarrollo \textit{Nexys 4 DDR}.
+      La función de este componente era la de generar el pulso cuadrado
+      unipolar, que controla la $PRF$ y el ciclo de trabajo del pulso del driver.
     \item Fuente de alimentación: provee DC para el driver. La amplitud de esta
         fuente determina la amplitud del pulso unipolar del driver.
     \item Driver: tiene tres funciones: actuar como buffer para la FPGA, de
@@ -71,7 +71,7 @@ medición. Consistió de
 \subsubsection{Fuente de alimentación}
 
 La fuente de alimentación era una XXXXX, en la figura \ref{fig:mediciones_fuente}. Permitía generar amplitudes de entre
-XXX y XXX y tenía una máxima capacidad de corriente de XXXXX.
+XXXX y XXXX y tenía una máxima capacidad de corriente de XXXXX.
 
 Presentaba limitación de corriente regulable e indicadores para la amplitud y la
 corriente entregada, lo que permitía trabajar de manera segura, dentro de los
@@ -79,7 +79,7 @@ límites de consumo obtenidos en las simulaciones anteriores.
 
 \begin{figure}
   \centering
-    \includegraphics[width=0.6\textwidth]{images/mediciones_fuente.png}
+    \includegraphics[width=0.5\textwidth]{images/mediciones_fuente.png}
     \caption{Fuente de alimentación utilizada.}
     \label{fig:mediciones_fuente}
 \end{figure}
@@ -88,7 +88,10 @@ límites de consumo obtenidos en las simulaciones anteriores.
 \subsubsection{FPGA}
 
 La \textit{FPGA} cumplía el rol de excitación del sistema. Generaba el pulso
-unipolar cuadrado de entrada. Se utilizo una XXXXX. En la figura
+unipolar cuadrado de entrada, que controla la $PRF$ y el ciclo de trabajo del 
+pulso del driver. La \textit{FPGA} utilizada es una \textit{Artix-7} de Xilinx,
+montada en una placa de desarrollo \textit{Nexys-4 DDR} de Digilent
+\cite{digilent_nexys4ddr}. En la figura
 \ref{fig:mediciones_fpga} puede observarse la misma. 
 
 Las variables de ajuste del pulso unipolar eran las siguientes
@@ -117,9 +120,9 @@ En el anexo \ref{app:verilog} puede inspeccionarse el \textit{HDL} del circuito 
 
 \begin{figure}
   \centering
-    \includegraphics[width=0.6\textwidth]{images/mediciones_fpga.png}
+    \includegraphics[width=0.6\textwidth]{images/banco_medicion.png}
     \caption{Banco de medición}
-    \label{fig:mediciones_fpga}
+    \label{fig:banco_medicion}
 \end{figure}
 
 \subsection{Mediciones realizadas}
@@ -375,7 +378,7 @@ para generadores de pulsos \textit{UWB} en la literatura.
     \end{tabular}
 }
    \begin{tablenotes}
-     \item [a] \texit{Balanceado}.
+     \item [a] \textit{Balanceado}.
      \item [b] la publicación presenta dos resultados, correspondientes a
        circuitos con componentes concentrados y distribuidos.
      \item [c] la publicación presenta múltiples resultados, se muestran
