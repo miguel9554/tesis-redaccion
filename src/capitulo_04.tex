@@ -51,7 +51,7 @@ filtradas y permanecer con una amplitud considerable a la salida del
 \subsection{Banco de medición}
 
 En la figura \ref{fig:banco_medicion} puede observarse el esquema del banco de
-medición. Consistió de
+medición. Consistió de los siguientes bloques
 
 \begin{itemize}
     \item Placa FPGA: consistía de una placa de desarrollo \textit{Nexys 4 DDR}.
@@ -63,24 +63,36 @@ medición. Consistió de
         manera que la carga exigida sea baja, convertir la amplitud digital del
         pulso de la FPGA a la amplitud de la fuente de alimentación, y convertir
         el pulso unipolar en uno bipolar.
-    \item Pulser: el \textit{DUT}, genera los pulsos en base a la salida del driver.
+    \item \textit{Pulser}: el \textit{DUT}, genera los pulsos en base a la salida del driver.
     \item Osciloscopio: instrumento de medición del experimento. Actúa como
       carga con su impedancia de entrada de \qty{50}{\ohm}.
 \end{itemize}
 
+\begin{figure}
+  \centering
+    \includegraphics[width=0.6\textwidth]{images/banco_medicion.png}
+    \caption{Banco de medición}
+    \label{fig:banco_medicion}
+\end{figure}
+
 \subsubsection{Fuente de alimentación}
 
-La fuente de alimentación era una XXXXX, en la figura \ref{fig:mediciones_fuente}. Permitía generar amplitudes de entre
-XXXX y XXXX y tenía una máxima capacidad de corriente de XXXXX.
+La fuente de alimentación era una \textit{Marconi Instruments TF2154}, en la figura 
+\ref{fig:mediciones_fuente} puede observarse la misma.
 
 Presentaba limitación de corriente regulable e indicadores para la amplitud y la
 corriente entregada, lo que permitía trabajar de manera segura, dentro de los
 límites de consumo obtenidos en las simulaciones anteriores.
 
+Como fuese explicado en la sección \textcolor{red}{REFERENCIAR SECCIÓN CON CALCULOS DE POTENCIA},
+la corriente máxima esperada en las condiciones de trabajo era menor a \qty{200}{\milli\ampere},
+por lo que se monitoreó durante todo el experimento que la corriente entregada por la fuente
+no supere este máximo teórico.
+
 \begin{figure}
   \centering
-    \includegraphics[width=0.5\textwidth]{images/mediciones_fuente.png}
-    \caption{Fuente de alimentación utilizada.}
+    \includegraphics[width=0.4\textwidth]{images/mediciones_fuente.png}
+    \caption{Fuente de alimentación \textit{Marconi Instruments TF2154}.}
     \label{fig:mediciones_fuente}
 \end{figure}
 
@@ -116,13 +128,13 @@ placa, se podía subir y bajar el ciclo de trabajo.
 Debido a la implementación del circuito, con un contador, el paso de estas
 variaciones era de un \qty{10}{\percent}.
 
-En el anexo \ref{app:verilog} puede inspeccionarse el \textit{HDL} del circuito utilizado.
+En el anexo \ref{app:verilog} puede inspeccionarse el \textit{HDL} del circuito implementado.
 
 \begin{figure}
   \centering
-    \includegraphics[width=0.6\textwidth]{images/banco_medicion.png}
-    \caption{Banco de medición}
-    \label{fig:banco_medicion}
+    \includegraphics[width=0.4\textwidth]{images/mediciones_fpga.png}
+    \caption{\textit{FPGA} utilizada}
+    \label{fig:mediciones_fpga}
 \end{figure}
 
 \subsection{Mediciones realizadas}
@@ -162,11 +174,34 @@ de alimentación distintos valores de tensión.
         \end{itemize}
 \end{itemize}
 
+En la figura \ref{fig:sistema_medido} puede observarse el \textit{pulser} junto con el
+\textit{driver} y la \textit{FPGA}.
+
 \begin{figure}
   \centering
-    \includegraphics[width=0.6\textwidth]{images/banco_medicion.png}
-    \caption{Banco de medición}
-    \label{fig:banco_medicion}
+    \includegraphics[width=0.4\textwidth]{images/sistema_medido.jpg}
+    \caption{\textit{FPGA}, \textit{driver} y \textit{pulser}.}
+    \label{fig:sistema_medido}
+\end{figure}
+
+\subsubsection{Mediciones previas}
+
+Previo a las mediciones principales, se realizó una medición de la salida del driver,
+con el objetivo de validar el pulso bipolar generado.
+
+El motivo de esta medición previa, fue a la limitada disponibilidad del osciloscopio de
+gran ancho de banda utilizado para la medición final del pulso. Esta pre-medición del pulso bipolar,
+se realizó con un osciloscopio de bajo ancho de banda, ya que el objetivo era validar los niveles de
+tensión del pulso, y su correcta variación con la variación del ciclo de trabajo del pulso unipolar.
+
+En la figura \ref{fig:banco_pre_mediciones} puede observarse el banco de medición. Los resultados fueron los esperados y,
+por lo tanto, no se requirió ninguna iteración sobre el diseño.
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.4\textwidth]{images/banco_pre_mediciones.jpg}
+    \caption{Banco de mediciones previas a la medición final del pulso.}
+    \label{fig:banco_pre_mediciones}
 \end{figure}
 
 \subsection{Resultados}
@@ -350,7 +385,7 @@ HAY Q VER Q PASÓ AHÍ
     \label{fig:psd_7v_70}
 \end{figure}
 
-\subsection{Comparación con resultados de la literatura}
+\subsubsection{Comparación con resultados de la literatura}
 
 En la tabla \ref{tab:resultados_literatura} se resumen resultados reportados
 para generadores de pulsos \textit{UWB} en la literatura.
