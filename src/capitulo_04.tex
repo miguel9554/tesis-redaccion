@@ -268,9 +268,9 @@ $V_{cc}$ [\unit{\volt}] & $D$ [\unit{\percent}] & $A$ [\unit{\volt}] &
 \hline
 5 & 50 & 0.380 & 159 & 7.5 & 93 & 88 \\
 5 & 70 & 0.625 & 161 & 3.6 & 93 & 91 \\
-7 & 50 & 0.702 & 162 & 3 & 93 & 93 \\
-7 & 60 & 0.909 & 164 & 3 & 94 & 95 \\
-7 & 70 & 1.120 & 165 & 3 & 95 & 96 \\
+7 & 50 & 0.702 & 162 & 4   & 93 & 93 \\
+7 & 60 & 0.909 & 164 & 4   & 94 & 95 \\
+7 & 70 & 1.120 & 165 & 2.8 & 95 & 96 \\
 \hline
 \end{tabular}
 \caption{Resultados de mediciones.}
@@ -279,28 +279,34 @@ $V_{cc}$ [\unit{\volt}] & $D$ [\unit{\percent}] & $A$ [\unit{\volt}] &
 
 \subsubsection{Comparación contra simulación}
 
-En las figuras pueden observarse los resultados de las mediciones obtenidas
-superpuestos con los resultados de simulación para las mismas condiciones de
+En las figuras \ref{fig:plots_5v_50} a \ref{fig:psd_7v_70} pueden observarse los resultados de las
+mediciones obtenidas superpuestos con los resultados de simulación para las mismas condiciones de
 trabajo (amplitud de alimentación y ciclo de trabajo).
 
-Para las simulaciones, se toman dos resultados: el de una simulación "ideal", 
-indicada como "esquemático ideal" en las leyendas, que se corresponde a una simulación
-sin contemplar parásitos de ningún tipo. El otro resultado corresponde a una simulación
-mas completa, en las leyendas "Layout", es una simulación en la que se extrajeron
-previamente los efectos parásitos del PCB, y se incorporaron en la simulación
-del pulso.
+Para las simulaciones, se toman dos resultados:
 
-Se realizan las comparaciones en el dominio del tiempo y de la frecuencia.
+\begin{itemize}
+    \item Una simulación ``ideal'', indicada como ``esquemático ideal'' en las leyendas, que se
+        corresponde a una simulación sin contemplar parásitos de ningún tipo.
+    \item El otro resultado corresponde a una simulación mas completa, en las leyendas ``Layout'', es
+        una simulación en la que se extrajeron previamente los efectos parásitos del \textit{PCB}
+        mediante una simulación electromagnética, y se incorporaron en la simulación del pulso.
+\end{itemize}
 
-En el dominio del tiempo, se observa una buena coincidencia entre la amplitud
-de los pulsos y el ancho. Se observa una diferencia en el \textit{ringing} de ambos.
-Las simulaciones prácticamente no presentan oscilaciones alrededor del pulso,
-mientras que las mediciones las presentan tanto previa como posteriormente.
-También se observa un segundo pulso de menor amplitud siguiendo al primero.
+Se realizan las comparaciones en el dominio del tiempo y de la frecuencia. Las comparaciones en el
+dominio del tiempo consisten en la superposición del pulso medido con el simulado. Para las
+comparaciones en el dominio de la frecuencia, se calculó el espectro de cada una de las formas de
+onda del dominio del tiempo. Para reducir el \textit{leakage} espectral, se utilizó una ventana de
+\textit{Hanning} \cite{oppenheim1999dsp}.
 
-Como causa de estas discrepancias, se descarta un efecto del PCB no modelado, 
-ya que los parásitos de esta estructura fueron extraídos por una simulación 
-electromagnética, y sus efectos contemplados en las simulaciones del \textit{layout}.
+En el dominio del tiempo, se observa una buena coincidencia entre la amplitud de los pulsos y el
+ancho. Se observa una diferencia en el \textit{ringing} de ambos.  Las simulaciones prácticamente no
+presentan oscilaciones alrededor del pulso, mientras que las mediciones las presentan tanto previa
+como posteriormente.  También se observa un segundo pulso de menor amplitud siguiendo al primero.
+
+Como causa de estas discrepancias, se descarta un efecto del \textit{PCB} no modelado, ya que los
+parásitos de esta estructura fueron extraídos por una simulación electromagnética, y sus efectos
+contemplados en las simulaciones del \textit{layout}.
 
 Estas  discrepancias sugieren una limitación en el modelado de alguno de los 
 dispositivos, tanto el SRD como el Schottky. Las simulaciones predijeron correctamente
@@ -387,29 +393,28 @@ HAY Q VER Q PASÓ AHÍ
 
 \subsubsection{Comparación con resultados de la literatura}
 
-En la tabla \ref{tab:resultados_literatura} se resumen resultados reportados
-para generadores de pulsos \textit{UWB} en la literatura.
+En la tabla \ref{tab:resultados_literatura} se resumen resultados reportados para generadores de
+pulsos \textit{UWB} en la literatura. En la figura \ref{fig:scatterplot_literature} se observan
+los valores de amplitud y duración reportados en un gráfico de dispersión.
 
 \begin{table}
   \begin{threeparttable}[b]
-    \label{tab:mytable}
     \caption{Resultados reportados en la literatura}
-    {\small
+    \label{tab:resultados_literatura}
+    {\footnotesize
     \begin{tabular}{ccccccccc}
         \hline
         Referencia & $A$ [\unit{\volt}] & $FWHM$ [\unit{\pico\second}] &
         Bal \tnote{a} & Bias & Dispositivos & $V_{cc}$ [\unit{\volt}] & $V_{in}$ [\unit{\volt}] & $PRF$ [\unit{\mega\hertz}] \\
         \hline
-        % agregar nota diciendo q resultados corresponden a lumped y distributed
-        \cite{rulikowski2004} & \num{\pm 0.896}, \num{\pm 1.6} \tnote{b} & 335, 511 & Sí & Int & SRD & +5 & TTL & 50 \\
-        \cite{protiva2009} & \num{7.5} & 110 & No & Ext & SRD+3TBJ+SD & +12 & TTL & 5 \\
-        \cite{kamal2014} & \num{0.8} & 170 & No & Int & SRD & +4 & 4 & 10 \\
-        % \cite{hyunseok2005} & \num{0.8} & 170 & No & Int & SRD & +4 & 4 & 10 \\
-        \cite{han2002} & \num{200} & 300 & No & Ext & SRD+2SD & ? & ? & 10 \\
-        % agregar nota diciendo q resultados corresponden a shunt y series
-        \cite{han2005} & \num{+6}, \num{+4} & 150 & No & Int & SRD+L & ? & 5 & 12 \\
-        \cite{oloumi2018} & \num{1.27} \tnote{c} & 286 & No & Int & 2SRD+L &
-        10 & 10 \tnote{d} & ? \\
+        \cite{rulikowski2004} & \num{\pm 0.896}, \num{\pm 1.6} \tnote{b} & 335, 511 & Sí & Int & SRD & 5 & TTL & 50 \\
+        \cite{protiva2009} & \num{-7.5} & 110 & No & Ext & SRD+3TBJ+SD & 12 & TTL & 5 \\
+        \cite{kamal2014} & \num{0.8} & 170 & No & Int & SRD & 4 & 4 & 10 \\
+        \cite{han2002} & \num{0.2} & 300 & No & Ext & SRD+2SD & ? & ? & 10 \\
+        \cite{han2005} & \num{-6}, \num{-4} & 150 & No & Int & SRD+L & ? & 5 & 12 \\
+        \cite{oloumi2018} & \num{1.27} \tnote{c} & 286 & No & Int & 2SRD+L & 10 & 10 \tnote{d} & ? \\
+        \textbf{Este trabajo} & \num{1.12} & 165 & No & Int & SRD+SD & 7 & CMOS  &
+        \num{10} \\
     \end{tabular}
 }
    \begin{tablenotes}
@@ -422,3 +427,90 @@ para generadores de pulsos \textit{UWB} en la literatura.
    \end{tablenotes}
   \end{threeparttable}
 \end{table}
+
+
+En cuanto a los resultados reportados en este trabajo, tiene uno de los anchos de pulso más bajos,
+habiendo otros trabajos que reportan el mismo o menor ancho de pulso con mayor amplitud. Otra
+característica a destacar es la simplicidad del diseño implementado, tanto en cantidad de
+componentes activos, como en amplitud de fuente de alimentación y pulso de entrada.
+
+En \cite{rulikowski2004} se presenta un diseño compuesto de un solo SRD en el que se desarrolla un
+pulso balanceado a la salida. Se presentan dos diseños, uno con componentes distribuidos y otro con
+componentes concentrados. En ambos casos se obtienen amplitudes pico-a-pico de pulso mayores a las
+de este trabajo. Es destacable que se obtienen mayores amplitudes usando una fuente de alimentación
+menor, de \qty{5}{\volt}. En cuanto al ancho de pulso, ambos pulsos presentan duraciones mayores que
+las de nuestro trabajo. En cuanto a la complejidad, el \textit{pulser} está implementado solamente
+con 1 \textit{SRD}, y componentes distribuidos o concentrados, dependiendo de la versión, por lo que
+es más simple que nuestro trabajo. El \textit{driver} presenta la misma complejidad en ambos casos,
+ya que está implementado con un solo circuito integrado. Nuestro trabajo presenta más versatilidad,
+ya que la amplitud de la fuente de alimentación puede variarse entre \qty{0}{\volt} y
+\qty{30}{\volt}.
+
+En \cite{protiva2009} se reporta un resultado de gran amplitud y duración de pulso menor a la de
+este trabajo. El diseño presentado es de mucho mayor complejidad al de este trabajo: necesita una
+alimentación de \qty{12}{\volt} y una corriente de \textit{bias} externa, y la etapa \textit{driver}
+está implementada con 3 TBJs, frente a 1 solo \textit{gate driver} en nuestro trabajo.
+
+En \cite{kamal2014} el pulso reportado es de características muy similares a las de nuestro trabajo.
+La duración del pulso es prácticamente la misma, mientras que en amplitud nuestro trabajo logró un
+pulso de \qty{40}{\percent} mayor amplitud. Nuestro trabajó logró para el \ŧextit{pulser} una
+complejidad menor a la reportada en \cite{kamal2014}, ya que en nuestro caso omitimos la red RC y el
+atenuador. En cuanto a etapa \textit{driver}, \cite{kamal2014} no presenta ninguna, en los
+resultados se reporta haber utilizado como entrada al \textit{tpulser} un pulso bipolar.
+
+En \cite{han2002} el generador presentado desarrolla pulsos monociclo, que son la primera derivada
+de un pulso gaussiano. Nuestro trabajó logro una amplitud de pulso mayor y también una duración de
+pulso menor. No se especifica el valor de amplitud de señal de entrada utilizado. La entrada al
+circuito es bipolar, y no se incluye un \textit{driver} de adaptación de pulso. La complejidad del
+generador descripto es mayor que la de este trabajo, utilizando bias externo, un diodo SRD y dos
+Schottky. Sin embargo, el generador de \cite{han2002} implementa un monociclo que es una derivada de
+un pulso gaussiano como el desarrollado en nuestro trabajo, por lo que es natural que la complejidad
+sea mayor.
+
+El resultado reportado en \cite{han2005} consiste en pulsos de mayor amplitud y menor duración. En
+ambos casos, el pulser se encuentra acoplado por \textit{AC}, lo que vuelve más complejo el diseño.
+Se presentan dos generadores, uno con línea de transmisión, y otro con un inductor, que utiliza al
+SRD en paralelo. El diseño con inductor es más complejo, ya que este se encuentra en el camino del
+pulso por lo que debe ser seleccionado con cuidado. En ambos casos se utiliza una red RC paralelo,
+mientras que en nuestro trabajo no.
+
+El resultado de \cite{oloumi2018} consiste en un pulso de mayor amplitud y mayor ancho al de nuestro
+trabajo. La complejidad del diseño es mayor, ya que utiliza dos SRD y un inductor que se encuentra
+en el camino de alta frecuencia, por lo que es costoso de seleccionar. La señal de entrada es una
+senoidal, que para el contexto en el que desarrollamos nuestro generador, es más costosa de
+conseguir, ya que requiere algún DAC, frente a la excitación de nuestro generador que es una señal
+cuadrada, fácilmente obtenible como salida digital de una FPGA o microcontrolador.
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+  \begin{axis}[
+    xlabel={$FWHM$ [\unit{\pico\second}]},
+    ylabel={$A_{pkpk}$ [\unit{\volt}]},
+    title=Resultados reportados,
+    grid=both
+    ]
+    \addplot[
+        scatter/classes={a={blue}, b={red}},
+        scatter, mark=*, only marks, 
+        scatter src=explicit symbolic,
+        nodes near coords*={\Label},
+        visualization depends on={value \thisrow{label} \as \Label} %<- added value
+    ] table [meta=class] {
+        x   y       class   label
+        511 3.2     b       {\cite{rulikowski2004}}
+        335 1.8     b       {\cite{rulikowski2004}}
+        110 7.5     b       {\cite{protiva2009}}
+        170 0.8     b       {\cite{kamal2014}}
+        300 0.2     b       {\cite{han2002}}
+        150 6       b       {\cite{han2005}}
+        150 4       b       {\cite{han2005}}
+        286 1.27    b       {\cite{oloumi2018}}
+        165 1.12    b       {\textbf{Este trabajo}}
+    };
+
+  \end{axis}
+\end{tikzpicture}
+  \caption{Diagrama de dispersión de resultados reportados.}
+  \label{fig:scatterplot_literature}
+\end{figure}
