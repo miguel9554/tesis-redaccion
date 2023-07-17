@@ -90,6 +90,14 @@ que el punto de \qty{10}{\percent} es $V_{10\%} = -2.5 \ V \ \cdot 0.9 =  2.25 \
 V$, y el de \qty{90}{\percent} es $V_{90\%} = -2.5 \ V \ \cdot 0.1 =  -0.25 \
 V$.
 
+En cuanto a la magnitud del salto de tensión $\Delta V$, estará dado por el
+valor de la tensión en el cátodo del \textit{SRD} antes de que pase al estado de
+alta impedancia. Esta tensión estará dada por el divisor entre $R_L$ y $R_s$,
+
+\begin{equation}
+    \Delta V = V_l \cdot \frac{R_L}{R_L+R_s}
+\end{equation}
+
 Vemos por los marcadores de la figura, que estos tiempos son
 \qty{87.77}{\nano\second} y \qty{88.06}{\nano\second} respectivamente, por lo
 que tenemos un tiempo de crecimiento
@@ -99,12 +107,16 @@ que tenemos un tiempo de crecimiento
     \qty{290}{\pico\second}
 \end{equation}
 
-Como fuese explicado en la sección, este tiempo de crecimiento estará dado por
-el tiempo de transición del diodo y por el tiempo del RC formado entre la
-capacidad de reversa del diodo y la resistencia vista desde los nodos del
-capacitor.
+Como fuese explicado en la sección \textcolor{red}{AGREGAR REF\ref{TODO}}, este
+tiempo de crecimiento estará dado por el tiempo de transición del diodo y por el
+tiempo del RC formado entre la capacidad de reversa del diodo y la resistencia
+vista desde los nodos del capacitor.
 
 \subsubsection{Generador de pulsos con \textit{stub}}
+
+Un \textit{stub} es una línea de transmisión puesta a tierra en paralelo con la
+señal. Una línea de transmisión puesta a tierra presenta una reflexión total de
+la señal transmitida, con polaridad opuesta \cite{pozar2011}.
 
 Agregando un \textit{stub} al afilador de pulsos descripto anteriormente, es
 posible formar un pulso con el flanco rápido generado por el SRD.
@@ -151,6 +163,10 @@ impedancia q ve una vez q se abre el SRD? ver q pasa si movemos esa Zo?
 \subsubsection{Calculo de stub}
 
 En algún lado explicar cómo obtuvimos el largo en mm del stub.
+
+\subsubsection{Diseño final del \textit{pulser}}
+
+Incluir diodo \textit{Schottky}
 
 \subsection{Diseño del \textit{driver}}
 
