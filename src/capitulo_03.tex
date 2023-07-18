@@ -114,6 +114,54 @@ vista desde los nodos del capacitor.
 
 \subsubsection{Generador de pulsos con \textit{stub}}
 
+\paragraph{Principios del \textit{stub}}
+
+Un \textit{stub} consiste de una línea de transmsión conectada en paralelo al
+camino de la señal. Su efecto sobre la señal dependerá de su impedancia
+característica, largo e impedancia de terminación \cite{pozar2011}.
+
+Cuando el \textit{stub} se encuentra abierto, es decir, terminado por una
+impedancia infinita, la señal propagada se verá reflejada con signo positivo, y
+en el caso de una línea de transmisión sin pérdidas, con un factor de ganancia
+unitario. En el caso de una línea de transmisión real, las pérdidas resultaran
+en un factor de atenuación. \textcolor{red}{chequear esto de la atenuación, y lo
+q sigue de las aplicaciones de un stub abierto}.  Este efecto permite generar
+resonancias en ciertas frecuencias, útiles para filtrado de señales o adaptación
+de impedancias.
+
+En el caso de un \textit{stub} cortocircuitado, es decir, con una impedancia de
+terminación igual a $0$, el efecto será una reflexión de la señal con fase
+opuesta, y un factor de atenuación dado por las pérdidas de la línea.
+
+El caso de interés para el circuito generador de pulsos, es el del \textit{stub}
+cortocircuitado, ya que la reflexión de señal con fase opuesta, permite generar
+un pulso en base a una forma de onda creciente o decreciente.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/placeholder.jpg}
+    \caption{Reflexiones en un \textit{stub} cortocircuitado.}
+    \label{fig:images-placeholder-jpg}
+\end{figure}
+
+En la figura \ref{TODO figura con funcionamiento temporal del stub} se observa
+el principio de funcionamiento. Se observa un pulso de entrada, formado por una
+forma de onda de tipo escalón, en nuestro caso este escalón será el mismo que en
+la figura \ref{srd_sharpener_result_rise_time}. Este escalón se ve reflejado con
+polaridad opuesta, y se suma al escalón de entrada.
+
+Dado el tiempo de propagación de la línea de transmisión $T$, vemos que el
+tiempo que tarda el pulso de entrada en reflejarse es $2*T$, el tiempo de un
+camino de ida y vuelta. Dado que el pulso se forma cuando vuelve la componente
+reflejada, vemos que el ancho de pulso estará dado por $2*T$. De esta forma, la
+duración temporal del pulso y, por lo tanto, el ancho de banda del sistema,
+estará dado por la longitud $L$ del \textit{stub}.
+
+Desarrollar la expresión de $T$.
+
+
+\paragraph{Generador de pulsos propuesto}
+
 Un \textit{stub} es una línea de transmisión puesta a tierra en paralelo con la
 señal. Una línea de transmisión puesta a tierra presenta una reflexión total de
 la señal transmitida, con polaridad opuesta \cite{pozar2011}.
