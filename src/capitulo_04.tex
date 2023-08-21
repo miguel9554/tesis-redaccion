@@ -1,6 +1,6 @@
-\section{Mediciones}
+\chapter{Mediciones}
 
-\subsection{Banco de medición}
+\section{Banco de medición}
 
 En la figura \ref{fig:banco_medicion} puede observarse un diagrama del banco de
 medición. Consiste de los siguientes bloques:
@@ -30,7 +30,7 @@ medición. Consiste de los siguientes bloques:
     \label{fig:banco_medicion}
 \end{figure}
 
-\subsubsection{Fuente de alimentación}
+\subsection{Fuente de alimentación}
 
 Para la fuente de alimentación se utilizó una \textit{Marconi Instruments
 TF2154}, en la figura \ref{fig:mediciones_fuente} puede observarse la misma.
@@ -54,7 +54,7 @@ no supere este máximo teórico.
 \end{figure}
 
 
-\subsubsection{FPGA}
+\subsection{FPGA}
 
 La \textit{FPGA} generaba el pulso unipolar cuadrado de entrada, que controla la
 $PRF$ y el ciclo de trabajo del pulso del driver. La placa utilizada fue
@@ -88,7 +88,7 @@ Las variables de ajuste del pulso unipolar de la \textit{FPGA} eran las siguient
     \label{fig:mediciones_fpga}
 \end{figure}
 
-\paragraph{Diseño implementado}
+\subsubsection{Diseño implementado}
 
 El diseño implementado en la \textit{FPGA} consistía en un generador de cuadrada con
 ciclo de trabajo y frecuencia variables. La interfaz del sistema consistió en
@@ -114,7 +114,7 @@ ciclo de trabajo y frecuencia variables. La interfaz del sistema consistió en
 
 En el anexo \ref{app:verilog} se encuentra el \textit{HDL} del diseño implementado.
 
-\subsubsection{Osciloscopio}
+\subsection{Osciloscopio}
 
 El osciloscopio fue utilizado para realizar la medición en el dominio del tiempo
 del pulso generado. Para una medición exitosa, era indispensable que este
@@ -141,7 +141,7 @@ esta impedancia como carga del generador de pulsos.
     \label{fig:osciloscopio}
 \end{figure}
 
-\paragraph{Seguridad del instrumento}
+\subsubsection{Seguridad del instrumento}
 
 Debido a las prestaciones del osciloscopio, era fundamental garantizar la
 integridad del mismo en la medición del protipo. Dado que actuaba como carga del
@@ -181,7 +181,7 @@ extremadamente bajo, ya que únicamente señales de gran ancho de banda pueden s
 filtradas y permanecer con una amplitud considerable a la salida del 
 \textit{stub}.
 
-\subsection{Mediciones realizadas}
+\section{Mediciones realizadas}
 
 Las mediciones consistieron en mediciones en el dominio del tiempo del pulso de
 salida. Utilizando funciones provistas por el osciloscopio, se midieron tiempo
@@ -229,7 +229,7 @@ En la figura \ref{fig:sistema_medido} puede observarse el \textit{pulser} junto 
     \label{fig:sistema_medido}
 \end{figure}
 
-\subsubsection{Mediciones preliminares}
+\subsection{Mediciones preliminares}
 
 Previo a las mediciones principales, se realizó una medición de la salida del driver,
 con el objetivo de validar el pulso bipolar generado.
@@ -251,7 +251,7 @@ ninguna iteración sobre la implementación del driver.
     \label{fig:banco_pre_mediciones}
 \end{figure}
 
-\subsection{Resultados}
+\section{Resultados}
 
 En las figuras \ref{fig:mediciones_5v_50}, \ref{fig:mediciones_5v_70},
 \ref{fig:mediciones_7v_50}, \ref{fig:mediciones_7v_60},
@@ -329,7 +329,7 @@ $V_{cc}$ [\unit{\volt}] & $D$ [\unit{\percent}] & $A$ [\unit{\volt}] &
 \label{tab:mediciones_resultados}
 \end{table}
 
-\subsubsection{Comparación con simulación}
+\subsection{Comparación con simulación}
 \label{sec:comp_simulacion}
 
 En las figuras \ref{fig:plots_5v_50} a \ref{fig:psd_7v_70} pueden observarse los resultados de las
@@ -442,7 +442,7 @@ el ringing y el pulso secundario.
     \label{fig:psd_7v_70}
 \end{figure}
 
-\subsubsection{Comparación con resultados de la literatura}
+\subsection{Comparación con resultados de la literatura}
 
 En la tabla \ref{tab:resultados_literatura} se resumen resultados reportados para generadores de
 pulsos \textit{UWB} en la literatura. En la figura \ref{fig:scatterplot_literature} se observan

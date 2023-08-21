@@ -1,8 +1,7 @@
-\section{Diseño}
+\chapter{Diseño}
 
-\subsection{Diseño del \textit{pulser}}
-
-\subsubsection{SRD como afilador de flanco}
+\section{SRD como afilador de flanco}
+\label{sec:srd_sharpener}
 
 En la sección \textcolor{red}{AGREGAR REF\ref{TODO}} fue explicado como un diodo
 \textit{SRD} funciona como afilador de flanco.
@@ -17,6 +16,11 @@ el funcionamiento.
     \label{fig:srd_sharpener}
 \end{figure}
 
+El circuito está compuesto por un generador de cuadrada lento, con tiempos de
+crecimiento y decrecimiento de \qty{5}{\nano\second}, en serie una resistencia
+de fuente $R_s$ de valor \qty{50}{\ohm}. La carga del circuito es la resistencia
+$R_L$ de \qty{50}{\ohm}.
+
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=0.8\textwidth]{images/srd_sharpener_result.png}
@@ -24,22 +28,10 @@ el funcionamiento.
     \label{fig:srd_sharpener_result}
 \end{figure}
 
-\begin{figure}[tbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/srd_sharpener_result_rise_time.png}
-    \caption{Tiempo de crecimiento.}
-    \label{fig:srd_sharpener_result_rise_time}
-\end{figure}
-
-El circuito está compuesto por un generador de cuadrada lento, con tiempos de
-crecimiento y decrecimiento de \qty{5}{\nano\second}, en serie una resistencia
-de fuente $R_s$ de valor \qty{50}{\ohm}. La carga del circuito es la resistencia
-$R_L$ de \qty{50}{\ohm}.
-
 En la figura \ref{fig:srd_sharpener_result} se observa el resultado de la
 simulación. Vemos que, hasta aproximadamente \qty{85}{\nano\second}, la señal de
 salida $V_o$ es igual a la señal de entrada, afectada por el divisor entre $R_L$
-y $R_s$, $\frac{R_L}7{R_L+R_s}$. Durante este tiempo, el \textit{SRD} presenta
+y $R_s$, $\frac{R_L}{R_L+R_s}$. Durante este tiempo, el \textit{SRD} presenta
 una baja impedancia. En la porción positiva de la señal de entrada $V_p$, esto
 es coincidente con un diodo usual, ya que el mismo se encuentra polarizado en
 directa. En lo que destaca el \textit{SRD} de un diodo usual, es que luego de que la
@@ -53,6 +45,13 @@ figura \ref{fig:srd_sharpener_result} puede observarse el comportamiento
 de la corriente. Se observa la misma caída abrupta en los
 \qty{85}{\nano\second}, y una inversión en el signo de la corriente con la
 inversión en el signo de la cuadrada de entrada.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/srd_sharpener_result_rise_time.png}
+    \caption{Tiempo de crecimiento.}
+    \label{fig:srd_sharpener_result_rise_time}
+\end{figure}
 
 Llamaremos corriente de inyección de carga $I_F$ a la corriente que circula por
 el \textit{SRD} con sentido positivo. Esta corriente determina la carga
@@ -98,6 +97,13 @@ alta impedancia. Esta tensión estará dada por el divisor entre $R_L$ y $R_s$,
     \Delta V = V_l \cdot \frac{R_L}{R_L+R_s}
 \end{equation}
 
+El tiempo de crecimiento de este escalón estará dado por dos componentes: un
+tiempo de transición del diodo SRD $t_t$, y un tiempo de carga $RC$ dado por el
+tiempo en que demora en cargarse el RC. \textcolor{red}{COMPLETAR CON EXPRESIÓN}
+\cite{an918}.
+
+\textcolor{red}{EXPLICAR IMPORTANCIA DE BAJA CAPACIDAD PARALELO AL SRD}
+
 Vemos por los marcadores de la figura, que estos tiempos son
 \qty{87.77}{\nano\second} y \qty{88.06}{\nano\second} respectivamente, por lo
 que tenemos un tiempo de crecimiento
@@ -112,9 +118,9 @@ tiempo de crecimiento estará dado por el tiempo de transición del diodo y por 
 tiempo del RC formado entre la capacidad de reversa del diodo y la resistencia
 vista desde los nodos del capacitor.
 
-\subsubsection{Generador de pulsos con \textit{stub}}
+\section{Generador de pulsos con \textit{stub}}
 
-\paragraph{Principios del \textit{stub}}
+\subsection{Principios del \textit{stub}}
 
 Un \textit{stub} consiste de una línea de transmsión conectada en paralelo al
 camino de la señal. Su efecto sobre la señal dependerá de su impedancia
@@ -157,26 +163,99 @@ reflejada, vemos que el ancho de pulso estará dado por $2*T$. De esta forma, la
 duración temporal del pulso y, por lo tanto, el ancho de banda del sistema,
 estará dado por la longitud $L$ del \textit{stub}.
 
-Desarrollar la expresión de $T$.
-
-
-\paragraph{Generador de pulsos propuesto}
-
-Un \textit{stub} es una línea de transmisión puesta a tierra en paralelo con la
-señal. Una línea de transmisión puesta a tierra presenta una reflexión total de
-la señal transmitida, con polaridad opuesta \cite{pozar2011}.
-
-Agregando un \textit{stub} al afilador de pulsos descripto anteriormente, es
-posible formar un pulso con el flanco rápido generado por el SRD.
-
-El \textit{stub} actúa como una puesta a tierra para señales cuya variación temporal es
-mucho más lenta que el tiempo de propagación en el mismo. Para el flanco
-generado por el \textit{SRD}, la reflexión del mismo genera un pulso. El ancho
-de este pulso es el doble del retardo temporal del \textit{stub}
+El tiempo de propagación $T$ está dado por la velocidad de propagación en la
+línea de transmisión $v_p$ y el largo de la línea $L$. La velocidad de
+propagación está dada por \textcolor{red}{AGREGAR REF, POZAR?} \cite{pozar2011}
 
 \begin{equation}
-    T_{pulso} = 2 \cdot T_{stub}
+  v_p = \frac{c_0}{\sqrt{\kappa}}
 \end{equation}
+
+con $\kappa$  la permitividad relativa del medio. Para una línea de transmisión,
+es posible desarrollar una \textit{permitividad relativa efectiva}, que es una
+función de la geometría de la línea y sus materiales \cite{pozar2011}. Esta
+función puede obtenerse a través de una forma cerrada, generalmente involucrando
+diversas aproximaciones, o mediante métodos numéricos iterativos. El punto a
+resaltar es que, dada una determinada estructura de línea de transmisión y sus
+materiales, se puede considerar a $\kappa$ una constante del circuito.
+
+Es interesante notar que $\kappa$ es una función del corte transversal de la
+línea de transmisión, y no de su dimensión longitudinal. De esta manera,
+$\kappa$ es independiente del largo $L$ de la línea \cite{pozar2011}.
+
+Entonces, el ancho de pulso $T_p$ está dado por
+
+\begin{equation}
+  T_p = 2*T = 2*v_p*L =2*\frac{c_0}{\sqrt{\kappa}}*L
+\end{equation}
+
+De esta forma, se puede diseñar el largo de línea $L$ para obtener un ancho de
+pulso $T_p$ deseado
+
+\begin{equation}
+  L = \frac{T_p}{2}\frac{\sqrt{\kappa}}{c_0}
+\end{equation}
+
+De esta manera, el largo $L$ queda determinado por el ancho de pulso deseado
+$T_p$ y la constante de propagación de la línea de transmisión utilizada
+$\kappa$.
+
+\subsection{Generador de pulsos SRD+\textit{stub}}
+
+Agregando un \textit{stub} cortocircuitado al afilador de flancos SRD
+descripto anteriormente, podemos formar un generador de pulsos ultracortos. El
+SRD genera un flanco rápido, y este flanco es convertido en un pulso
+mediante la reflexión con fase opuesta en el \textit{stub}. 
+
+El ancho de pulso es controlado por el largo del \textit{stub} como fuese
+explicado anteriormente. La amplitud por la amplitud de la fuente, la relación
+entra la impedancia de carga $Z_L$ y la del generador $Z_g$ y por el largo del
+stub.
+
+Como fuese explicado en secciones anteriores \textcolor{red}{EXPLICAR EN QUÉ
+SECCIÓN}, el escalón de tensión generado en el SRD tiene una magnitud dada por
+
+\begin{equation}
+    \Delta V = V_l \cdot \frac{R_L}{R_L+R_s}
+\end{equation}
+
+El ancho del pulso, estará dado por el valor de este escalón en el instante en
+el que el pulso reflejado se recombina, como puede observarse en la figura
+\textcolor{red}{FIGURA MOSTRANDO REFLEXIÓN STUB}. Si asumimos que el escalón
+crece como un sistema de primer orden con constante de tiempo $\tau$, el valor
+del escalón en función del tiempo es
+
+\begin{equation}
+  V(t) = \Delta V \left( 1-e^{-\frac{t}{\tau}}\right)
+\end{equation}
+
+Siendo el tiempo que tarda el pulso en reflejarse ida y vuelta $2T$ o $T_p$, la
+amplitud del pulso estará dada por
+
+\begin{equation}
+  A_p = V(2T) = V_l \cdot \frac{R_L}{R_L+R_s} \left( 1-e^{-\frac{2T}{\tau}}\right)
+\end{equation}
+
+Vemos que $\Delta V$ es el máximo valor que puede alcanzar el pulso, siendo la
+relación $\frac{2T}{\tau}$ la que determina que porcentaje de este valor tomará
+el pulso. Para $ \tau \ll T $, será $e^{-\frac{2T}{\tau}} \approx 1$, y por lo
+tanto $A_p \approx 0$. Este es el mismo resultado que intuitivamente se
+obtendría, que para señales con una variación temporal $\tau$ mucho menor al
+tiempo de propagación en el \textit{stub} $T$, la señal será filtrada por el
+efecto de puesto a tierra.
+
+Para el caso de la señal de escalón generada por el SRD, es fácil obtener un
+tiempo de crecimiento del orden de los cientos de picosegundos, por lo que su
+amplitud resulta un porcentaje considerable de $\Delta V$. Cuanto más rápido sea
+el flanco, mayor amplitud.
+
+En la figura \ref{fig:stub_generator_circuit} podemos observar un esquemático
+del generador de pulsos basado en SRD y \textit{stub}. La fuente es simétrica,
+con amplitudes de \qty{\pm 5}{\volt}. La impedancia de fuente $Z_g$ se encuentra
+perfectamente adaptada a la de carga $Z_L$, siendo ambas de \qty{50}{\ohm}. La
+línea de transmisión es ideal, caracterizada únicamente por su impedancia
+característica, \qty{50}{\ohm} en este caso, y su retardo de propagación,
+\qty{60}{\pico\second} en este caso.
 
 \begin{figure}[tbp]
     \centering
@@ -184,6 +263,41 @@ de este pulso es el doble del retardo temporal del \textit{stub}
     \caption{Generador de pulsos basado en \textit{stub}}
     \label{fig:stub_generator_circuit}
 \end{figure}
+
+En las figuras \ref{fig:generator_result_waves} y
+\ref{fig:stub_generator_result_pulse} se observan los resultados de la
+simulación del esquemático de la figura \ref{fig:stub_generator_circuit}. En la
+figura \ref{fig:generator_result_waves} se observan las formas de onda de la
+señal de entrada $V_p$, la tensión de salida $V_o$ y la corriente sobre el SRD
+$I_{SRD}$. Se observa que la tensión de salida $V_o$ sigue a la de entrada $V_p$
+hasta aproximadamente \qty{85}{\nano\second}, donde el SRD pasa del estado de
+baja impedancia al de alta. En en este instante, se forma un pulso por una
+combinación del salto de tensión en el SRD y el efecto de reflexión del stub
+cortocircuitado. Es interesante notar que los flancos positivos y negativos de
+la señal de entrada también resultan en pulsos a la salida, aunque de mucha
+menor amplitud. La forma de onda de la corriente es coincidente con lo
+mencionado anteriormente, siendo una versión escalada por la impedancia de la
+forma de onda de entrada $V_p$, hasta los \qty{85}{\nano\second}, donde cae
+abruptamente a $0$ debido al cambio de impedancia en el SRD.
+
+Es interesante notar que en este caso, los valores de la corriente están dados
+por $\frac{V_p}{R_s}$ y no $\frac{V_p}{R_s+R_L}$ como en la sección
+\ref{sec:srd_sharpener}. Esto se debe a que el \textit{stub} actua como un
+cortocircuito sobre $R_L$, anulando su impedancia. Es importante notar que,
+entonces, $R_S$ tiene la función de limitación de corriente durante las etapas
+de conducción del SRD. De ser $0$ esta impedancia, la corriente sería infinita
+(en rigor, se vería limitada únicamente por la resistencia serie del SRD)
+
+En la figura \ref{fig:stub_generator_result_pulse} se observa un zoom sobre el
+pulso obtenido. Tiene una amplitud de \qty{1.728}{\volt}, y una duración
+de \qty{180}{\pico\second} \textcolor{red}{por qué no es 60*2=120?}
+\textcolor{red}{verificar que la amplitud coincida con la expresión anterior}.
+Se observa que el pulso presenta un sobretiro negativo, una no idealidad no
+contemplada hasta ahora en el modelo presentado.
+
+\textcolor{red}{Hablar sobre la falta de reflexiones en el stub por ser de 50
+ohm, q es la impedancia q ve una vez q se abre el SRD? ver q pasa si movemos esa
+Zo?}
 
 \begin{figure}[tbp]
     \centering
@@ -199,22 +313,87 @@ de este pulso es el doble del retardo temporal del \textit{stub}
     \label{fig:stub_generator_result_pulse}
 \end{figure}
 
-Vemos que el pulso tiene un ancho igual al doble del stub. vemos que se generan
-pulsos espureos con los flancos de la señal de entrada. Vemos que se el pulso
-final tiene un undershoot. vemos que la corriente baja abruptamente a 0. Vemos
-que ahora la corriente es Vp/Rs, RL ya no entra en juego porque esta
-cortocircuitada por el stub.
+\subsection{Diseño del \textit{stub}}
 
-Hablar sobre la falta de reflexiones en el stub por ser de 50 ohm, q es la
-impedancia q ve una vez q se abre el SRD? ver q pasa si movemos esa Zo?
+En algún lado cómo obtuvimos el largo en mm del stub.
 
-\subsubsection{Calculo de stub}
+\section{Diseño final del \textit{pulser}}
 
-En algún lado explicar cómo obtuvimos el largo en mm del stub.
+\textcolor{red}{mostrar oscilaciones en el resultado anterior para justificar la
+inclusión del Schottky}
 
-\subsubsection{Diseño final del \textit{pulser}}
+Para compensar tanto las transmisiones de los flancos de la fuente de entrada y
+el sobretiro negativo observado, se agrega al generador un diodo rectificador en
+serie con la resistencia de carga $R_L$. Siendo la tensión de encendido del
+diodo mayor a la amplitud de los pulsos generados por las transiciones de la
+onda de entrada, estos no serán transmitidos a la carga $R_L$ debido a la acción
+de rectificación. En cuanto al sobretiro y las oscilaciones, tampoco serán
+transmitidas a la salida debido al bloqueo de de corriente en sentido negativo.
 
-Incluir diodo \textit{Schottky}
+El costo de este diodo es la perdida de amplitud en el pulso principal, dada por la
+magnitud de su tensión de encendido. Para un correcto funcionamiento del
+generador de pulsos, es fundamental que el rectificador sea lo suficientemente
+rápido como para transmitir el pulso ultracorto sin degradación. Por esta razón
+se utiliza un diodo Schottky.
 
-\subsection{Diseño del \textit{driver}}
+\subsection{Selección del diodo}
 
+Se utilizó un \textcolor{red}{MAE...}. Este posee una baja capacidad. Hablar del
+pequeño factor de forma.
+
+\subsection{Simulaciones}
+
+En la figura \ref{fig:pulser_final_schematic} se observa un esquemático del
+generador de pulsos con el rectificador incluido. En la figura
+\ref{fig:generator_schottky_result_waves} se observa el resultado de la
+simulación. Para este caso, en la salida se encuentra únicamente el pulso
+principal, habiéndose anulados los pulsos generados por las transiciones de la
+señal de entrada.
+
+En la figura \ref{fig:schottky_generator_result_pulse} se observa el pulso
+simulado. Con respecto al de la simulación sin rectificador, figura
+\ref{fig:stub_generator_result_pulse}, se observa una caída en la amplitud de
+\textcolor{red}{COMPLETAR VALOR}, dada por la tensión de encendido del Schottky
+utilizado, y una reducción del sobretiro y las oscilaciones
+\textcolor{red}{MOSTRAR QUE ESTO SE REDUCE}.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/placeholder.jpg}
+    \caption{\textit{Pulser} final incluyendo diodo Schottky}
+    \label{fig:pulser_final_schematic}
+\end{figure}
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/placeholder.jpg}
+    \caption{Resultado de simulación de generador con rectificador}
+    \label{fig:generator_schottky_result_waves}
+\end{figure}
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/placeholder.jpg}
+    \caption{Pulso simulado con generador con rectificador}
+    \label{fig:schottky_generator_result_pulse}
+\end{figure}
+
+\section{Consumo del generador}
+
+Cálculos de cuánto consume el generador, cuanto disipan los componentes.
+
+\section{Diseño del \textit{driver}}
+
+Dado que uno de los objetivos del trabajo es un generador de pulsos que pueda
+ser controlado por la salida digital de un sistema embebido, y dado que estas
+salidas son en la mayoría de los casos unipolares y de baja capacidad de carga,
+es necesario incluir en el prototipo una etapa \textit{driver}.
+
+La función de esta etapa es, en base a un pulso digital de entrada de control, y
+una fuente de alimentación continua, generar el pulso bipolar necesario para el
+funcionamiento del \textit{pulser}. Este pulso bipolar tendrá un ciclo de
+trabajo y un período dados por el ciclo de trabajo y el período del pulso
+unipolar de entrada. Es necesario también que el \textit{driver} presente una
+baja carga al pulso unipolar.
+
+En la figura puede observarse un diagrama del driver utilizado.

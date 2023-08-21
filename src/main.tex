@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper]{report}
 
 \input{src/packages.tex}
 
@@ -14,11 +14,15 @@
 
 \begin{document}
 
+\maketitle
+
+\tableofcontents
+
 \input{src/capitulo_03.tex}
 \newpage
 \input{src/capitulo_04.tex}
 
-\bibliography{src/mybib} 
+\bibliography{src/mybib}
 \bibliographystyle{ieeetr}
 
 \input{src/appendix.tex}
