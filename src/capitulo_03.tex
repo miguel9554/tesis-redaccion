@@ -384,6 +384,8 @@ Cálculos de cuánto consume el generador, cuanto disipan los componentes.
 
 \section{Diseño del \textit{driver}}
 
+\section{Arquitectura}
+
 Dado que uno de los objetivos del trabajo es un generador de pulsos que pueda
 ser controlado por la salida digital de un sistema embebido, y dado que estas
 salidas son en la mayoría de los casos unipolares y de baja capacidad de carga,
@@ -396,4 +398,79 @@ trabajo y un período dados por el ciclo de trabajo y el período del pulso
 unipolar de entrada. Es necesario también que el \textit{driver} presente una
 baja carga al pulso unipolar.
 
-En la figura puede observarse un diagrama del driver utilizado.
+En la figura \ref{fig:driver_block_diagram} se observa un diagrama en bloques
+del driver propuesto. El mismo está compuesto por dos componentes principales
+que brindan dos funciones diferenciadas, la llave y el capacitar. A la entrada
+es excitado por la señal digital de control, y a la salida tiene una carga
+$Z_L$. La carga en este caso será el pulser, por lo tanto será una carga no
+lineal, ya que como se mostro en secciones anteriores, la corriente que consume
+tiene una abrupta caída a 0 cuando se abre el SRD.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/driver.drawio.png}
+    \caption{Diagrama en bloques del driver}
+    \label{fig:driver_block_diagram}
+\end{figure}
+
+La llave, que conmuta entre $V_{dd}$ y tierra, según la señal de control
+digital. De esta manera, la corriente que consume la carga es entregada por la
+fuente y no por la señal de control digital. A la salida de la llave se generará
+una señal cuadrada unipolar, pero a diferencia de la entrada, esta conmutará
+entre $V_{dd}$ y tierra, mientras que a la entrada se conmuta entre $V_{dig}$ y
+tierra. De esta manera, la llave logra presentarle una carga baja y constante a
+la salida digital, y amplifica la conmutación a todo el rango disponible con la
+fuente de alimentación. Esta es una aproximación ideal, en realidad será todo el
+rango de la fuente de alimentación menos la caída que tenga el bloque.
+
+A la salida de la llave tenemos entonces una señal cuadarada unipolar, con
+amplitud pico a pico igual a $V_{dd}$, es decir, toda la amplitud disponible de
+la fuente de alimentación, y una capacidad de entrega de corriente considerable.
+Para convertir este pulso unipolar en uno bipolar, se utiliza un capacitor en
+serie $C$, que junto con la carga $Z_L$ forma un filtro pasaltos, eliminando la
+componente continua de la cuadarada unipolar, resultando en una bipolar.
+
+El valor medio de la tensión $V_m$ en una señal cuadrada con valores $V_+$ y
+$V_-$, con período $T$ y ciclo de trabajo $D$ está dado por
+
+\begin{equation}
+    V_m = D \cdot V_+ + (1-D) \cdot V_-
+\end{equation}
+
+En nuestro caso, la señal unipolar a la salida de la llave tiene valores
+$V_+=V_{dd}$ y $V_-=0$, por lo que tiene un valor medio
+
+\begin{equation}
+    V_m = D \cdot V_{dd}
+\end{equation}
+
+La cuadrada desarrollada en la impedancia de carga $Z_L$ será la cuadarada
+unipolar a la salida de la llave, menos su valor medio. Esta señal tendrá
+entonces valores $V_+$ y $V_-$ dados por
+
+\begin{equation}
+    \begin{aligned}
+        V_+ &= V_{dd}-V_m = V_{dd} \cdot (1-D) \\
+        V_- &= -V_m = -V_{dd} \cdot D \\
+    \end{aligned}
+\end{equation}
+
+Esta es la tensión $V_l$ en la ecuación de amplitud del pulso, entonces a más
+$D$ mayor amplitud de pulso, vamos!
+
+\textcolor{red}{aclarar que al ser la carga no lineal, lo de arriba no aplica
+perfectamente}
+
+\textcolor{red}{ni me acordaba que había una resistencia paralelo, explicar
+porque carajos está ahí}
+
+\section{Implementación de la llave}
+
+El driver fue diseñado en base a un integrado gate driver. Estos integrados son
+utilizados generalmente para conmutar un transistor de potencia con una señal
+digital de baja capacidad de carga, un caso de uso que se adapta perfectamente
+al nuestro.
+
+\section{Implementación}
+
+Hablar acá de cuestiones del layout, fabricación, etc, simulación final en ADS
