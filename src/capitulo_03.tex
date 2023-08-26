@@ -233,7 +233,8 @@ Siendo el tiempo que tarda el pulso en reflejarse ida y vuelta $2T$ o $T_p$, la
 amplitud del pulso estará dada por
 
 \begin{equation}
-  A_p = V(2T) = V_l \cdot \frac{R_L}{R_L+R_s} \left( 1-e^{-\frac{2T}{\tau}}\right)
+    \label{eq:A_p}
+    A_p = V(2T) = V_l \cdot \frac{R_L}{R_L+R_s} \left( 1-e^{-\frac{2T}{\tau}}\right)
 \end{equation}
 
 Vemos que $\Delta V$ es el máximo valor que puede alcanzar el pulso, siendo la
@@ -400,7 +401,7 @@ baja carga al pulso unipolar.
 
 En la figura \ref{fig:driver_block_diagram} se observa un diagrama en bloques
 del driver propuesto. El mismo está compuesto por dos componentes principales
-que brindan dos funciones diferenciadas, la llave y el capacitar. A la entrada
+que brindan dos funciones diferenciadas, la llave y el capacitor. A la entrada
 es excitado por la señal digital de control, y a la salida tiene una carga
 $Z_L$. La carga en este caso será el pulser, por lo tanto será una carga no
 lineal, ya que como se mostro en secciones anteriores, la corriente que consume
@@ -413,22 +414,80 @@ tiene una abrupta caída a 0 cuando se abre el SRD.
     \label{fig:driver_block_diagram}
 \end{figure}
 
-La llave, que conmuta entre $V_{dd}$ y tierra, según la señal de control
-digital. De esta manera, la corriente que consume la carga es entregada por la
-fuente y no por la señal de control digital. A la salida de la llave se generará
-una señal cuadrada unipolar, pero a diferencia de la entrada, esta conmutará
-entre $V_{dd}$ y tierra, mientras que a la entrada se conmuta entre $V_{dig}$ y
+\subsection{Llave}
+
+La llave conmuta entre $V_{dd}$ y tierra según la señal de control digital. De
+esta manera, la corriente que consume la carga es entregada por la fuente y no
+por la señal de control digital. A la salida de la llave se generará una señal
+cuadrada unipolar, pero a diferencia de la entrada, esta conmutará entre
+$V_{dd}$ y tierra, mientras que a la entrada se conmuta entre $V_{dig}$ y
 tierra. De esta manera, la llave logra presentarle una carga baja y constante a
 la salida digital, y amplifica la conmutación a todo el rango disponible con la
 fuente de alimentación. Esta es una aproximación ideal, en realidad será todo el
 rango de la fuente de alimentación menos la caída que tenga el bloque.
 
-A la salida de la llave tenemos entonces una señal cuadarada unipolar, con
+A la salida de la llave tenemos entonces una señal cuadrada unipolar, con
 amplitud pico a pico igual a $V_{dd}$, es decir, toda la amplitud disponible de
 la fuente de alimentación, y una capacidad de entrega de corriente considerable.
-Para convertir este pulso unipolar en uno bipolar, se utiliza un capacitor en
-serie $C$, que junto con la carga $Z_L$ forma un filtro pasaltos, eliminando la
-componente continua de la cuadarada unipolar, resultando en una bipolar.
+
+\subsection{Filtro pasa altos}
+
+Sabemos que un pulso cuadrado unipolar de período $T$ tendrá un espectro dado
+por una componente de continua con el valor medio $V_{m}$, y múltiples
+harmónicos de $T$, cada uno con una amplitud que decae con $\frac{1}{n}$.
+\textcolor{red}{agregar una referencia que banque esto}.
+
+Entonces, podemos pensar al pulso unipolar como la suma de un pulso bipolar de
+valor medio 0, y una constante con valor igual al valor medio del pulso
+unipolar. Entonces, podemos obtener al pulso bipolar restándole al unipolar su
+valor medio.
+
+Teniendo en cuenta que el valor medio es la componente de DC del pulso, podemos
+lograr este resultado pasando el pulso unipolar por un filtro pasaltos. El ancho
+de banda de este filtro debe ser tal que filtre la componente de continua y no
+distorsione las componentes alternas, que se encuentran a partir de $T$.
+
+Sabemos que un filtro pasa altos de primer orden con frecuencia de corte $f_c$
+tiene una característica de magnitud que presenta atenuación desde continua hasta
+aproximadamente $f_c$, y una fase que varía \qty{90}{\degree} desde
+$\frac{f_c}{10}$ hasta $f_c \cdot 10$. Entonces, para filtrar la componente
+continua de la unipolar y transmitir la bipolar sin distorsión,
+es necesario que la frecuencia de la cuadrada sea mayor a 10 veces $f_c$, es
+decir $T > 10 \cdot f_c$, o $f_c < \frac{T}{10}$
+
+Siendo la $PRF$ objetivo de \qty{10}{\mega\hertz}, el requerimiento sobre $f_c$
+es entonces $f_c < \qty{1}{\mega\hertz}$.
+
+Para implementar el filtro pasa altos propuesto, se optó por un filtro de primer
+orden RC. Para lograr la característica pasa altos, el capacitor debe estar en
+el camino de la señal, es decir, en serie. De esta manera, el filtro queda
+compuesto por un capacitor $C$ serie y una impedancia $Z$ dada por la impedancia
+de entrada del pulser, asumiendo una impedancia despreciable para la llave.
+
+Para una estimación del rango de valores posibles para $C$ asumimos un rango
+para $Z$ de $ Z \approx \qty{50}{\ohm}$. Esta es una aproximación razonable dado
+que el sistema trabaja en \qty{50}{\ohm}, por lo que $Z$ será una serie de
+impedancias cercanas a \qty{50}{\ohm} en serie o paralelo, lo que resultará en
+una impedancia en ese mismo orden de valores. De esta manera,
+
+\begin{equation}
+    \begin{aligned}
+        f_c &< \qty{1}{\mega\hertz} \\
+        \frac{1}{2\pi \cdot |Z| \cdot C} &< \qty{1}{\mega\hertz} \\
+        C &> \frac{1}{2\pi \cdot |Z| \cdot \qty{1}{\mega\hertz}} \\
+        C &> \frac{1}{2\pi \cdot \qty{50}{\mega\hertz} \cdot \qty{1}{\mega\hertz}} \\
+        C &> \qty{3.2}{\nano\farad} \\
+    \end{aligned}
+\end{equation}
+
+La capacidad debe estar por arriba de \qty{3.2}{\nano\farad}, valores fácilmente
+obtenibles en los tamaños de encapsulados objetivo.
+
+En la siguiente sección, asumiendo un filtrado ideal, es decir, donde se filtra
+por completo el valor medio $V_m$ y se transmiten los harmónicos sin distorsión,
+se desarrolla la expresión de los valores de la bipolar.
+
+\subsubsection{Carga lineal}
 
 El valor medio de la tensión $V_m$ en una señal cuadrada con valores $V_+$ y
 $V_-$, con período $T$ y ciclo de trabajo $D$ está dado por
@@ -444,7 +503,7 @@ $V_+=V_{dd}$ y $V_-=0$, por lo que tiene un valor medio
     V_m = D \cdot V_{dd}
 \end{equation}
 
-La cuadrada desarrollada en la impedancia de carga $Z_L$ será la cuadarada
+La cuadrada desarrollada en la impedancia de carga $Z_L$ será la cuadrada
 unipolar a la salida de la llave, menos su valor medio. Esta señal tendrá
 entonces valores $V_+$ y $V_-$ dados por
 
@@ -455,8 +514,25 @@ entonces valores $V_+$ y $V_-$ dados por
     \end{aligned}
 \end{equation}
 
-Esta es la tensión $V_l$ en la ecuación de amplitud del pulso, entonces a más
-$D$ mayor amplitud de pulso, vamos!
+Estos son los valores de la señal cuadrada unipolar que excitará al pulser.
+Entonces, reconocemos que $V_-$ es $V_l$ en la ecuación \ref{eq:A_p}.
+
+\begin{equation}
+    A_p = V_{dd} \cdot D \cdot \frac{R_L}{R_L+R_s} \left( 1-e^{-\frac{2T}{\tau}}\right)
+\end{equation}
+
+Entonces, tanto el valor absoluto de $V_{dd}$ como el valor de $D$ incrementan
+linealmente la amplitud del pulso a la salida. Aumentar $V_{dd}$ tiene como
+límite la conducción de corriente máxima en los componentes del circuito,
+mientras que $D$ tiene como límite superior el tiempo de descarga $T_s$,
+teniendo que se ser $T*(1-D) > T_s$, es decir, el tiempo en el que la cuadrada
+bipolar tiene el valor $V_l$ tiene que ser suficiente para la remoción de todas
+las cargas en el SRD.
+
+\subsubsection{Carga no lineal}
+
+En el caso de una carga no lineal, no es válido relacionar la tensión de salida
+con la de entrada a través de la suma $-V_m$
 
 \textcolor{red}{aclarar que al ser la carga no lineal, lo de arriba no aplica
 perfectamente}
@@ -474,3 +550,6 @@ al nuestro.
 \section{Implementación}
 
 Hablar acá de cuestiones del layout, fabricación, etc, simulación final en ADS
+
+Hablar de que se apuntó a usar componentes lo más pequeños posibles para
+eliminar las contribuciones de las impedancias parásitas
