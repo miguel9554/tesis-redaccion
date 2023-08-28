@@ -531,8 +531,28 @@ las cargas en el SRD.
 
 \subsubsection{Carga no lineal}
 
-En el caso de una carga no lineal, no es válido relacionar la tensión de salida
-con la de entrada a través de la suma $-V_m$
+En el caso de una carga no lineal, no es válido el análisis de función
+transferencia. Podemos en cambio, basar el análisis en el balance ampere-segundo
+en el capacitor \cite{Erickson_Robert_W_2020}. Este resultado establece que el
+valor medio de la corriente en un capacitor en estado estacionario es nulo.
+
+\begin{equation}
+    \label{eq:capacitor_ampere_second_balance}
+    \langle i(t) \rangle = \int_{t_0}^{t_0+T} i(t)dt = 0
+\end{equation}
+
+En caso de una carga $Z_L$ lineal, la corriente y la tensión están linealmente
+relacionadas, conduciendo al resultado de la sección anterior en el que tanto la
+tensión como la corriente tienen un valor medio 0. En el caso de la carga no
+lineal, se mantiene la ecuación \ref{eq:capacitor_ampere_second_balance}, es
+decir, el valor medio de la corriente en el capacitor será cero, pero no
+necesariamente la tensión será 0.
+
+Asumiendo que en estado permanente el capacitor se carga a una tensión constante
+$V_C$, este valor será el que resulte de imponer el cumplimiento de la ecuación
+\ref{eq:capacitor_ampere_second_balance}.
+
+$V_o$ antes era $i_C*Z_{L}$, ahora la carga no es lineal. Desarrollar.
 
 \textcolor{red}{aclarar que al ser la carga no lineal, lo de arriba no aplica
 perfectamente}
