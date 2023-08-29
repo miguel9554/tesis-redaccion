@@ -546,19 +546,162 @@ relacionadas, conduciendo al resultado de la sección anterior en el que tanto l
 tensión como la corriente tienen un valor medio 0. En el caso de la carga no
 lineal, se mantiene la ecuación \ref{eq:capacitor_ampere_second_balance}, es
 decir, el valor medio de la corriente en el capacitor será cero, pero no
-necesariamente la tensión será 0.
+necesariamente el de la tensión será 0.
 
 Asumiendo que en estado permanente el capacitor se carga a una tensión constante
 $V_C$, este valor será el que resulte de imponer el cumplimiento de la ecuación
 \ref{eq:capacitor_ampere_second_balance}.
 
-$V_o$ antes era $i_C*Z_{L}$, ahora la carga no es lineal. Desarrollar.
+Para el caso de una carga lineal, tenemos
 
-\textcolor{red}{aclarar que al ser la carga no lineal, lo de arriba no aplica
-perfectamente}
+\begin{equation}
+    \label{eq:vc_linear_load}
+    \begin{aligned}
+        \frac{V_U-V_C}{R} \cdot D &= \frac{Vc}{R} \cdot D' \\
+        V_U \cdot D &= V_C \cdot \left( D'+D \right) \\
+        V_C &= V_U \cdot D \\
+    \end{aligned}
+\end{equation}
 
-\textcolor{red}{ni me acordaba que había una resistencia paralelo, explicar
-porque carajos está ahí}
+Es el mismo resultado que en la sección anterior.
+
+Ahora, supongamos una carga no lineal de las siguientes características: conduce
+durante todo el período positivo de la unipolar $D$, y una porción $\alpha \cdot
+D'$ de la porción negativa, con $\alpha \in \left[0, 1 \right]$. Un $\alpha=0$
+corresponde a una carga que no conduce en la porción negativa, como un diodo
+usual, y una de $\alpha=1$ corresponde a una carga lineal. En nuestro caso, es
+$\alpha = \frac{T_s}{D'}$, con $T_s$ el tiempo de descarga del diodo, es decir,
+el tiempo que le toma  a la corriente negativa extraer todas las cargas
+inyectadas en la porción positiva.
+
+En este caso, el balance de corrientes en el capacitor es
+
+\begin{equation}
+    \label{eq:vc_non_linear_load_0}
+    \begin{aligned}
+        \frac{V_U-V_C}{R} \cdot D &= \frac{Vc}{R} \cdot \alpha \cdot D' \\
+        V_U \cdot D &= V_C \cdot \left( \alpha \cdot D'+D \right) \\
+        V_C &= V_U \cdot \frac{D}{\alpha \cdot D' + D}  \\
+    \end{aligned}
+\end{equation}
+
+Definiendo a $\alpha'=\alpha-1$, tenemos
+
+\begin{equation}
+    \label{eq:vc_non_linear_load}
+    \begin{aligned}
+        \alpha \cdot D' &+ D \\
+        (1-\alpha') \cdot D' &+ D \\
+        \cdot D' - \alpha' \cdot D' &+ D \\
+        1 - \alpha' \cdot D' & \\
+    \end{aligned}
+\end{equation}
+
+Llegamos a
+
+\begin{equation}
+    \label{eq:vc_non_linear_load_final}
+        V_C &= V_U \cdot \frac{D}{1-\alpha' \cdot D}
+\end{equation}
+
+Vemos que para el caso de carga lineal, $\alpha = 1 \ (\alpha'=0)$, la ecuación
+se convierte en la misma que \ref{eq:vc_linear_load} como es esperado.
+
+Para el caso en que agreguemos una resistencia en paralelo, tenemos
+
+\begin{equation}
+    \label{eq:vc_non_linear_load_with_shunt_0}
+    \begin{aligned}
+        \frac{V_U-V_C}{R_{sh}} \cdot D + \frac{V_U-V_C}{R_{s}} \cdot D &=
+        \frac{Vc}{R_{sh}} \cdot D' + \frac{Vc}{R_{s}} \cdot \alpha \cdot D' \\
+        \left( V_U - V_C \right) \cdot D \cdot \left( \frac{1}{R_{sh}} +
+        \frac{1}{R_s} \right) &= V_C \cdot D' \left( \frac{1}{R_{sh}} +
+        \frac{\alpha}{R_s} \right) \\
+        V_C &= V_U \cdot \frac{D}{\alpha \cdot D' + D}  \\
+    \end{aligned}
+\end{equation}
+
+Reconocemos la expresión de la resistencia en paralelo de $R_{sh}$ y $R_s$, y la
+de $R_{sh}$ y $\frac{R_s}{\alpha}$, siendo el efecto de $\alpha$ el de reducir
+la resistencia en la porción negativa en $\alpha$.
+
+\begin{equation}
+    \label{eq:vc_non_linear_load_with_shunt_1}
+    \begin{aligned}
+        \frac{V_U-V_C}{R_{sh} // R_{s}} \cdot D &= \frac{V_C}{R_{sh} //
+        \frac{R_{s}}{\alpha}} \cdot D'  \\
+        \frac{V_U}{R_{sh} // R_{s}} \cdot D &= V_C \left( \frac{D}{R_{sh}
+        // R_{s}} + \frac{D'}{R_{sh} // R_{s}} \right) \\
+    \end{aligned}
+\end{equation}
+
+Definiendo a $\alpha'=\alpha-1$ y desarrollando la expresión que acompaña a $V_C$,
+
+\begin{equation}
+    \begin{aligned}
+        D \left( \frac{1}{R_s} + \frac{1}{R_{sh}} \right) &+ (1-D) \left(
+        \frac{1}{R_{sh}} + \frac{\alpha}{R_s} \right) \\
+        D \left( \frac{1}{R_s} + \frac{1}{R_{sh}} \right) &+ (1-D) \left(
+        \frac{1}{R_{sh}} + \frac{1}{R_s} \right) - (1-D) \frac{\alpha'}{R_s} \\
+        \frac{1}{R_{sh} // R_{s}} &- \frac{D' \cdot \alpha'}{R_s} \\
+    \end{aligned}
+\end{equation}
+
+Reemplazando en \ref{eq:vc_non_linear_load_with_shunt_1}
+
+\begin{equation}
+    \label{eq:vc_non_linear_load_with_shunt_2}
+    \begin{aligned}
+        \frac{V_U}{R_{sh} // R_{s}} \cdot D &= V_C \left( \frac{1}{R_{sh} //
+        R_{s}} - \frac{D' \cdot \alpha'}{R_s} \right) \\
+        V_U \cdot D &= V_C \left( 1 - \frac{R_{sh} // R_{s}}{R_s} \cdot D' \cdot
+        \alpha'\right) \\
+    \end{aligned}
+\end{equation}
+
+Reconocemos a $\frac{R_{sh} // R_{s}}{R_s} = \frac{R_{sh}}{R_{sh}+R_s}$ como la
+exresión de un divisor resistivo entre $R_{sh}$ y $R_s$. Llamaremos a esta
+expresion $\gamma$, y notamos que cuando $R_{sh} >> R_s$ es $\gamma \lim 1$, y
+cuando $R_{sh} << R_s$ es $\lim_{R_{sh} \to 0} \gamma = 0$.
+
+Entonces, llegamos a
+
+\begin{equation}
+    \label{eq:vc_non_linear_load_with_shunt_final}
+    \begin{aligned}
+        V_U \cdot D &= V_C \left( 1 - \gamma \cdot D' \cdot \alpha'\right) \\
+        V_C &= V_U \cdot \frac{D}{\left( 1 - \gamma \cdot D' \cdot \alpha'\right)} \\
+    \end{aligned}
+\end{equation}
+
+Notamos los siguientes casos extremos de $\gamma$:
+
+\begin{itemize}
+    \item $\gamma \to 1$: este caso se corresponde a $R_{sh} \to \inf$, es
+        decir, $R_{sh} >> R_s$. En este caso, la expresión es idéntica a
+        \ref{eq:vc_non_linear_load_final}. Esto es esperado, ya que en este caso
+        la corriente que consume $R_{sh}$ es despreciable, por lo que es un caso
+        equivalente al que no hay $R_{sh}$
+    \item $gamma \to 0$: en este caso, $R_{sh} \to 0$, es decir, $R_{sh} <<
+        R_s$. En este caso, la expresión
+        \ref{eq:vc_non_linear_load_with_shunt_final} se convierte en
+        \ref{eq:vc_linear_load}. Esto es esperado, ya que en este caso, la
+        corriente de la carga no lineal es despreciable frente a la corriente
+        de la carga lineal $R_{sh}$.
+\end{itemize}
+
+Notamos del último punto, que en presencia de una carga no lineal, agregar una
+carga lineal en paralelo $R_{sh}$, logra el efecto de \textit{linearizar} la
+forma de onda, en el sentido de volver sus extremos más similares a los de un
+caso de carga lineal.
+
+Mostrar la simulación, mostrar que fallaba sin R shunt mostrar q R SHUNT arregló
+
+Mostrar que sin R SHUNT, la corriente en la porción positiva es mayor a la
+negativa, por eso nunca se abre el diodo.
+
+Explicar que esto es esperado, ya que la corriente en el capa se balancea, y en
+realidad queremos que quede apagado por un tiempo el SRD.
 
 \section{Implementación de la llave}
 
