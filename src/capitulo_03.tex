@@ -119,6 +119,7 @@ tiempo del RC formado entre la capacidad de reversa del diodo y la resistencia
 vista desde los nodos del capacitor.
 
 \section{Generador de pulsos con \textit{stub}}
+\label{sec:generador_pulsos_stub}
 
 \subsection{Principios del \textit{stub}}
 
@@ -164,41 +165,43 @@ duración temporal del pulso y, por lo tanto, el ancho de banda del sistema,
 estará dado por la longitud $L$ del \textit{stub}.
 
 El tiempo de propagación $T$ está dado por la velocidad de propagación en la
-línea de transmisión $v_p$ y el largo de la línea $L$. La velocidad de
-propagación está dada por \textcolor{red}{AGREGAR REF, POZAR?} \cite{pozar2011}
+línea de transmisión $v_p$ y el largo de la línea $L$.
+
+En un medio con permisividad relativa $\kappa$ y permeabilidad magnética
+relativa unitaria, la velocidad de propagación está dada por \cite{pozar2011}
 
 \begin{equation}
   v_p = \frac{c_0}{\sqrt{\kappa}}
 \end{equation}
 
-con $\kappa$  la permitividad relativa del medio. Para una línea de transmisión,
-es posible desarrollar una \textit{permitividad relativa efectiva}, que es una
-función de la geometría de la línea y sus materiales \cite{pozar2011}. Esta
-función puede obtenerse a través de una forma cerrada, generalmente involucrando
-diversas aproximaciones, o mediante métodos numéricos iterativos. El punto a
-resaltar es que, dada una determinada estructura de línea de transmisión y sus
-materiales, se puede considerar a $\kappa$ una constante del circuito.
+Para una línea de transmisión, es posible desarrollar una \textit{permisividad
+relativa efectiva} $\kappa_{eff}$, que es una función de la geometría de la
+línea y sus materiales \cite{pozar2011}. Esta función puede obtenerse a través
+de una forma cerrada, generalmente involucrando diversas aproximaciones, o
+mediante métodos numéricos iterativos. El punto a resaltar es que, dada una
+determinada estructura de línea de transmisión y sus materiales, se puede
+considerar a $\kappa_{eff}$ una constante del circuito.
 
-Es interesante notar que $\kappa$ es una función del corte transversal de la
-línea de transmisión, y no de su dimensión longitudinal. De esta manera,
-$\kappa$ es independiente del largo $L$ de la línea \cite{pozar2011}.
+Es interesante notar que $\kappa_{eff}$ es una función del corte transversal de
+la línea de transmisión, y no de su dimensión longitudinal. De esta manera,
+$\kappa_{eff}$ es independiente del largo $L$ de la línea \cite{pozar2011}.
 
 Entonces, el ancho de pulso $T_p$ está dado por
 
 \begin{equation}
-  T_p = 2*T = 2*v_p*L =2*\frac{c_0}{\sqrt{\kappa}}*L
+    T_p = 2*T = 2*v_p*L =2*\frac{c_0}{\sqrt{\kappa_{eff}}}*L
 \end{equation}
 
 De esta forma, se puede diseñar el largo de línea $L$ para obtener un ancho de
 pulso $T_p$ deseado
 
 \begin{equation}
-  L = \frac{T_p}{2}\frac{\sqrt{\kappa}}{c_0}
+    L = \frac{T_p}{2}\frac{\sqrt{\kappa_{eff}}}{c_0}
 \end{equation}
 
 De esta manera, el largo $L$ queda determinado por el ancho de pulso deseado
 $T_p$ y la constante de propagación de la línea de transmisión utilizada
-$\kappa$.
+$\kappa_{eff}$.
 
 \subsection{Generador de pulsos SRD+\textit{stub}}
 
@@ -529,7 +532,10 @@ teniendo que se ser $T*(1-D) > T_s$, es decir, el tiempo en el que la cuadrada
 bipolar tiene el valor $V_l$ tiene que ser suficiente para la remoción de todas
 las cargas en el SRD.
 
+\textcolor{red}{agregar una simulación?}
+
 \subsubsection{Carga no lineal}
+\label{sec:carga_no_lineal}
 
 En el caso de una carga no lineal, no es válido el análisis de función
 transferencia. Podemos en cambio, basar el análisis en el balance ampere-segundo
@@ -601,13 +607,75 @@ Llegamos a
 
 \begin{equation}
     \label{eq:vc_non_linear_load_final}
-        V_C &= V_U \cdot \frac{D}{1-\alpha' \cdot D}
+        V_C = V_U \cdot \frac{D}{1-\alpha' \cdot D}
 \end{equation}
 
 Vemos que para el caso de carga lineal, $\alpha = 1 \ (\alpha'=0)$, la ecuación
 se convierte en la misma que \ref{eq:vc_linear_load} como es esperado.
 
-Para el caso en que agreguemos una resistencia en paralelo, tenemos
+En el caso del driver propuesto, la carga sería el pulser que es no lineal, dado
+que conduce corriente en el período positivo del pulso bipolar, y solo durante
+$T_s$ en el período negativo. Simulamos el filtro pasaltos junto al pulser, en
+la figura \ref{fig:sch_highpass_non_linear_simulation} podemos observar el
+esquemático. Está compuesto por la fuente unipolar, el capacitor del filtro pasa
+altos y el pulser.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \caption{Circuito pasa altos con carga no lineal simulado}
+    \label{fig:sch_highpass_non_linear_simulation}
+\end{figure}
+
+En la figura \ref{fig:highpass_non_linear_simulation_result} se observa el
+resultado de la simulación. El resultado es tomado a partir de los
+$\textcolor{red}{XXX} us$, en el estado permanente del circuito, con todos sus
+transitorios extinguidos. La corriente sobre el capacitor tiene un valor medio
+nulo, mientras que el valor medio de la tensión sobre el ánodo del SRD es
+$\textcolor{red}{XXXX} \neq 0$.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \caption{Resultado de simulación de pasa altos con carga no lineal.}
+    \label{fig:highpass_non_linear_simulation_result}
+\end{figure}
+
+En la salida vemos que no se forman pulsos. Analizando la corriente en el SRD,
+que es la misma que en el capacitor, vemos que en la porción positiva de
+inyección de carga, la corriente es $\textcolor{red}{XXXX}$, mayor que durante
+la porción negativa, $\textcolor{red}{XXXX}$. Dado este hecho, es natural que
+los pulsos no se generen, ya que la condición necesaria es que se remueva toda
+la carga inyectada en la porción positiva.
+
+Analizando la forma de onda de tensión, observamos la misma relación entre los
+valores positivos y negativos: el positivo es mayor al negativo. Esto es
+esperado en base a la observación sobre la corriente, ya que ambas formas de
+onda están linealmente relacionadas a través de $R_s$.
+
+Recordando que la forma de onda de tensión es la tensión unipolar $v_u$ menos la
+tensión cargada en el capacitor $V_C$, podemos asociar al problema a un valor
+insuficiente de $V_C$. Si este se cargara a un mayor valor, la corriente en la
+porción negativa se volvería mayor que en la positiva, permitiendo la transición
+al estado de alta impedancia del SRD y generando un pulso a la salida.
+
+Vemos que la tensión en el capacitor es $\textcolor{red}{XXXX}$, que se condice
+con \ref{eq:vc_non_linear_load_final} reemplazando los valores.
+
+\textcolor{red}{Comentar q es razonable que NO se abra, ya que el balance entre
+corriente inyectada y removida no es exactamente perfecto, siempre hay una
+diferencia. Buscar de dónde sale esta diferencia, recombinación?}.
+
+\subsubsection{Carga no lineal en paralelo con carga lineal}
+
+Para resolver el problema de la sección, en el que el filtro pasaltos en serie
+con el pulser no logra generar la apertura del SRD, se propone colocar un
+resistor lineal en paralelo con el pulser. Este, visto desde el capacitor,
+provee un consumo de corriente mientras el SRD se encuentra en estado de alta
+impedancia, relajando la ecuación de balance de corriente.
+
+Buscamos la expresión de la tensión en estado permanente del capacitor bajo la
+condición de balance de corrientes. En este caso, tenemos
 
 \begin{equation}
     \label{eq:vc_non_linear_load_with_shunt_0}
@@ -660,8 +728,8 @@ Reemplazando en \ref{eq:vc_non_linear_load_with_shunt_1}
 \end{equation}
 
 Reconocemos a $\frac{R_{sh} // R_{s}}{R_s} = \frac{R_{sh}}{R_{sh}+R_s}$ como la
-exresión de un divisor resistivo entre $R_{sh}$ y $R_s$. Llamaremos a esta
-expresion $\gamma$, y notamos que cuando $R_{sh} >> R_s$ es $\gamma \lim 1$, y
+expresión de un divisor resistivo entre $R_{sh}$ y $R_s$. Llamaremos a esta
+expresión $\gamma$, y notamos que cuando $R_{sh} >> R_s$ es $\gamma \lim 1$, y
 cuando $R_{sh} << R_s$ es $\lim_{R_{sh} \to 0} \gamma = 0$.
 
 Entonces, llegamos a
@@ -695,22 +763,169 @@ carga lineal en paralelo $R_{sh}$, logra el efecto de \textit{linearizar} la
 forma de onda, en el sentido de volver sus extremos más similares a los de un
 caso de carga lineal.
 
-Mostrar la simulación, mostrar que fallaba sin R shunt mostrar q R SHUNT arregló
+En la figura \ref{fig:sch_highpass_non_linear_w_shunt_simulation} se observa el
+esquemático simulado. Es la misma configuración que en
+\ref{fig:sch_highpass_non_linear_simulation}, pero ahora se  agrega un resistor
+en paralelo con el pulser.
 
-Mostrar que sin R SHUNT, la corriente en la porción positiva es mayor a la
-negativa, por eso nunca se abre el diodo.
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \caption{Circuito pasa altos con carga no lineal y lineal en paralelo simulado}
+    \label{fig:sch_highpass_non_linear_w_shunt_simulation}
+\end{figure}
 
-Explicar que esto es esperado, ya que la corriente en el capa se balancea, y en
-realidad queremos que quede apagado por un tiempo el SRD.
+En la figura \ref{fig:highpass_non_linear_w_shunt_simulation_result} se observan
+los resultados de la simulación. En este caso, a la salida se observa la
+generación de pulsos. Analizando la corriente sobre el SRD, vemos que en este
+caso la corriente negativa es de mayor módulo que la positiva, observándose la
+transición a alta impedancia del SRD con su característica abrupta caída a $0$
+de la corriente.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \caption{Resultado de simulación de pasa altos con carga no lineal y lineal
+    en paralelo.}
+    \label{fig:highpass_non_linear_w_shunt_simulation_result}
+\end{figure}
+
+En cuanto al valor del capacitor, vemos que ahora es , consistente con
+\ref{eq:vc_non_linear_load_with_shunt_final} y mayor que en la simulación de la
+sección \ref{sec:carga_no_lineal} como era esperado. Esto resulta en una forma
+de onda bipolar con un offset menor, por lo tanto menos valores de tensión. Esto
+es consistente con la forma de onda de corriente observada sobre el SRD.
 
 \section{Implementación de la llave}
 
-El driver fue diseñado en base a un integrado gate driver. Estos integrados son
-utilizados generalmente para conmutar un transistor de potencia con una señal
-digital de baja capacidad de carga, un caso de uso que se adapta perfectamente
-al nuestro.
+\section{Requisitos}
 
-\section{Implementación}
+En la tabla \ref{tab:llave_requirements} se describen los requerimientos que
+debe cumplir la llave
+
+\begin{table}
+\centering
+\begin{tabular}{c|c}
+\hline
+    Variable & Requerimiento \\
+\hline
+    $V_{in}$                &   CMOS @ $V_{DD}=\qty{5}{\volt}$    \\
+    $f_{in}$                &   Typ \qty{10}{\mega\hertz} \\
+    $\tau_{r}$ / $\tau_{f}$ &   Max \qty{10}{\nano\second} \\
+    $V_{dd}$                &   \qty{5}{\volt} - \qty{8}{\volt} \textcolor{red}{chequear} \\
+    $I_{out}$               &   Max \qty{200}{\milli\ampere} \textcolor{red}{chequear}  \\
+\hline
+\end{tabular}
+\caption{Requerimientos de la llave para el driver.}
+\label{tab:llave_requirements}
+\end{table}
+
+El requerimiento de tensión de entrada TTL es debido a ser los niveles de
+tensión usuales en sistemas embebidos de bajo costo, y en particular de la
+plataforma mencionada en \textcolor{red}{MENCIONAR TRABAJO ANDRÉS, EXPLICAR
+MEJOR TTL}.
+
+La frecuencia de  entrada se debe a la $PRF$ objetivo de \qty{10}{\mega\hertz}.
+El requerimiento de tiempo de crecimiento y caída $\tau_{r}$ / $\tau_{f}$ es
+impuesto para que no sean mucho mayores a $\frac{10}{f_{in}}$. Esto garantiza
+que la forma de tensión no se diferencie demasiado de la forma de onda ideal con
+la que se diseño el sistema. Es probable que formas de onda con mayores
+relaciones entre tiempo de crecimiento y período funcionen para generación de
+pulsos, pero para este primer prototipo se optó por una forma de onda lo más
+ideal posible.
+
+En rigor, también existe un requisito de tiempo mínimo de crecimiento/caída.
+Esto se debe la presencia del stub. Como fuese explicado en
+\ref{sec:generador_pulsos_stub}, el stub genera pulsos para cualquier tipo de
+transición, con una amplitud de pulso proporcional a la velocidad de crecimiento
+de la señal. Si los tiempos de crecimiento/caída de la llave fueran tales que el
+pulso generado por el stub por estas transiciones tenga una amplitud mayor a la
+tensión de encendido del diodo Scottky, se generarían pulsos indeseados en la
+salida. Es por esto que existe un límite inferior para el tiempo de
+crecimiento/caída de la llave. De todas formas, no se impondrá  este
+requerimiento sobre la llave, ya que en el circuito se dejará disponible un
+lugar para el soldado de un capacitor $C$ paralelo a la salida de la llave. Esto
+permite volver más lento el tiempo de crecimiento en caso de que este sea
+demasiado rápido.
+
+El requerimiento de $V_{dd}$ se debe al rango de tensiones de alimentación de
+interés del sistema \textcolor{red}{mencionar en algún lado q se justifique
+porque usamos este rango}. La corriente se debe al cálculo de consumo de
+corriente máxima del pulser \textcolor{red}{REFERENCIAR}.
+
+\section{Llave utilizada}
+
+En base a todos estos requerimientos, se optó por un circuito integrado
+comercial \textit{gate driver}. Estos dispositivos son utilizados generalmente
+para conmutar un transistor de potencia en base a  una señal digital de baja
+capacidad de carga. Debido a la similitud entre este caso y de uso y el de este
+trabajo, fue fácil encontrar un dispositivo que cumpla con los requisitos de la
+tabla \ref{tab:llave_requirements}.
+
+El integrado seleccionado fue el LM5114 \cite{LM5114_datasheet}. En la figura
+\ref{fig:lm5114_block_diagram} puede observarse un diagrama en bloques del
+mismo, tomado de \cite{LM5114_datasheet}. El dispositivo posee dos salidas, una
+para el transistor $P$ y otra para el $N$. Esto permite, mediante resistencias
+externas, igualar los tiempos de crecimiento de cada transición. En nuestra
+aplicación, esto no es de interés, por  lo que ambas salidas estarán
+cortocircuitadas. \textcolor{red}{explicar esto mejor?}
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \caption{Diagrama en bloques del LM5114. Tomado de \cite{LM5114_datasheet}}
+    \label{fig:lm5114_block_diagram}
+\end{figure}
+
+El integrado presenta dos versiones, $A$ y $B$, la primera teniendo niveles de
+tensión de entrada CMOS y la segunda TTL.  Se optó por la versión B, ya que los
+niveles de tensión CMOS dependen de la tensión de alimentación $V_{dd}$,
+mientras que la TTL tiene niveles de tensión independientes de $V_{dd}$ y
+compatibles con los especificados en \ref{tab:llave_requirements}. En cuanto al
+encapsulado, se optó por la versión en SOT-23, debido a su disponibilidad en
+stock \textcolor{red}{VERIFICAR ENCAPSULADO Y PORQUE LO ELEGIMOS, HABÍA UNOS
+MAILS DONDE DISCUTIMOS ESTO, CREO Q POR FACILIDAD DE SOLDADO?}.
+
+En la tabla se observan las propiedades especificadas por el fabricante. En
+todos los casos cumplen los requisitos de \ref{tab:llave_requirements} en exceso.
+
+En cuanto a rango de $V_{dd}$, la hoja de datos lo especifica en \qty{4}{\volt}
+- \qty{10}{\volt}, excediendo el requerimiento de \ref{tab:llave_requirements}.
+La corriente máxima es de \textcolor{red}{COMPLETAR} \textcolor{red}{Buscar si
+en onenote hay algo sobre esto}.
+
+En cuanto a tiempo de caída/crecimiento $\tau_{r}$ / $\tau_{f}$, el fabricante
+especifica una dependencia del mismo en función de la capacidad de carga $C_L$,
+con mayores tiempos a mayores carga. Para la carga mínima especificada,
+\qty{1000}{\pico\farad}, el tiempo de crecimiento es de \qty{8}{\nano\second} y
+el de caída de \qty{3.2}{\nano\second}. Ambos tiempos se encuentran por debajo
+de los máximos \qty{10}{\nano\second} especificados en
+\ref{tab:llave_requirements}. De todas maneras, la capacidad de carga de la
+llave estará muy por debajo de los \qty{1000}{\pico\farad}, por lo que tendremos
+tiempos de crecimiento/caída mucho menores. \textcolor{red}{justificar esto, xq
+en realidad tenemos un capa de 100n jeje. Pero, creo q la cara real va a ser
+mucho menor, xq no tenemos q cargar y descargar ese capacitor en cada ciclo...
+debería ser la capacidad de carga q presenta el SRD+stub+capacidad parásita del
+layout}.  \textcolor{red}{Buscar si en onenote hay algo sobre esto}.
+
+El dispositivo no tiene una especificación de frecuencia de trabajo, ya que
+conmuta según la forma de onda de entrada, presentando a la salida los tiempos
+de crecimiento especificados. Mientras estos tiempos sean suficientes para
+generar las transiciones, se puede trabajar a la frecuencia especificada.
+Entonces, funcionará a \qty{10}{\mega\hertz}. \textcolor{red}{esto está
+horrible, reescribirlo}.
+
+\textcolor{red}{Se podría hablar de los tiempos de propagación 0->1 y 1->0, q
+también soportan freq de 10 MHz. Creo q no son simétricos, explicar q esto
+tampoco importa}.
+
+\section{Simulación}
+
+El fabricante provee un modelo de SPICE del gate driver. Con este realizamos una
+simulación, y confirmamos los tiempos de crecimiento, y q funciona OK. Podemos
+ver la caída de tensión en el mismo?
+
+\section{Implementación en PCB}
 
 Hablar acá de cuestiones del layout, fabricación, etc, simulación final en ADS
 
