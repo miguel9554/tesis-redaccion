@@ -317,9 +317,8 @@ Zo?}
     \label{fig:stub_generator_result_pulse}
 \end{figure}
 
-\subsection{Diseño del \textit{stub}}
-
-En algún lado cómo obtuvimos el largo en mm del stub.
+\textcolor{red}{En algún lado calcular y simular el ancho de banda del pulso
+generado}.
 
 \section{Diseño final del \textit{pulser}}
 
@@ -798,7 +797,7 @@ es consistente con la forma de onda de corriente observada sobre el SRD.
 
 \section{Implementación de la llave}
 
-\section{Requisitos}
+\subsection{Requisitos}
 
 En la tabla \ref{tab:llave_requirements} se describen los requerimientos que
 debe cumplir la llave
@@ -829,7 +828,7 @@ La frecuencia de  entrada se debe a la $PRF$ objetivo de \qty{10}{\mega\hertz}.
 El requerimiento de tiempo de crecimiento y caída $\tau_{r}$ / $\tau_{f}$ es
 impuesto para que no sean mucho mayores a $\frac{10}{f_{in}}$. Esto garantiza
 que la forma de tensión no se diferencie demasiado de la forma de onda ideal con
-la que se diseño el sistema. Es probable que formas de onda con mayores
+la que se diseñó el sistema. Es probable que formas de onda con mayores
 relaciones entre tiempo de crecimiento y período funcionen para generación de
 pulsos, pero para este primer prototipo se optó por una forma de onda lo más
 ideal posible.
@@ -839,28 +838,27 @@ Esto se debe la presencia del stub. Como fuese explicado en
 \ref{sec:generador_pulsos_stub}, el stub genera pulsos para cualquier tipo de
 transición, con una amplitud de pulso proporcional a la velocidad de crecimiento
 de la señal. Si los tiempos de crecimiento/caída de la llave fueran tales que el
-pulso generado por el stub por estas transiciones tenga una amplitud mayor a la
-tensión de encendido del diodo Scottky, se generarían pulsos indeseados en la
-salida. Es por esto que existe un límite inferior para el tiempo de
-crecimiento/caída de la llave. De todas formas, no se impondrá  este
-requerimiento sobre la llave, ya que en el circuito se dejará disponible un
-lugar para el soldado de un capacitor $C$ paralelo a la salida de la llave. Esto
-permite volver más lento el tiempo de crecimiento en caso de que este sea
-demasiado rápido.
+pulso generado por el stub tenga una amplitud mayor a la tensión de encendido
+del diodo Scottky, se transmitirían pulsos indeseados en la salida. Es por esto que
+existe un límite inferior para el tiempo de crecimiento/caída de la llave. De
+todas formas, no se impondrá  este requerimiento sobre la llave, ya que en el
+circuito se dejará disponible un lugar para el soldado de un capacitor $C$
+paralelo a la salida de la llave. Esto permite volver más lento el tiempo de
+crecimiento en caso de que este sea demasiado rápido.
 
 El requerimiento de $V_{dd}$ se debe al rango de tensiones de alimentación de
 interés del sistema \textcolor{red}{mencionar en algún lado q se justifique
 porque usamos este rango}. La corriente se debe al cálculo de consumo de
 corriente máxima del pulser \textcolor{red}{REFERENCIAR}.
 
-\section{Llave utilizada}
+\subsection{Llave utilizada}
 
 En base a todos estos requerimientos, se optó por un circuito integrado
 comercial \textit{gate driver}. Estos dispositivos son utilizados generalmente
-para conmutar un transistor de potencia en base a  una señal digital de baja
-capacidad de carga. Debido a la similitud entre este caso y de uso y el de este
-trabajo, fue fácil encontrar un dispositivo que cumpla con los requisitos de la
-tabla \ref{tab:llave_requirements}.
+para conmutar la compuerta de un transistor CMOS de potencia en base a  una
+señal digital de baja capacidad de carga. Debido a la similitud entre este caso
+de uso y el de este trabajo, fue fácil encontrar un dispositivo que cumpla con
+los requisitos de la tabla \ref{tab:llave_requirements}.
 
 El integrado seleccionado fue el LM5114 \cite{LM5114_datasheet}. En la figura
 \ref{fig:lm5114_block_diagram} puede observarse un diagrama en bloques del
@@ -886,9 +884,6 @@ encapsulado, se optó por la versión en SOT-23, debido a su disponibilidad en
 stock \textcolor{red}{VERIFICAR ENCAPSULADO Y PORQUE LO ELEGIMOS, HABÍA UNOS
 MAILS DONDE DISCUTIMOS ESTO, CREO Q POR FACILIDAD DE SOLDADO?}.
 
-En la tabla se observan las propiedades especificadas por el fabricante. En
-todos los casos cumplen los requisitos de \ref{tab:llave_requirements} en exceso.
-
 En cuanto a rango de $V_{dd}$, la hoja de datos lo especifica en \qty{4}{\volt}
 - \qty{10}{\volt}, excediendo el requerimiento de \ref{tab:llave_requirements}.
 La corriente máxima es de \textcolor{red}{COMPLETAR} \textcolor{red}{Buscar si
@@ -896,38 +891,187 @@ en onenote hay algo sobre esto}.
 
 En cuanto a tiempo de caída/crecimiento $\tau_{r}$ / $\tau_{f}$, el fabricante
 especifica una dependencia del mismo en función de la capacidad de carga $C_L$,
-con mayores tiempos a mayores carga. Para la carga mínima especificada,
+con mayores tiempos a mayor carga. Para la carga mínima especificada,
 \qty{1000}{\pico\farad}, el tiempo de crecimiento es de \qty{8}{\nano\second} y
-el de caída de \qty{3.2}{\nano\second}. Ambos tiempos se encuentran por debajo
-de los máximos \qty{10}{\nano\second} especificados en
-\ref{tab:llave_requirements}. De todas maneras, la capacidad de carga de la
-llave estará muy por debajo de los \qty{1000}{\pico\farad}, por lo que tendremos
-tiempos de crecimiento/caída mucho menores. \textcolor{red}{justificar esto, xq
-en realidad tenemos un capa de 100n jeje. Pero, creo q la cara real va a ser
-mucho menor, xq no tenemos q cargar y descargar ese capacitor en cada ciclo...
-debería ser la capacidad de carga q presenta el SRD+stub+capacidad parásita del
-layout}.  \textcolor{red}{Buscar si en onenote hay algo sobre esto}.
+el de caída de \qty{3.2}{\nano\second}. Ambos se encuentran por debajo de los
+máximos \qty{10}{\nano\second} especificados en \ref{tab:llave_requirements}. De
+todas maneras, la capacidad de carga de la llave estará muy por debajo de los
+\qty{1000}{\pico\farad}, por lo que tendremos tiempos de crecimiento/caída mucho
+menores. \textcolor{red}{justificar esto, xq en realidad tenemos un capa de 100n
+jeje. Pero, creo q la carga real va a ser mucho menor, xq no tenemos q cargar y
+descargar ese capacitor en cada ciclo...  debería ser la capacidad de carga q
+presenta el SRD+stub+capacidad parásita del layout}.  \textcolor{red}{Buscar si
+en onenote hay algo sobre esto}.
 
-El dispositivo no tiene una especificación de frecuencia de trabajo, ya que
-conmuta según la forma de onda de entrada, presentando a la salida los tiempos
-de crecimiento especificados. Mientras estos tiempos sean suficientes para
-generar las transiciones, se puede trabajar a la frecuencia especificada.
-Entonces, funcionará a \qty{10}{\mega\hertz}. \textcolor{red}{esto está
-horrible, reescribirlo}.
+Se encuentra especificada una asimetría importante entre $\tau_r$ y $\tau_f$,
+siendo el último aproximadamente un \qty{25}{\percent} del primero. Esta
+asimetría es un sentido beneficioso para el circuito, ya que el tiempo de
+transición crítico es el de caida. Este tiempo tiene que ser lo suficientemente
+rápido para que cuando el SRD transiciones al estado de alta impedancia, la forma
+de onda de entrada ya haya llegado a su mínimo valor. Caso contrario, el pulso
+tendrá menor amplitud. Esto es claro de la ecuación \ref{eq:A_p}, donde se
+establece que la amplitud del pulso es directamente proporcional a la tensión en
+el ánodo del SRD.
 
-\textcolor{red}{Se podría hablar de los tiempos de propagación 0->1 y 1->0, q
-también soportan freq de 10 MHz. Creo q no son simétricos, explicar q esto
-tampoco importa}.
+El dispositivo no presenta una especificación de frecuencia de trabajo, pero
+contiene especificaciones de tiempo de propagación y tiempos de
+caída/crecimiento, que imponen una restricción sobre la máxima frecuencia de
+operación. En la figura \ref{} se observan las definiciones de tiempo de
+propagación y caída/crecimiento. De la definición, el tiempo desde que la señal
+de entrada llega a un \qty{50}{\percent} hasta que la salida conmuta es
+aproximadamente $t_{D-on}+t_{r}$ para el caso de una transición $0\to1$, y
+para la transición $1\to0$ será $t_{D-off}+t_{f}$.
 
-\section{Simulación}
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \caption{Definición de tiempos de transición y propagación, tomado de
+    \cite{LM5114_datasheet}}
+    \label{fig:lm5114_timing}
+\end{figure}
 
-El fabricante provee un modelo de SPICE del gate driver. Con este realizamos una
-simulación, y confirmamos los tiempos de crecimiento, y q funciona OK. Podemos
-ver la caída de tensión en el mismo?
+Referenciando estos al inicio de la transición de la señal de entrada, tenemos
+que son $t_{ri}+t_{D-on}+t_{ro}$ y $t_{fi}+t_{D-off}+t_{fo}$, donde definimos a
+$t_{ri}$ y $t_{fi}$ y $t_{ro}$ y $t_{fo}$ como los tiempos de transición
+$\qty{10}{\percent}-\qty{90}{\percent}$ de las señales de entrada y salida
+respectivamente. Estas expresiones son cotas superiores, ya que los tiempos de
+crecimiento son del \qty{10}{\percent} al \qty{90}{\percent}, mientras que el
+tiempo anterior estaba reverenciado desde el \qty{50}{\percent} de la señal de
+entrada.
+
+Entonces, vemos que el período mínimo será $T_{min} = t_{ri} + t_{D-on} + t_{ro}
++ t_{fi} + t_{D-off} + t_{fo}$. De la hoja de datos, tenemos los siguientes
+peores (máximos) tiempos especificados para operación a $T_j=\qty{25}{\celsius}$
+
+\begin{itemize}
+    \item $t_{D-on} = \qty{27}{\nano\second}$
+    \item $t_{r} @ \qty{1000}{\pico\farad} = \qty{12}{\nano\second}$
+    \item $t_{D-off} = \qty{27}{\nano\second}$
+    \item $t_{f} @ \qty{1000}{\pico\farad} = \qty{3}{\nano\second}$
+\end{itemize}
+
+Asumiendo para un peor caso, tiempos de transición de entrada de
+\qty{10}{\nano\second},  tenemos un período mínimo de
+
+\begin{equation}
+    \begin{aligned}
+        T_{min} &= t_{ri} + t_{D-on} + t_{ro} + t_{fi} + t_{D-off} + t_{fo} \\
+        T_{min} &= \qty{10}{\nano\second} + \qty{27}{\nano\second} +
+        \qty{12}{\nano\second} + \qty{10}{\nano\second} + \qty{27}{\nano\second}
+        + \qty{3}{\nano\second} \\
+        T_{min} &= \qty{89}{\nano\second} \\
+    \end{aligned}
+\end{equation}
+
+El período mínimo se encuentra por debajo del período de \qty{100}{\nano\second}
+correspondiente a los \qty{10}{\mega\hertz} especificados en, por lo que se
+cumple el requerimiento de $f_{in}$.
+
+\subsection{Simulación}
+
+El fabricante provee un modelo de SPICE del gate driver. Con este se realizó una
+simulación para confirmar el correcto funcionamiento. En la figura
+\ref{fig:lm5114_sim_sch} puede observarse el esquemático simulado, y los
+resultados en la \ref{fig:lm5114_sim_result}.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \caption{Esquemático de simulación con modelo de LM5114.}
+    \label{fig:lm5114_sim_sch}
+\end{figure}
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \caption{Resultado de simulación con modelo de LM5114.}
+    \label{fig:lm5114_sim_result}
+\end{figure}
 
 \section{Implementación en PCB}
 
-Hablar acá de cuestiones del layout, fabricación, etc, simulación final en ADS
+Se implementó en PCB el circuito diseñado. Se diseñaron dos placas distintas:
+una para el driver, y otra para el pulser. Se tomó esta decisión para darle más
+versatilidad al trabajo. De esta manera, el pulser puede utilizarse con otro
+eventual driver, el driver puede ser evaluado por separado antes de una medición
+final, y en caso de falla de diseño en alguno de los dos circuitos, la falla se
+mantiene contenida al modulo defectuoso y no a la totalidad del sistema.
+
+Se fabricaron las placas con el fabricante OSHPark. Se utilizó el servicio de 4
+capas y material FR408HR de Isola \cite{fr408_datasheet}. El material, a
+diferencia del FR4 más económico, presenta buena estabilidad en frecuencia para
+su constante dieléctrica, y bajas perdidas, por lo que es apropiado para
+trabajar en el ancho de banda necesario. La constante dieléctrica presenta una
+variación menor al \qty{2}{\percent} en el rango \qty{100}{\mega\hertz} a
+\qty{10}{\giga\hertz}, y una tangente de pérdidas con mayor variación pero menor
+a \num{0.01} hasta \qty{10}{\giga\hertz}. \textcolor{red}{explicar por qué esta
+tangente es baja?}.
+
+En la tabla se muestra el apilamiento de las capas del proceso de fabricación,
+con sus dimensiones y materiales.
+
+\begin{table}[htbp]
+\centering
+\caption{Apilamiento de capas del proceso de fabricación de OSH Park}
+\begin{tabular}{c|c}
+Capa & Grosor [mil] \\
+\hline
+silkscreen & 1 $\pm$0.2 \\
+solder resist & 1 $\pm$0.2 \\
+1 oz copper clad+plated & 1.7 \\
+FR408HR 2113 prepreg & 7.96 $\pm$0.796 \\
+0.5 oz copper clad & 0.68 \\
+FR408HR core & 39 $\pm$3.9 \\
+0.5 oz copper clad & 0.68 \\
+FR408HR 2113 prepreg & 7.96 $\pm$0.796 \\
+1 oz copper clad+plated & 1.7 \\
+solder resist & 1 $\pm$0.2 \\
+silkscreen & 1 $\pm$0.2 \\
+\end{tabular}
+\label{tab:oshpark_4_layer_stackup}
+\end{table}
+
+\subsection{Selección de componentes pasivos}
 
 Hablar de que se apuntó a usar componentes lo más pequeños posibles para
 eliminar las contribuciones de las impedancias parásitas
+
+\subsection{Layout del pulser}
+
+Para el pulser, se utilizó la capa de cobre 1 como señal, formando un plano de
+tierra en la capa 2 interna de cobre. De esta manera, las líneas de transmisión
+formadas tienen una separación de señal con tierra de $H = 7.96 \ mil =
+\qty{0.0202}{\milli\meter}$. \textcolor{red}{revisar en el onenote y mails
+porque habíamos usado esta, era mejor una distancia de tierra más chica? Cómo
+afectaba esto a la microstrip? No me acuerdo}.
+
+Se utilizaron componentes pequeños. Se pusieron muchas vias. Se hizo un
+tappering con los conectores SMA?
+
+\subsubsection{Diseño del \textit{stub}}
+
+Dado el $H$, se diseño el stub, fue cuestión de elegir un $w$ que resulte en 50
+ohm. Después, con el w elegido, se obtuvo $k_{eff}$, y se calculo el largo de la
+línea.
+
+Incluir simulaciones del pulser con la línea real. Mostrar como se degrada? Si
+es que se degrada
+
+\subsection{Layout del driver}
+
+Mostrar el layout del driver, explicar por qué se hizo así.
+
+Explicar lo del integrado para filtrar el ruido. Explicar que había un jumper
+para alimentación externa. Explicar que se usó PMOD para conectar a la FPGA.
+
+Mostrar que se dejó un espacio para el capacitor paralelo en el LM114 para
+reducir el tiempo de crecimient. Al final no fue necesario.
+
+Explicar que se armó una plaquita para filtrar ruido de manera externa?
+
+\subsection{Simulación con parásitos extraídos}
+
+\section{Fabricación}
+
+Explicar algo sobre la fabricación? Complicaciones con los componentes chicos?
+O agregar al capitulo 4?
