@@ -387,8 +387,6 @@ Cálculos de cuánto consume el generador, cuanto disipan los componentes.
 
 \section{Diseño del \textit{driver}}
 
-\section{Arquitectura}
-
 Dado que uno de los objetivos del trabajo es un generador de pulsos que pueda
 ser controlado por la salida digital de un sistema embebido, y dado que estas
 salidas son en la mayoría de los casos unipolares y de baja capacidad de carga,
@@ -406,7 +404,7 @@ del driver propuesto. El mismo está compuesto por dos componentes principales
 que brindan dos funciones diferenciadas, la llave y el capacitor. A la entrada
 es excitado por la señal digital de control, y a la salida tiene una carga
 $Z_L$. La carga en este caso será el pulser, por lo tanto será una carga no
-lineal, ya que como se mostro en secciones anteriores, la corriente que consume
+lineal, ya que como se mostró en secciones anteriores, la corriente que consume
 tiene una abrupta caída a 0 cuando se abre el SRD.
 
 \begin{figure}[tbp]
@@ -415,8 +413,6 @@ tiene una abrupta caída a 0 cuando se abre el SRD.
     \caption{Diagrama en bloques del driver}
     \label{fig:driver_block_diagram}
 \end{figure}
-
-\subsection{Llave}
 
 La llave conmuta entre $V_{dd}$ y tierra según la señal de control digital. De
 esta manera, la corriente que consume la carga es entregada por la fuente y no
@@ -431,6 +427,11 @@ rango de la fuente de alimentación menos la caída que tenga el bloque.
 A la salida de la llave tenemos entonces una señal cuadrada unipolar, con
 amplitud pico a pico igual a $V_{dd}$, es decir, toda la amplitud disponible de
 la fuente de alimentación, y una capacidad de entrega de corriente considerable.
+Para convertir esta señal en una bipolar, se utiliza un filtro pasa altos, que
+elimina la componente continua de la señal unipolar, resultando en una bipolar.
+
+En las próximas secciones se explica en detalle los requerimientos e
+implementación de cada uno de estos bloques.
 
 \subsection{Filtro pasa altos}
 
@@ -445,7 +446,7 @@ unipolar. Entonces, podemos obtener al pulso bipolar restándole al unipolar su
 valor medio.
 
 Teniendo en cuenta que el valor medio es la componente de DC del pulso, podemos
-lograr este resultado pasando el pulso unipolar por un filtro pasaltos. El ancho
+lograr este resultado pasando el pulso unipolar por un filtro pasa altos. El ancho
 de banda de este filtro debe ser tal que filtre la componente de continua y no
 distorsione las componentes alternas, que se encuentran a partir de $T$.
 
@@ -455,7 +456,7 @@ aproximadamente $f_c$, y una fase que varía \qty{90}{\degree} desde
 $\frac{f_c}{10}$ hasta $f_c \cdot 10$. Entonces, para filtrar la componente
 continua de la unipolar y transmitir la bipolar sin distorsión,
 es necesario que la frecuencia de la cuadrada sea mayor a 10 veces $f_c$, es
-decir $T > 10 \cdot f_c$, o $f_c < \frac{T}{10}$
+decir $T > 10 \cdot f_c$, o $f_c < \frac{T}{10}$.
 
 Siendo la $PRF$ objetivo de \qty{10}{\mega\hertz}, el requerimiento sobre $f_c$
 es entonces $f_c < \qty{1}{\mega\hertz}$.
@@ -489,7 +490,7 @@ En la siguiente sección, asumiendo un filtrado ideal, es decir, donde se filtra
 por completo el valor medio $V_m$ y se transmiten los harmónicos sin distorsión,
 se desarrolla la expresión de los valores de la bipolar.
 
-\subsubsection{Carga lineal}
+\subsubsection{Cuadrada unipolar filtrada por pasa altos}
 
 El valor medio de la tensión $V_m$ en una señal cuadrada con valores $V_+$ y
 $V_-$, con período $T$ y ciclo de trabajo $D$ está dado por
@@ -510,6 +511,7 @@ unipolar a la salida de la llave, menos su valor medio. Esta señal tendrá
 entonces valores $V_+$ y $V_-$ dados por
 
 \begin{equation}
+    \label{eq:square_linear_load_highpassed_values}
     \begin{aligned}
         V_+ &= V_{dd}-V_m = V_{dd} \cdot (1-D) \\
         V_- &= -V_m = -V_{dd} \cdot D \\
@@ -533,13 +535,64 @@ las cargas en el SRD.
 
 \textcolor{red}{agregar una simulación?}
 
-\subsubsection{Carga no lineal}
+\subsubsection{pasa altos con pulser}
 \label{sec:carga_no_lineal}
 
-En el caso de una carga no lineal, no es válido el análisis de función
-transferencia. Podemos en cambio, basar el análisis en el balance ampere-segundo
-en el capacitor \cite{Erickson_Robert_W_2020}. Este resultado establece que el
-valor medio de la corriente en un capacitor en estado estacionario es nulo.
+Simulamos el circuito pasa altos utilizando como carga al pulser. En la figura
+\ref{fig:highpass_filter_nonlinear_load_sch} puede observarse el esquemático
+simulado. A la entrada, tenemos una fuente unipolar de \qty{5}{\volt} de
+amplitud, con un ciclo de trabajo $D=0.5$. En base a
+\ref{eq:square_linear_load_highpassed_values}, esperamos en el nodo
+$V_{bipolar}$ una señal cuadrada simétrica con amplitudes de
+\qty{\pm2.5}{\volt}. Siendo la constante de tiempo del circuito pasa altos $\tau
+\approx \qty{100}{\nano\farad} \cdot \qty{50}{\ohm} = \qty{5}{\micro\second}$,
+el tiempo total de simulación es de \qty{50}{\micro\second} de manera tal de
+capturar 10 constantes y analizar el estado permanente del circuito.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.99\textwidth]{images/highpass_filter_nonlinear_load_sch.png}
+    \caption{Esquemático simulado para filtro pasa altos con carga no lineal.}
+    \label{fig:highpass_filter_nonlinear_load_sch}
+\end{figure}
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.99\textwidth]{images/highpass_filter_nonlinear_load_sim_result.png}
+    \caption{Resultados de simulación para filtro pasa altos con carga no lineal.}
+    \label{fig:highpass_filter_nonlinear_load_sim_result}
+\end{figure}
+
+En la figura \ref{fig:highpass_filter_nonlinear_load_sim_result} se observan los
+resultados de la simulación. Contrario a lo predecido por
+\ref{eq:square_linear_load_highpassed_values}, los valores de $V_{bipolar}$ no
+son \qty{\pm2.5}{\volt}, sino \qty{3}{\volt} y \qty{-1.9}{\volt}. Esto es
+consistente con el valor en estado estacionario de la tensión en el capacitor,
+que es \qty{-1.9}{\volt}, y no \qty{-2.5}{\volt.}
+
+En cuanto al nodo de salida $V_o$, vemos que no desarrolla los pulsos esperados,
+y que encuentra constante en \qty{0}{\volt}. Esto es consistente con la forma de
+onda bipolar generada: al presentar un nivel de tensión positivo de mayor
+magnitud al negativo, aplicándose ambos niveles durante el mismo tiempo (es
+decir $D=0.5$), es esperado que la carga inyectada al SRD no sea removida, no
+pasando este al estado de alta impedancia y, por lo tanto, no se de la
+generación de pulsos.
+
+Esto se confirma observando la forma de onda de la corriente: es simétrica, con
+la misma corriente siendo inyectada en la porción positiva de la cuadrada
+bipolar que siendo removida en la porción negativa.
+
+Desarrollaremos en detalle el comportamiento del filtro pasa altos con una carga
+no lineal para explicar la razón de este problema, y presentar una solución al
+mismo.
+
+\subsubsection{Carga lineal}
+
+Empezamos analizando el caso de una carga lineal, pero sin apelar a argumentos
+de función transferencia, ya que para el caso de una carga no lineal no son
+validos. Basaremos el análisis en el balance ampere-segundo en el capacitor
+\cite{Erickson_Robert_W_2020}. Este resultado establece que el valor medio de la
+corriente en un capacitor en estado estacionario es nulo.
 
 \begin{equation}
     \label{eq:capacitor_ampere_second_balance}
@@ -557,7 +610,43 @@ Asumiendo que en estado permanente el capacitor se carga a una tensión constant
 $V_C$, este valor será el que resulte de imponer el cumplimiento de la ecuación
 \ref{eq:capacitor_ampere_second_balance}.
 
-Para el caso de una carga lineal, tenemos
+\begin{figure}[h!]
+    \begin{center}
+        \begin{circuitikz}[american]
+            \draw (0,3) to [V, l=$V_U$] (0,0)
+            (0,3) to [C=$C$, v=$V_C$] (4,3)
+            (4,3) to [R=$R$] (4,0) --
+            (0,0);
+        \end{circuitikz}
+    \end{center}
+    \caption{Circuito pasa altos con carga lineal}
+    \label{fig:sch_highpass_non_linear_load}
+\end{figure}
+
+Para el caso de una carga lineal, tenemos un circuito como el de
+\ref{fig:sch_highpass_non_linear_load}. Asumiendo que durante las porciones
+positivas y negativas de la tensión unipolar tenemos corrientes constantes $I_+$
+e $I_-$, aplicando \ref{eq:capacitor_ampere_second_balance} llegamos a 
+
+\begin{equation}
+    \label{eq:current_balance_capacitor_linear_load}
+    \begin{aligned}
+        \int_{t_0}^{t_0+T} i(t)dt &= I_+ \cdot D - I_- \cdot D' = 0 \\
+        I_+ \cdot D &= I_- \cdot D' \\
+    \end{aligned}
+\end{equation}
+
+En este caso, las corrientes son
+
+\begin{equation}
+    \label{eq:highpass_currents_linear_load}
+    \begin{aligned}
+        I_+ &= \frac{V_U-V_C}{R} \\
+        I_- &= \frac{Vc}{R} \\
+    \end{aligned}
+\end{equation}
+
+Reemplazando en \ref{eq:current_balance_capacitor_linear_load},
 
 \begin{equation}
     \label{eq:vc_linear_load}
@@ -570,16 +659,29 @@ Para el caso de una carga lineal, tenemos
 
 Es el mismo resultado que en la sección anterior.
 
+\subsubsection{Carga no lineal}
+
 Ahora, supongamos una carga no lineal de las siguientes características: conduce
 durante todo el período positivo de la unipolar $D$, y una porción $\alpha \cdot
 D'$ de la porción negativa, con $\alpha \in \left[0, 1 \right]$. Un $\alpha=0$
 corresponde a una carga que no conduce en la porción negativa, como un diodo
 usual, y una de $\alpha=1$ corresponde a una carga lineal. En nuestro caso, es
-$\alpha = \frac{T_s}{D'}$, con $T_s$ el tiempo de descarga del diodo, es decir,
+$\alpha = \frac{T_s}{D'}$, con $T_s$ el tiempo de descarga del SRD, es decir,
 el tiempo que le toma  a la corriente negativa extraer todas las cargas
 inyectadas en la porción positiva.
 
-En este caso, el balance de corrientes en el capacitor es
+En este caso, el balance de corrientes es
+
+\begin{equation}
+    \label{eq:current_balance_capacitor_linear_load}
+    \begin{aligned}
+        \int_{t_0}^{t_0+T} i(t)dt &= I_+ \cdot D - I_- \cdot \alpha \cdot D' = 0 \\
+        I_+ \cdot D &= I_- \cdot \alpha \cdot D' \\
+    \end{aligned}
+\end{equation}
+
+Las corrientes $I_+$ e $I_-$ son las mismas que en
+\ref{eq:highpass_currents_linear_load}. Entonces, llegamos a
 
 \begin{equation}
     \label{eq:vc_non_linear_load_0}
@@ -609,82 +711,72 @@ Llegamos a
         V_C = V_U \cdot \frac{D}{1-\alpha' \cdot D}
 \end{equation}
 
-Vemos que para el caso de carga lineal, $\alpha = 1 \ (\alpha'=0)$, la ecuación
+Vemos que para el caso de carga lineal $\alpha = 1 \ (\alpha'=0)$, la ecuación
 se convierte en la misma que \ref{eq:vc_linear_load} como es esperado.
 
-En el caso del driver propuesto, la carga sería el pulser que es no lineal, dado
-que conduce corriente en el período positivo del pulso bipolar, y solo durante
-$T_s$ en el período negativo. Simulamos el filtro pasaltos junto al pulser, en
-la figura \ref{fig:sch_highpass_non_linear_simulation} podemos observar el
-esquemático. Está compuesto por la fuente unipolar, el capacitor del filtro pasa
-altos y el pulser.
+El resultado obtenido es consistente con el resultado de la simulación del pasa
+altos con el pulser como carga. La ecuación
+\ref{eq:vc_non_linear_load}  indica que a mayor $\alpha$, es decir, menor
+conducción de corriente durante la porción negativa, menor es $V_C$, la tensión de
+estado permanente en el capacitor. Este resultado es contrario a las necesidades
+de operación del generador de pulsos, ya que este se basa en la transición al
+estado de alta impedancia del SRD, es decir, en un $\alpha < 1$. Esta condición
+resulta en un $V_C$ menor, lo que incrementa $I_+$ y decrementa $I_-$,
+imposibilitando la remoción de carga en el SRD.
 
-\begin{figure}[tbp]
-    \centering
-    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
-    \caption{Circuito pasa altos con carga no lineal simulado}
-    \label{fig:sch_highpass_non_linear_simulation}
-\end{figure}
-
-En la figura \ref{fig:highpass_non_linear_simulation_result} se observa el
-resultado de la simulación. El resultado es tomado a partir de los
-$\textcolor{red}{XXX} us$, en el estado permanente del circuito, con todos sus
-transitorios extinguidos. La corriente sobre el capacitor tiene un valor medio
-nulo, mientras que el valor medio de la tensión sobre el ánodo del SRD es
-$\textcolor{red}{XXXX} \neq 0$.
-
-\begin{figure}[tbp]
-    \centering
-    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
-    \caption{Resultado de simulación de pasa altos con carga no lineal.}
-    \label{fig:highpass_non_linear_simulation_result}
-\end{figure}
-
-En la salida vemos que no se forman pulsos. Analizando la corriente en el SRD,
-que es la misma que en el capacitor, vemos que en la porción positiva de
-inyección de carga, la corriente es $\textcolor{red}{XXXX}$, mayor que durante
-la porción negativa, $\textcolor{red}{XXXX}$. Dado este hecho, es natural que
-los pulsos no se generen, ya que la condición necesaria es que se remueva toda
-la carga inyectada en la porción positiva.
-
-Analizando la forma de onda de tensión, observamos la misma relación entre los
-valores positivos y negativos: el positivo es mayor al negativo. Esto es
-esperado en base a la observación sobre la corriente, ya que ambas formas de
-onda están linealmente relacionadas a través de $R_s$.
-
-Recordando que la forma de onda de tensión es la tensión unipolar $v_u$ menos la
-tensión cargada en el capacitor $V_C$, podemos asociar al problema a un valor
-insuficiente de $V_C$. Si este se cargara a un mayor valor, la corriente en la
-porción negativa se volvería mayor que en la positiva, permitiendo la transición
-al estado de alta impedancia del SRD y generando un pulso a la salida.
-
-Vemos que la tensión en el capacitor es $\textcolor{red}{XXXX}$, que se condice
-con \ref{eq:vc_non_linear_load_final} reemplazando los valores.
-
-\textcolor{red}{Comentar q es razonable que NO se abra, ya que el balance entre
-corriente inyectada y removida no es exactamente perfecto, siempre hay una
-diferencia. Buscar de dónde sale esta diferencia, recombinación?}.
+En la siguiente sección, desarrollamos el efecto de un resistor lineal en
+paralelo con la carga no lineal. Se demostrará como este tiene el efecto de
+linearizar la operación, compensando el efecto de $\alpha < 1$, y posibilitando
+el funcionamiento del pulser.
 
 \subsubsection{Carga no lineal en paralelo con carga lineal}
 
-Para resolver el problema de la sección, en el que el filtro pasaltos en serie
-con el pulser no logra generar la apertura del SRD, se propone colocar un
-resistor lineal en paralelo con el pulser. Este, visto desde el capacitor,
-provee un consumo de corriente mientras el SRD se encuentra en estado de alta
-impedancia, relajando la ecuación de balance de corriente.
+Tenemos un circuito como el de la figura
+\ref{fig:circuit_non_linear_load_with_shunt}. Nombramos $R_s$ a la resistencia
+de la rama no lineal, ya que en el caso del pulser, cuando la rama conduce, su
+resistencia es igual a $R_s$. $R_{sh}$ es una resistencia propuesta para mitigar
+el efecto mencionando anteriormente.
 
-Buscamos la expresión de la tensión en estado permanente del capacitor bajo la
-condición de balance de corrientes. En este caso, tenemos
+\begin{figure}[h!]
+    \begin{center}
+        \begin{circuitikz}[american]
+            \draw (0,3) to [V, l=$V_U$] (0,0)
+            (0,3) to [C=$C$, v=$V_C$] (4,3)
+            (4,3) to [R=$R_{sh}$] (4,0)
+            (4,3) to [spst] (6,3) --
+            (6,3) to [R=$R_{s}$] (6,0) --
+            (0,0);
+        \end{circuitikz}
+    \end{center}
+    \caption{pasa altos con carga no lineal en paralelo con lineal}
+    \label{fig:circuit_non_linear_load_with_shunt}
+\end{figure}
+
+Planteando el balance de corrientes en el capacitor, tenemos
+
+\begin{equation}
+    \label{eq:current_balance_capacitor_linear_load}
+    \begin{aligned}
+        \int_{t_0}^{t_0+T} i(t)dt &= \left( I_{+L} + I_{+NL} \right) \cdot D -
+        \left( I_{-L} \cdot \cdot D' + I_{-NL} \cdot \alpha \cdot D'
+        \right) = 0 \\
+        \left( I_{+L} + I_{+NL} \right) \cdot D &= \left( I_{-L} + I_{-NL} \cdot
+        \alpha \right) \cdot D' \\
+    \end{aligned}
+\end{equation}
+
+Siendo ambas expresiones $I_{\pm-L}$ e $I_{\pm-NL}$ las de
+\ref{eq:highpass_currents_linear_load} evaluando $R=R_{sh}$ y $R=R_{s}$
+respectivamente, llegamos a
 
 \begin{equation}
     \label{eq:vc_non_linear_load_with_shunt_0}
     \begin{aligned}
-        \frac{V_U-V_C}{R_{sh}} \cdot D + \frac{V_U-V_C}{R_{s}} \cdot D &=
-        \frac{Vc}{R_{sh}} \cdot D' + \frac{Vc}{R_{s}} \cdot \alpha \cdot D' \\
+        \left( \frac{V_U-V_C}{R_{sh}} + \frac{V_U-V_C}{R_{s}} \right) \cdot D &=
+        \left( \frac{Vc}{R_{sh}} + \frac{Vc}{R_{s}} \cdot \alpha \right) \cdot D' \\
         \left( V_U - V_C \right) \cdot D \cdot \left( \frac{1}{R_{sh}} +
         \frac{1}{R_s} \right) &= V_C \cdot D' \left( \frac{1}{R_{sh}} +
         \frac{\alpha}{R_s} \right) \\
-        V_C &= V_U \cdot \frac{D}{\alpha \cdot D' + D}  \\
     \end{aligned}
 \end{equation}
 
@@ -795,9 +887,9 @@ sección \ref{sec:carga_no_lineal} como era esperado. Esto resulta en una forma
 de onda bipolar con un offset menor, por lo tanto menos valores de tensión. Esto
 es consistente con la forma de onda de corriente observada sobre el SRD.
 
-\section{Implementación de la llave}
+\subsection{Implementación de la llave}
 
-\subsection{Requisitos}
+\subsubsection{Requisitos}
 
 En la tabla \ref{tab:llave_requirements} se describen los requerimientos que
 debe cumplir la llave
@@ -851,7 +943,7 @@ interés del sistema \textcolor{red}{mencionar en algún lado q se justifique
 porque usamos este rango}. La corriente se debe al cálculo de consumo de
 corriente máxima del pulser \textcolor{red}{REFERENCIAR}.
 
-\subsection{Llave utilizada}
+\subsubsection{Llave utilizada}
 
 En base a todos estos requerimientos, se optó por un circuito integrado
 comercial \textit{gate driver}. Estos dispositivos son utilizados generalmente
@@ -967,7 +1059,7 @@ El período mínimo se encuentra por debajo del período de \qty{100}{\nano\seco
 correspondiente a los \qty{10}{\mega\hertz} especificados en, por lo que se
 cumple el requerimiento de $f_{in}$.
 
-\subsection{Simulación}
+\subsubsection{Simulación}
 
 El fabricante provee un modelo de SPICE del gate driver. Con este se realizó una
 simulación para confirmar el correcto funcionamiento. En la figura
