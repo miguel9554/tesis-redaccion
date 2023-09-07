@@ -148,14 +148,14 @@ un pulso en base a una forma de onda creciente o decreciente.
     \centering
     \includegraphics[width=0.8\textwidth]{images/placeholder.jpg}
     \caption{Reflexiones en un \textit{stub} cortocircuitado.}
-    \label{fig:images-placeholder-jpg}
+    \label{fig:stub_time_domain_waveforms}
 \end{figure}
 
-En la figura \ref{TODO figura con funcionamiento temporal del stub} se observa
-el principio de funcionamiento. Se observa un pulso de entrada, formado por una
-forma de onda de tipo escalón, en nuestro caso este escalón será el mismo que en
-la figura \ref{srd_sharpener_result_rise_time}. Este escalón se ve reflejado con
-polaridad opuesta, y se suma al escalón de entrada.
+En la figura \ref{fig:stub_time_domain_waveforms} se observa el principio de
+funcionamiento. Se observa un pulso de entrada, formado por una forma de onda de
+tipo escalón, en nuestro caso este escalón será el mismo que en la figura
+\ref{srd_sharpener_result_rise_time}. Este escalón se ve reflejado con polaridad
+opuesta, y se suma al escalón de entrada.
 
 Dado el tiempo de propagación de la línea de transmisión $T$, vemos que el
 tiempo que tarda el pulso de entrada en reflejarse es $2*T$, el tiempo de un
@@ -196,7 +196,7 @@ De esta forma, se puede diseñar el largo de línea $L$ para obtener un ancho de
 pulso $T_p$ deseado
 
 \begin{equation}
-    L = \frac{T_p}{2}\frac{\sqrt{\kappa_{eff}}}{c_0}
+    L = \frac{T_p}{c_0}\frac{\sqrt{\kappa_{eff}}}{2}
 \end{equation}
 
 De esta manera, el largo $L$ queda determinado por el ancho de pulso deseado
@@ -533,9 +533,7 @@ teniendo que se ser $T*(1-D) > T_s$, es decir, el tiempo en el que la cuadrada
 bipolar tiene el valor $V_l$ tiene que ser suficiente para la remoción de todas
 las cargas en el SRD.
 
-\textcolor{red}{agregar una simulación?}
-
-\subsubsection{pasa altos con pulser}
+\subsubsection{Pasa altos con \textit{pulser}}
 \label{sec:carga_no_lineal}
 
 Simulamos el circuito pasa altos utilizando como carga al pulser. En la figura
@@ -663,13 +661,49 @@ Es el mismo resultado que en la sección anterior.
 
 Ahora, supongamos una carga no lineal de las siguientes características: conduce
 durante todo el período positivo de la unipolar $D$, y una porción $\alpha \cdot
-D'$ de la porción negativa, con $\alpha \in \left[0, 1 \right]$. Un $\alpha=0$
-corresponde a una carga que no conduce en la porción negativa, como un diodo
-usual, y una de $\alpha=1$ corresponde a una carga lineal. En nuestro caso, es
-$\alpha = \frac{T_s}{D'}$, con $T_s$ el tiempo de descarga del SRD, es decir,
-el tiempo que le toma  a la corriente negativa extraer todas las cargas
-inyectadas en la porción positiva.
+D'$ de la porción negativa, con $\alpha \in \left[0, 1 \right]$. En la figura
+\ref{fig:alpha_definition_plot} se muestra gráficamente la definición. Un
+$\alpha=0$ corresponde a una carga que no conduce en la porción negativa, como
+un diodo usual, y una de $\alpha=1$ corresponde a una carga lineal. En nuestro
+caso, es $\alpha = 2 \cdot \frac{T_s}{T}$, con $T_s$ el tiempo de descarga del
+SRD, es decir, el tiempo que le toma  a la corriente negativa extraer todas las
+cargas inyectadas en la porción positiva.
 
+\begin{figure}[h!]
+    \begin{center}
+        \begin{tikzpicture}
+          \def\D{0.5}
+          \def\Alpha{0.5}
+          \def\Iplus{0.7}
+          \def\Iminus{-1.2}
+
+          \begin{axis}[
+            xlabel=$t$,
+            ylabel=$i$,
+            xmin=0, xmax=1,
+            ymin=\Iminus-1, ymax=\Iplus+1,
+            samples=100,
+            axis lines=center,
+            xtick={0,\D,\D+(1-\D)*\Alpha},
+            ytick={\Iminus,\Iplus},
+            domain=0:1,
+            xticklabels={$0$, $D \cdot T$, $\alpha \cdot D' \cdot T$},
+            yticklabels={$I_{-}$, $I_{+}$},
+          ]
+
+          % Square wave function
+          \def\sqwave(#1){
+            ifthenelse(#1 < \D, \Iplus,
+              ifthenelse(#1 < \D+\Alpha*(1-\D), \Iminus, 0))
+          }
+
+          \addplot[blue, thick, domain=0:1, samples=500] {\sqwave(x)};
+          \end{axis}
+        \end{tikzpicture}
+    \end{center}
+    \caption{Definición del parámetro $\alpha$}
+    \label{fig:alpha_definition_plot}
+\end{figure}
 En este caso, el balance de corrientes es
 
 \begin{equation}
@@ -820,8 +854,8 @@ Reemplazando en \ref{eq:vc_non_linear_load_with_shunt_1}
 
 Reconocemos a $\frac{R_{sh} // R_{s}}{R_s} = \frac{R_{sh}}{R_{sh}+R_s}$ como la
 expresión de un divisor resistivo entre $R_{sh}$ y $R_s$. Llamaremos a esta
-expresión $\gamma$, y notamos que cuando $R_{sh} >> R_s$ es $\gamma \lim 1$, y
-cuando $R_{sh} << R_s$ es $\lim_{R_{sh} \to 0} \gamma = 0$.
+expresión $\gamma$, y notamos que cuando $R_{sh} >> R_s$ es $\gamma \to 1$, y
+cuando $R_{sh} << R_s$ es $\gamma \to 0$.
 
 Entonces, llegamos a
 
@@ -836,7 +870,7 @@ Entonces, llegamos a
 Notamos los siguientes casos extremos de $\gamma$:
 
 \begin{itemize}
-    \item $\gamma \to 1$: este caso se corresponde a $R_{sh} \to \inf$, es
+    \item $\gamma \to 1$: este caso se corresponde a $R_{sh} \to \infty$, es
         decir, $R_{sh} >> R_s$. En este caso, la expresión es idéntica a
         \ref{eq:vc_non_linear_load_final}. Esto es esperado, ya que en este caso
         la corriente que consume $R_{sh}$ es despreciable, por lo que es un caso
@@ -852,16 +886,18 @@ Notamos los siguientes casos extremos de $\gamma$:
 Notamos del último punto, que en presencia de una carga no lineal, agregar una
 carga lineal en paralelo $R_{sh}$, logra el efecto de \textit{linearizar} la
 forma de onda, en el sentido de volver sus extremos más similares a los de un
-caso de carga lineal.
+caso de carga lineal.  En base a este principio, es que agregamos un resistor no
+lineal en paralelo al pulser para lograr su correcto funcionamiento.
 
-En la figura \ref{fig:sch_highpass_non_linear_w_shunt_simulation} se observa el
-esquemático simulado. Es la misma configuración que en
-\ref{fig:sch_highpass_non_linear_simulation}, pero ahora se  agrega un resistor
-en paralelo con el pulser.
+Realizamos una simulación de la mejora propuesta. En la figura
+\ref{fig:sch_highpass_non_linear_w_shunt_simulation} se observa el esquemático
+simulado. Es la misma configuración que en
+\ref{fig:sch_highpass_non_linear_load}, pero ahora se  agrega un resistor en
+paralelo con el pulser.
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \includegraphics[width=\textwidth]{images/highpass_nonlinear_w_shunt_sch.png}
     \caption{Circuito pasa altos con carga no lineal y lineal en paralelo simulado}
     \label{fig:sch_highpass_non_linear_w_shunt_simulation}
 \end{figure}
@@ -871,21 +907,85 @@ los resultados de la simulación. En este caso, a la salida se observa la
 generación de pulsos. Analizando la corriente sobre el SRD, vemos que en este
 caso la corriente negativa es de mayor módulo que la positiva, observándose la
 transición a alta impedancia del SRD con su característica abrupta caída a $0$
-de la corriente.
+de la corriente. Para la corriente en el capacitor, vemos que ahora es la suma
+de la corriente en el resistor lineal y la corriente en el SRD.
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \includegraphics[width=\textwidth]{images/highpass_nonlinear_w_shunt_sim_result.png}
     \caption{Resultado de simulación de pasa altos con carga no lineal y lineal
     en paralelo.}
     \label{fig:highpass_non_linear_w_shunt_simulation_result}
 \end{figure}
 
-En cuanto al valor del capacitor, vemos que ahora es , consistente con
-\ref{eq:vc_non_linear_load_with_shunt_final} y mayor que en la simulación de la
-sección \ref{sec:carga_no_lineal} como era esperado. Esto resulta en una forma
-de onda bipolar con un offset menor, por lo tanto menos valores de tensión. Esto
-es consistente con la forma de onda de corriente observada sobre el SRD.
+En cuanto a la tensión cargada en el capacitor, vemos que ahora es
+\qty{-2.52}{\volt}, mayor que los \qty{-1.9}{\volt} de la simulación sin carga
+lineal en paralelo. Este incremento de la tensión de carga es consistente con la
+ecuación \ref{eq:vc_non_linear_load_with_shunt_final}. Evaluando la ecuación,
+tenemos en este caso
+
+\begin{equation}
+    \begin{aligned}
+        D &= 0.5 \\
+        \gamma &= \frac{R_{sh}}{R_{sh}+R_{s}} =0.5 \\
+        \alpha &= \frac{0.4}{0.5} = 0.9 \\
+    \end{aligned}
+\end{equation}
+
+Donde tomamos $\alpha$ leyendo el eje $x$ de
+\ref{fig:highpass_non_linear_w_shunt_simulation_result}. Para estos valores,
+\ref{eq:vc_non_linear_load_with_shunt_final} predice un valor de
+
+\begin{equation}
+    \begin{aligned}
+        V_C &= V_U \cdot \frac{D}{\left( 1 - \gamma \cdot D' \cdot \alpha'\right)} \\
+        V_C &= \qty{5}{\volt} \cdot \frac{0.5}{\left( 1 - 0.5 \cdot (1-0.5)
+        \cdot (1-0.9) \right)} \\
+        V_C &= \qty{2.56}{\volt} \\
+    \end{aligned}
+\end{equation}
+
+La ecuación es consistente con el resultado de la simulación. En este caso, los
+valores de la señal bipolar son \qty{\pm2.5}{\volt}, habiendo logrado bajar los
+niveles con respecto al resultado de la figura
+\ref{fig:highpass_filter_nonlinear_load_sim_result}.
+
+El agregado del resistor lineal en paralelo logró el efecto deseado, aumentando
+la tensión en el capacitor serie, logrando una señal bipolar que logra cargar y
+descargar al SRD permitiendo la generación de pulsos.
+
+Para terminar de demostrar su funcionamiento, repetimos la simulación del
+esquemático de la figura \ref{fig:highpass_nonlinear_w_shunt_sch}, ahora con un
+ciclo de trabajo $D=0.8$. En la figura
+\ref{fig:highpass_non_linear_w_shunt_simulation_result_80_dc} se observa el
+resultado. Ahora se logra el efecto descripto anteriormente, mediante el
+incremento del ciclo de trabajo $D$ decrece la tensión $V_{+}$ y aumenta
+$V_{-}$, resultando en una mayor amplitud de pulso. Vemos que esta es
+\qty{0.85}{\volt}, mientras que en
+\ref{fig:highpass_non_linear_w_shunt_simulation_result} se obtuvieron
+\qty{0.45}{\volt}.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/highpass_nonlinear_w_shunt_sim_result_80_dc.png}
+    \caption{Resultado de simulación de pasa altos con carga no lineal y lineal
+    en paralelo, $D=0.8$.}
+    \label{fig:highpass_non_linear_w_shunt_simulation_result_80_dc}
+\end{figure}
+
+En cuanto a la tensión en el capacitor, aplicando la ecuación
+\ref{eq:vc_non_linear_load_with_shunt_final}, tenemos
+
+\begin{equation}
+    \begin{aligned}
+        V_C &= V_U \cdot \frac{D}{\left( 1 - \gamma \cdot D' \cdot \alpha'\right)} \\
+        V_C &= \qty{5}{\volt} \cdot \frac{0.8}{\left( 1 - 0.5 \cdot (1-0.8)
+        \cdot (1-0.9) \right)} \\
+        V_C &= \qty{4}{\volt} \\
+    \end{aligned}
+\end{equation}
+
+La ecuación se encuentra consistente con el resultado obtenido en la simulación.
 
 \subsection{Implementación de la llave}
 
@@ -962,7 +1062,7 @@ cortocircuitadas. \textcolor{red}{explicar esto mejor?}
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \includegraphics[width=0.4\textwidth]{images/lm5114_block_diagram.png}
     \caption{Diagrama en bloques del LM5114. Tomado de \cite{LM5114_datasheet}}
     \label{fig:lm5114_block_diagram}
 \end{figure}
@@ -1016,7 +1116,7 @@ para la transición $1\to0$ será $t_{D-off}+t_{f}$.
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \includegraphics[width=0.4\textwidth]{images/lm5114_timing_definitions.png}
     \caption{Definición de tiempos de transición y propagación, tomado de
     \cite{LM5114_datasheet}}
     \label{fig:lm5114_timing}
