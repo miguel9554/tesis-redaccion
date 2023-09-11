@@ -189,14 +189,15 @@ $\kappa_{eff}$ es independiente del largo $L$ de la línea \cite{pozar2011}.
 Entonces, el ancho de pulso $T_p$ está dado por
 
 \begin{equation}
-    T_p = 2*T = 2*v_p*L =2*\frac{c_0}{\sqrt{\kappa_{eff}}}*L
+    T_p = 2 \cdot T = 2 \cdot \frac{L}{v_p} =2 \cdot \sqrt{\kappa_{eff}} \cdot \frac{L}{c_0}
 \end{equation}
 
 De esta forma, se puede diseñar el largo de línea $L$ para obtener un ancho de
 pulso $T_p$ deseado
 
 \begin{equation}
-    L = \frac{T_p}{c_0}\frac{\sqrt{\kappa_{eff}}}{2}
+    \label{eq:stub_length_vs_delay}
+    L = \frac{T_p}{2} \cdot \frac{c_0}{\sqrt{\kappa_{eff}}}
 \end{equation}
 
 De esta manera, el largo $L$ queda determinado por el ancho de pulso deseado
@@ -485,6 +486,9 @@ una impedancia en ese mismo orden de valores. De esta manera,
 
 La capacidad debe estar por arriba de \qty{3.2}{\nano\farad}, valores fácilmente
 obtenibles en los tamaños de encapsulados objetivo.
+
+\textcolor{red}{explicar q vamos incluso más arriba de esto para q la tensión en
+el capacitor sea constante y no una triangular}
 
 En la siguiente sección, asumiendo un filtrado ideal, es decir, donde se filtra
 por completo el valor medio $V_m$ y se transmiten los harmónicos sin distorsión,
@@ -1000,7 +1004,8 @@ debe cumplir la llave
 \hline
     Variable & Requerimiento \\
 \hline
-    $V_{in}$                &   CMOS @ $V_{DD}=\qty{5}{\volt}$    \\
+    $V_{in}$                &   CMOS @ $V_{DD}=\qty{3.3}{\volt}$ ($V_{OH}$
+    \qty{2.4}{\volt})     \\
     $f_{in}$                &   Typ \qty{10}{\mega\hertz} \\
     $\tau_{r}$ / $\tau_{f}$ &   Max \qty{10}{\nano\second} \\
     $V_{dd}$                &   \qty{5}{\volt} - \qty{8}{\volt} \textcolor{red}{chequear} \\
@@ -1011,10 +1016,11 @@ debe cumplir la llave
 \label{tab:llave_requirements}
 \end{table}
 
-El requerimiento de tensión de entrada TTL es debido a ser los niveles de
-tensión usuales en sistemas embebidos de bajo costo, y en particular de la
-plataforma mencionada en \textcolor{red}{MENCIONAR TRABAJO ANDRÉS, EXPLICAR
-MEJOR TTL}.
+El requerimiento de tensión de entrada es debido al sistema objetivo de
+integración del prototipo, en el que los sistemas digitales de control trabajan
+con un $V_{DD}$ de \qty{3.3}{\volt}. Además, este nivel de tensión es versátil
+en cuanto a que permite trabajar con otro tipo de salidas, como $TTL$
+\qty{5}{\volt}.
 
 La frecuencia de  entrada se debe a la $PRF$ objetivo de \qty{10}{\mega\hertz}.
 El requerimiento de tiempo de crecimiento y caída $\tau_{r}$ / $\tau_{f}$ es
@@ -1039,9 +1045,8 @@ paralelo a la salida de la llave. Esto permite volver más lento el tiempo de
 crecimiento en caso de que este sea demasiado rápido.
 
 El requerimiento de $V_{dd}$ se debe al rango de tensiones de alimentación de
-interés del sistema \textcolor{red}{mencionar en algún lado q se justifique
-porque usamos este rango}. La corriente se debe al cálculo de consumo de
-corriente máxima del pulser \textcolor{red}{REFERENCIAR}.
+interés del sistema. Estas son fácilmente obtenibles en las plataformas a las
+que se apunta integrar el prototipo.
 
 \subsubsection{Llave utilizada}
 
@@ -1058,7 +1063,7 @@ mismo, tomado de \cite{LM5114_datasheet}. El dispositivo posee dos salidas, una
 para el transistor $P$ y otra para el $N$. Esto permite, mediante resistencias
 externas, igualar los tiempos de crecimiento de cada transición. En nuestra
 aplicación, esto no es de interés, por  lo que ambas salidas estarán
-cortocircuitadas. \textcolor{red}{explicar esto mejor?}
+cortocircuitadas.
 
 \begin{figure}[tbp]
     \centering
@@ -1072,33 +1077,109 @@ tensión de entrada CMOS y la segunda TTL.  Se optó por la versión B, ya que l
 niveles de tensión CMOS dependen de la tensión de alimentación $V_{dd}$,
 mientras que la TTL tiene niveles de tensión independientes de $V_{dd}$ y
 compatibles con los especificados en \ref{tab:llave_requirements}. En cuanto al
-encapsulado, se optó por la versión en SOT-23, debido a su disponibilidad en
-stock \textcolor{red}{VERIFICAR ENCAPSULADO Y PORQUE LO ELEGIMOS, HABÍA UNOS
-MAILS DONDE DISCUTIMOS ESTO, CREO Q POR FACILIDAD DE SOLDADO?}.
+encapsulado, se optó por la versión en WSON debido a su disponibilidad en
+stock.
 
 En cuanto a rango de $V_{dd}$, la hoja de datos lo especifica en \qty{4}{\volt}
 - \qty{10}{\volt}, excediendo el requerimiento de \ref{tab:llave_requirements}.
-La corriente máxima es de \textcolor{red}{COMPLETAR} \textcolor{red}{Buscar si
-en onenote hay algo sobre esto}.
+No se especifica una corriente continua máxima de operación, pero se puede
+obtener esta medida a partir de la especificación de máxima temperatura de
+juntura $T_{jM}$ y resistencia térmica $\theta_{jA}$. Estas están especificadas en
+
+\begin{equation}
+    \begin{aligned}
+        T_{jM} & = \qty{125}{\celsius} \\
+        \theta_{jA} &= \qty[per-mode=fraction]{51.2}{\celsius\per\watt}
+    \end{aligned}
+\end{equation}
+
+La relación entre potencia disipada $P$ en el integrado, temperatura de juntura
+$T_j$, temperatura ambiente $T_A$ y resistencia térmica $\theta_{jA}$ es
+
+\begin{equation}
+    \begin{aligned}
+        T_{j} = T_{A} + P \cdot \theta_{jA}
+    \end{aligned}
+\end{equation}
+
+Dada la máxima temperatura de juntura $T_{jM}$, la máxima potencia $P_M$ es
+
+\begin{equation}
+    \begin{aligned}
+        P_{M} = \frac{T_{jM}-T_A}{\theta_{jA}}
+    \end{aligned}
+\end{equation}
+
+Aproximando el consumo de potencia en el integrado con la corriente de salida
+multiplicada por la impedancia de salida, es decir, despreciando todas las otras
+fuentes de disipación, tenemos
+
+\begin{equation}
+    \begin{aligned}
+        P_{M} = I_M^2 \cdot R_o &= \frac{T_{jM}-T_A}{\theta_{jA}} \\
+        I_M &= \sqrt{\frac{T_{jM}-T_A}{\theta_{jA}}} \cdot \frac{1}{R_o} \\
+    \end{aligned}
+\end{equation}
+
+La hoja de datos especifica distintos rangos de $R_o$ para la salida $N$ y la
+$P$. Utilizaremos la peor que es \qty{4.78}{\ohm}. Para $\theta_{jA}$, dado que
+el valor depende no solo del integrado sino también del PCB, tomaremos un peor
+caso aumentando en un \qty{50}{\percent} el especificado por el fabricante.
+Entonces tenemos
+
+\begin{equation}
+    \begin{aligned}
+        I_M &= \sqrt{\frac{ \qty{125}{\celsius}-
+        \qty{25}{\celsius}}{\qty[per-mode=fraction]{51.2}{\celsius\per\watt}
+        \cdot 1.5 }} \cdot \frac{1}{ \qty{4.78}{\ohm} } \\
+        I_M &= \qty{240}{\milli\ampere}
+    \end{aligned}
+\end{equation}
+
+Vemos que el requisito de la tabla \ref{tab:llave_requirements} se cumple. Cabe
+destacar que esta corriente $I_M$ fue obtenida asumiendo peores casos, en caso
+de requeriría una corriente superior, probablemente el integrado pueda
+proveerla. Incluso en caso de exceder la corriente la temperatura máxima de
+juntura, se puede colocar un disipador.
 
 En cuanto a tiempo de caída/crecimiento $\tau_{r}$ / $\tau_{f}$, el fabricante
 especifica una dependencia del mismo en función de la capacidad de carga $C_L$,
 con mayores tiempos a mayor carga. Para la carga mínima especificada,
 \qty{1000}{\pico\farad}, el tiempo de crecimiento es de \qty{8}{\nano\second} y
 el de caída de \qty{3.2}{\nano\second}. Ambos se encuentran por debajo de los
-máximos \qty{10}{\nano\second} especificados en \ref{tab:llave_requirements}. De
-todas maneras, la capacidad de carga de la llave estará muy por debajo de los
-\qty{1000}{\pico\farad}, por lo que tendremos tiempos de crecimiento/caída mucho
-menores. \textcolor{red}{justificar esto, xq en realidad tenemos un capa de 100n
-jeje. Pero, creo q la carga real va a ser mucho menor, xq no tenemos q cargar y
-descargar ese capacitor en cada ciclo...  debería ser la capacidad de carga q
-presenta el SRD+stub+capacidad parásita del layout}.  \textcolor{red}{Buscar si
-en onenote hay algo sobre esto}.
+máximos \qty{10}{\nano\second} especificados en \ref{tab:llave_requirements}.
+
+De todas maneras, analizando la capacidad de carga que tiene el integrado, esta
+es mucho menor a \qty{1000}{\pico\farad}. Como fuese explicado anteriormente, la
+impedancia que presenta el pulser es igual a la resistencia $R_s$ durante el
+período de conducción positivo, y $R_S/\alpha$ durante el período negativo. La
+carga del gate driver está compuesta por el pulser en serie con el capacitor de
+filtrado pasa altos. Este capacitor es de \qty{100}{\nano\farad}, y en las
+frecuencias de trabajo de la señal cuadrada, presenta una impedancia
+
+\begin{equation}
+    \begin{aligned}
+        | Z_C | &< \frac{1}{2\pi \cdot PRF \cdot C} \\
+        | Z_C | &< \frac{1}{j2\pi \cdot \qty{10}{\mega\hertz} \cdot
+        \qty{100}{\nano\farad}} \\
+        | Z_C | &< \qty{15}{\milli\ohm}
+    \end{aligned}
+\end{equation}
+
+La impedancia del capacitor es menor en todo el rango ya que el contenido
+espectral de la señal cuadrada se encuentra por arriba de la frecuencia
+fundamental $PRF$. Entonces, la impedancia de carga del gate driver es $Z_L
+\approx \qty{50}{\ohm} + j \cdot \qty{15}{\milli\ohm} \approx \qty{50}{\ohm}$,
+es decir una carga resistiva pura, debido a lo despreciable de la impedancia del
+capacitor serie con la resistencia de limitación de corriente $R_s$. En este
+análisis no se tuvieron en cuenta las capacidades a tierra parásitas tanto de
+los encapsulados como del PCB, por lo que serán estas las que determinen la
+capacidad de carga real.
 
 Se encuentra especificada una asimetría importante entre $\tau_r$ y $\tau_f$,
 siendo el último aproximadamente un \qty{25}{\percent} del primero. Esta
 asimetría es un sentido beneficioso para el circuito, ya que el tiempo de
-transición crítico es el de caida. Este tiempo tiene que ser lo suficientemente
+transición crítico es el de caída. Este tiempo tiene que ser lo suficientemente
 rápido para que cuando el SRD transiciones al estado de alta impedancia, la forma
 de onda de entrada ya haya llegado a su mínimo valor. Caso contrario, el pulso
 tendrá menor amplitud. Esto es claro de la ecuación \ref{eq:A_p}, donde se
@@ -1108,18 +1189,18 @@ el ánodo del SRD.
 El dispositivo no presenta una especificación de frecuencia de trabajo, pero
 contiene especificaciones de tiempo de propagación y tiempos de
 caída/crecimiento, que imponen una restricción sobre la máxima frecuencia de
-operación. En la figura \ref{} se observan las definiciones de tiempo de
-propagación y caída/crecimiento. De la definición, el tiempo desde que la señal
-de entrada llega a un \qty{50}{\percent} hasta que la salida conmuta es
-aproximadamente $t_{D-on}+t_{r}$ para el caso de una transición $0\to1$, y
-para la transición $1\to0$ será $t_{D-off}+t_{f}$.
+operación. En la figura \ref{fig:lm5114_timing_definitions} se observan las
+definiciones de tiempo de propagación y caída/crecimiento. De la definición, el
+tiempo desde que la señal de entrada llega a un \qty{50}{\percent} hasta que la
+salida conmuta es aproximadamente $t_{D-on}+t_{r}$ para el caso de una
+transición $0\to1$, y para la transición $1\to0$ será $t_{D-off}+t_{f}$.
 
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=0.4\textwidth]{images/lm5114_timing_definitions.png}
     \caption{Definición de tiempos de transición y propagación, tomado de
     \cite{LM5114_datasheet}}
-    \label{fig:lm5114_timing}
+    \label{fig:lm5114_timing_definitions}
 \end{figure}
 
 Referenciando estos al inicio de la transición de la señal de entrada, tenemos
@@ -1156,28 +1237,49 @@ Asumiendo para un peor caso, tiempos de transición de entrada de
 \end{equation}
 
 El período mínimo se encuentra por debajo del período de \qty{100}{\nano\second}
-correspondiente a los \qty{10}{\mega\hertz} especificados en, por lo que se
-cumple el requerimiento de $f_{in}$.
+correspondiente a los \qty{10}{\mega\hertz} especificados en
+la tabla \ref{tab:llave_requirements}, por lo que se cumple el requerimiento de $f_{in}$.
 
 \subsubsection{Simulación}
 
-El fabricante provee un modelo de SPICE del gate driver. Con este se realizó una
-simulación para confirmar el correcto funcionamiento. En la figura
-\ref{fig:lm5114_sim_sch} puede observarse el esquemático simulado, y los
-resultados en la \ref{fig:lm5114_sim_result}.
+El fabricante provee un modelo de SPICE del gate driver \cite{LM5114-PSpice}.
+Con este se realizó una simulación para confirmar el correcto funcionamiento. En
+la figura \ref{fig:lm5114_sim_sch} puede observarse el esquemático simulado. El
+mismo consiste en el pulser, el capacitor de filtrado pasa altos, y el LM5114
+junto a una fuente cuadrada unipolar de \qty{3.3}{\volt}. Esta simula la señal
+de control del sistema embebido de bajo costo.
+
+La simulación se realiza bajo dos condiciones de ciclo de trabajo para la señal
+de entrada: \qty{50}{\percent}, con el resultado en la figura
+\ref{fig:lm5114_sim_result_50_D} y \qty{70}{\percent}, resultado en la figura
+\ref{fig:lm5114_sim_result_70_D}. En ambos casos se observa la transición del
+SRD al estado de alta impedancia y la consecuente generación de pulsos. Se
+observa que en este caso la señal cuadrada unipolar no tiene la amplitud
+completa de la fuente de alimentación, \qty{5}{\volt}, sino aproximadamente
+\qty{4.5}{\volt}, debido a las perdidas en el LM5114. Se observa que el efecto
+de aumentar el ciclo de trabajo de \qty{50}{\percent} a \qty{70}{\percent} logra
+un aumento en la amplitud del pulso de casi un \qty{100}{\percent} como en la
+sección anterior.
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
+    \includegraphics[width=\textwidth]{images/lm5114_sim_sch.png}
     \caption{Esquemático de simulación con modelo de LM5114.}
     \label{fig:lm5114_sim_sch}
 \end{figure}
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.4\textwidth]{images/placeholder.jpg}
-    \caption{Resultado de simulación con modelo de LM5114.}
-    \label{fig:lm5114_sim_result}
+    \includegraphics[width=\textwidth]{images/lm5114_sim_result_50_D.png}
+    \caption{Resultado de simulación con modelo de LM5114, $D=0.5$.}
+    \label{fig:lm5114_sim_result_50_D}
+\end{figure}
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/lm5114_sim_result_70_D.png}
+    \caption{Resultado de simulación con modelo de LM5114, $D=0.7$.}
+    \label{fig:lm5114_sim_result_70_D}
 \end{figure}
 
 \section{Implementación en PCB}
@@ -1192,34 +1294,50 @@ mantiene contenida al modulo defectuoso y no a la totalidad del sistema.
 Se fabricaron las placas con el fabricante OSHPark. Se utilizó el servicio de 4
 capas y material FR408HR de Isola \cite{fr408_datasheet}. El material, a
 diferencia del FR4 más económico, presenta buena estabilidad en frecuencia para
-su constante dieléctrica, y bajas perdidas, por lo que es apropiado para
+su constante dieléctrica y bajas perdidas, por lo que es apropiado para
 trabajar en el ancho de banda necesario. La constante dieléctrica presenta una
 variación menor al \qty{2}{\percent} en el rango \qty{100}{\mega\hertz} a
 \qty{10}{\giga\hertz}, y una tangente de pérdidas con mayor variación pero menor
-a \num{0.01} hasta \qty{10}{\giga\hertz}. \textcolor{red}{explicar por qué esta
-tangente es baja?}.
+a \num{0.01} hasta \qty{10}{\giga\hertz}.
 
-En la tabla se muestra el apilamiento de las capas del proceso de fabricación,
-con sus dimensiones y materiales.
+En la tabla \ref{tab:oshpark_4_layer_stackup} se muestra el apilamiento de las
+capas del proceso de fabricación, con sus dimensiones y materiales. El proceso
+consta de 4 capas conductoras, todas compuestas por cobre. Entre ambos pares de
+conductores se encuentra el \textit{prepeg} de constante dieléctrica estable en
+frecuencia. Entre los dos pares se encuentra el núcleo FR4. Por sobre las capas de
+cobre superior e inferior se encuentran capas de serigrafía y máscaras de
+soldadura, que a los efectos de cálculos de impedancia tienen un rol
+despreciable.
+
+\textcolor{red}{comentar q usamos la de 4 capas porque tenía un H más chico? xq
+era esto?}
 
 \begin{table}[htbp]
 \centering
+\begin{threeparttable}[b]
+    \begin{tabular}{c|c|c|c}
+        Capa & C/D \tnote{a} & Grosor [mil]  & $\epsilon_r$ \tnote{b} \\
+        \hline
+        Serigrafía & D & 1 $\pm$0.2 & \\
+        Máscara de soldadura & D & 1 $\pm$0.2 & \\
+        Cobre 1 oz & C & 1.7 \\
+        \textit{Prepreg} FR408HR 2113  & D & 7.96 $\pm$0.796 &
+        3.61@\qty{1}{\giga\hertz} \\
+        Cobre 0.5 oz & C & 0.68 & \\
+        Núcleo FR408HR & D & 39 $\pm$3.9 & \\
+        Cobre 0.5 & C & 0.68 \\
+        \textit{Prepreg} FR408HR 2113 & D & 7.96 $\pm$0.796 &
+        3.61@\qty{1}{\giga\hertz}\\
+        Cobre 1 oz & C & 1.7 & \\
+        Máscara de soldadura & D & 1 $\pm$0.2 & \\
+        Serigrafía & D & 1 $\pm$0.2 & \\
+    \end{tabular}
+    \begin{tablenotes}
+        \item [a] Conductor/Dieléctrico.
+        \item [a] Permisividad relativa.
+    \end{tablenotes}
+\end{threeparttable}
 \caption{Apilamiento de capas del proceso de fabricación de OSH Park}
-\begin{tabular}{c|c}
-Capa & Grosor [mil] \\
-\hline
-silkscreen & 1 $\pm$0.2 \\
-solder resist & 1 $\pm$0.2 \\
-1 oz copper clad+plated & 1.7 \\
-FR408HR 2113 prepreg & 7.96 $\pm$0.796 \\
-0.5 oz copper clad & 0.68 \\
-FR408HR core & 39 $\pm$3.9 \\
-0.5 oz copper clad & 0.68 \\
-FR408HR 2113 prepreg & 7.96 $\pm$0.796 \\
-1 oz copper clad+plated & 1.7 \\
-solder resist & 1 $\pm$0.2 \\
-silkscreen & 1 $\pm$0.2 \\
-\end{tabular}
 \label{tab:oshpark_4_layer_stackup}
 \end{table}
 
@@ -1230,24 +1348,50 @@ eliminar las contribuciones de las impedancias parásitas
 
 \subsection{Layout del pulser}
 
-Para el pulser, se utilizó la capa de cobre 1 como señal, formando un plano de
-tierra en la capa 2 interna de cobre. De esta manera, las líneas de transmisión
-formadas tienen una separación de señal con tierra de $H = 7.96 \ mil =
-\qty{0.0202}{\milli\meter}$. \textcolor{red}{revisar en el onenote y mails
-porque habíamos usado esta, era mejor una distancia de tierra más chica? Cómo
-afectaba esto a la microstrip? No me acuerdo}.
+Para el pulser, se utilizó la capa superior de cobre como plano de señal y la
+capa de cobre inferior a esta como tierra. De esta manera, se forma un linea de
+transmisión microtira \cite{pozar2011}, siendo el material dieléctrico el
+\textit{prepeg} de permisividad relativa estable en frecuencia y una altura de
+$H = 7.96 \ mil = \qty{0.0202}{\milli\meter}$.
+
+Dado el $H$ de la línea de transmisión, se calculó el $w$ necesario para obtener
+una impedancia característica de \qty{50}{\ohm}. Para esto, se utilizo el
+programa \textit{LineCalc} disponible dentro de \textit{ADS}. Este programa
+permite cargar una configuración de línea de transmisión, y en base al alto del
+dieléctrico $H$ y una impedancia característica deseada $Z_o$, obtener el ancho
+$w$ necesario. En la figura \ref{fig:tline_width_calculation} se observan los
+parámetros configurados. Esto resultó en un ancho de pista de
+\qty{0.4}{\milli\meter}.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/tline_width_calculation.png}
+    \caption{Calculo de línea de transmisión para obtener \qty{50}{\ohm}.}
+    \label{fig:tline_width_calculation}
+\end{figure}
 
 Se utilizaron componentes pequeños. Se pusieron muchas vias. Se hizo un
 tappering con los conectores SMA?
 
 \subsubsection{Diseño del \textit{stub}}
 
-Dado el $H$, se diseño el stub, fue cuestión de elegir un $w$ que resulte en 50
-ohm. Después, con el w elegido, se obtuvo $k_{eff}$, y se calculo el largo de la
-línea.
+Con la línea de transmisión a utilizar en el pulser determinada como una
+microtira de los parámetros dados por el proceso de fabricación de la tabla
+\ref{tab:oshpark_4_layer_stackup}, se obtuvo su $\kappa_{eff}$ con el programa
+\textit{LineCalc}. En la figura \ref{fig:tline_width_calculation} se observa que
+este es de \num{2.753}.
 
-Incluir simulaciones del pulser con la línea real. Mostrar como se degrada? Si
-es que se degrada
+Reemplazando estos datos en la ecuación \ref{eq:stub_length_vs_delay} podemos
+obtener el largo necesario para obtener un retardo de \qty{60}{\pico\second}.
+
+\begin{equation}
+    \begin{aligned}
+        L &= \frac{T_p}{2} \cdot \frac{c_0}{\sqrt{\kappa_{eff}}} \\
+        L &= \frac{\qty{120}{\pico\second}}{2} \cdot \frac{
+            \qty{3e8}{\meter\per\second}}{\sqrt{2.753}} \\
+        L &= \qty{10.85}{\milli\meter}
+    \end{aligned}
+\end{equation}
 
 \subsection{Layout del driver}
 
