@@ -269,21 +269,20 @@ característica, \qty{50}{\ohm} en este caso, y su retardo de propagación,
     \label{fig:stub_generator_circuit}
 \end{figure}
 
-En las figuras \ref{fig:generator_result_waves} y
-\ref{fig:stub_generator_result_pulse} se observan los resultados de la
-simulación del esquemático de la figura \ref{fig:stub_generator_circuit}. En la
-figura \ref{fig:generator_result_waves} se observan las formas de onda de la
-señal de entrada $V_p$, la tensión de salida $V_o$ y la corriente sobre el SRD
-$I_{SRD}$. Se observa que la tensión de salida $V_o$ sigue a la de entrada $V_p$
-hasta aproximadamente \qty{85}{\nano\second}, donde el SRD pasa del estado de
-baja impedancia al de alta. En en este instante, se forma un pulso por una
-combinación del salto de tensión en el SRD y el efecto de reflexión del stub
-cortocircuitado. Es interesante notar que los flancos positivos y negativos de
-la señal de entrada también resultan en pulsos a la salida, aunque de mucha
-menor amplitud. La forma de onda de la corriente es coincidente con lo
-mencionado anteriormente, siendo una versión escalada por la impedancia de la
-forma de onda de entrada $V_p$, hasta los \qty{85}{\nano\second}, donde cae
-abruptamente a $0$ debido al cambio de impedancia en el SRD.
+En la figura \ref{fig:stub_generator_sim_result} se observan los resultados de
+la simulación del esquemático de la figura \ref{fig:stub_generator_circuit}. En
+la figura  se observan las formas de onda de la señal de entrada $V_p$, la
+tensión de salida $V_o$ y la corriente sobre el SRD $I_{SRD}$. Se observa que la
+tensión de salida $V_o$ sigue a la de entrada $V_p$ hasta aproximadamente
+\qty{85}{\nano\second}, donde el SRD pasa del estado de baja impedancia al de
+alta. En en este instante, se forma un pulso por una combinación del salto de
+tensión en el SRD y el efecto de reflexión del stub cortocircuitado. Es
+interesante notar que los flancos positivos y negativos de la señal de entrada
+también resultan en pulsos a la salida, aunque de mucha menor amplitud. La forma
+de onda de la corriente es coincidente con lo mencionado anteriormente, siendo
+una versión escalada por la impedancia de la forma de onda de entrada $V_p$,
+hasta los \qty{85}{\nano\second}, donde cae abruptamente a $0$ debido al cambio
+de impedancia en el SRD.
 
 Es interesante notar que en este caso, los valores de la corriente están dados
 por $\frac{V_p}{R_s}$ y no $\frac{V_p}{R_s+R_L}$ como en la sección
@@ -293,7 +292,7 @@ entonces, $R_S$ tiene la función de limitación de corriente durante las etapas
 de conducción del SRD. De ser $0$ esta impedancia, la corriente sería infinita
 (en rigor, se vería limitada únicamente por la resistencia serie del SRD)
 
-En la figura \ref{fig:stub_generator_result_pulse} se observa un zoom sobre el
+En la figura \ref{fig:stub_generator_sim_result} se observa un zoom sobre el
 pulso obtenido. Tiene una amplitud de \qty{1.728}{\volt}, y una duración
 de \qty{180}{\pico\second} \textcolor{red}{por qué no es 60*2=120?}
 \textcolor{red}{verificar que la amplitud coincida con la expresión anterior}.
@@ -306,16 +305,9 @@ Zo?}
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/stub_generator_result_waves.png}
+    \includegraphics[width=0.8\textwidth]{images/stub_generator_sim_result.png}
     \caption{Resultado de simulación de generador con \textit{stub}}
-    \label{fig:generator_result_waves}
-\end{figure}
-
-\begin{figure}[tbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/stub_generator_result_pulse.png}
-    \caption{Pulso simulado con generador con \textit{stub}}
-    \label{fig:stub_generator_result_pulse}
+    \label{fig:stub_generator_sim_result}
 \end{figure}
 
 \textcolor{red}{En algún lado calcular y simular el ancho de banda del pulso
@@ -331,55 +323,52 @@ el sobretiro negativo observado, se agrega al generador un diodo rectificador en
 serie con la resistencia de carga $R_L$. Siendo la tensión de encendido del
 diodo mayor a la amplitud de los pulsos generados por las transiciones de la
 onda de entrada, estos no serán transmitidos a la carga $R_L$ debido a la acción
-de rectificación. En cuanto al sobretiro y las oscilaciones, tampoco serán
-transmitidas a la salida debido al bloqueo de de corriente en sentido negativo.
+de rectificación. En cuanto al sobretiro, tambien será filtrado debido al
+bloqueo de de corriente en sentido negativo.
 
-El costo de este diodo es la perdida de amplitud en el pulso principal, dada por la
-magnitud de su tensión de encendido. Para un correcto funcionamiento del
-generador de pulsos, es fundamental que el rectificador sea lo suficientemente
-rápido como para transmitir el pulso ultracorto sin degradación. Por esta razón
-se utiliza un diodo Schottky.
+Para un correcto funcionamiento del generador de pulsos, es fundamental que el
+rectificador sea lo suficientemente rápido como para transmitir el pulso
+ultracorto sin degradación. Por esta razón se utiliza un diodo Schottky.
 
-\subsection{Selección del diodo}
+El costo de este diodo es la perdida de amplitud en el pulso principal, dada por
+la magnitud de su tensión de encendido
 
-Se utilizó un \textcolor{red}{MAE...}. Este posee una baja capacidad. Hablar del
-pequeño factor de forma.
+Para esta función de rectifiación, se utilizó un diodo Schottky MA4E2502H
+\cite{MA4E2502H-datasheet}. Este diodo con aplicaciones en rango de frecuencias
+de microondas posee una muy baja capacidad total del orden de
+\qty{0.1}{\pico\farad} y capacidad e inductancia parásitas extremadamente bajas
+debido a su encapsulado. Esto permite trabajar en el ancho de banda necesario.
+Además el encapsulado es de montaje superficial, por lo que es fácilmente
+integrable. Su tensión de encendido es de \qty{0.65}{\milli\volt}, por lo que se
+perdería esa amplitud del pulso de salida.
 
 \subsection{Simulaciones}
 
-En la figura \ref{fig:pulser_final_schematic} se observa un esquemático del
+En la figura \ref{fig:pulser_w_schottky_sch} se observa un esquemático del
 generador de pulsos con el rectificador incluido. En la figura
-\ref{fig:generator_schottky_result_waves} se observa el resultado de la
+\ref{fig:pulser_w_schottky_sim_result} se observa el resultado de la
 simulación. Para este caso, en la salida se encuentra únicamente el pulso
 principal, habiéndose anulados los pulsos generados por las transiciones de la
 señal de entrada.
 
 En la figura \ref{fig:schottky_generator_result_pulse} se observa el pulso
 simulado. Con respecto al de la simulación sin rectificador, figura
-\ref{fig:stub_generator_result_pulse}, se observa una caída en la amplitud de
+\ref{fig:stub_generator_sim_result}, se observa una caída en la amplitud de
 \textcolor{red}{COMPLETAR VALOR}, dada por la tensión de encendido del Schottky
-utilizado, y una reducción del sobretiro y las oscilaciones
-\textcolor{red}{MOSTRAR QUE ESTO SE REDUCE}.
+utilizado, y una anluación del sobretiro negativo.
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/placeholder.jpg}
+    \includegraphics[width=0.8\textwidth]{images/pulser_w_schottky_sch.png}
     \caption{\textit{Pulser} final incluyendo diodo Schottky}
-    \label{fig:pulser_final_schematic}
+    \label{fig:pulser_w_schottky_sch}
 \end{figure}
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/placeholder.jpg}
+    \includegraphics[width=0.8\textwidth]{images/pulser_w_schottky_sim_result.png}
     \caption{Resultado de simulación de generador con rectificador}
-    \label{fig:generator_schottky_result_waves}
-\end{figure}
-
-\begin{figure}[tbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/placeholder.jpg}
-    \caption{Pulso simulado con generador con rectificador}
-    \label{fig:schottky_generator_result_pulse}
+    \label{fig:pulser_w_schottky_sim_result}
 \end{figure}
 
 \section{Consumo del generador}
@@ -1352,7 +1341,7 @@ Para el pulser, se utilizó la capa superior de cobre como plano de señal y la
 capa de cobre inferior a esta como tierra. De esta manera, se forma un linea de
 transmisión microtira \cite{pozar2011}, siendo el material dieléctrico el
 \textit{prepeg} de permisividad relativa estable en frecuencia y una altura de
-$H = 7.96 \ mil = \qty{0.0202}{\milli\meter}$.
+$H = \qty{7.96}{\mil} = \qty{0.0202}{\milli\meter}$.
 
 Dado el $H$ de la línea de transmisión, se calculó el $w$ necesario para obtener
 una impedancia característica de \qty{50}{\ohm}. Para esto, se utilizo el
@@ -1369,9 +1358,6 @@ parámetros configurados. Esto resultó en un ancho de pista de
     \caption{Calculo de línea de transmisión para obtener \qty{50}{\ohm}.}
     \label{fig:tline_width_calculation}
 \end{figure}
-
-Se utilizaron componentes pequeños. Se pusieron muchas vias. Se hizo un
-tappering con los conectores SMA?
 
 \subsubsection{Diseño del \textit{stub}}
 
@@ -1392,6 +1378,41 @@ obtener el largo necesario para obtener un retardo de \qty{60}{\pico\second}.
         L &= \qty{10.85}{\milli\meter}
     \end{aligned}
 \end{equation}
+
+\subsubsection{Layout}
+
+Una vez diseñada la línea de transmisión y simulada en \textit{ADS}, se exportó
+el layout obtenido en formato \textit{Gerber}. Este fue importado en el software
+de código abierto \textit{KiCad}, donde se realizaron cuestiones finales. En la
+figura \ref{fig:pulser_layout} puede observarse el resultado.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/pulser_layout.png}
+    \caption{Captura del PCB diseñado en \textit{KiCad}.}
+    \label{fig:pulser_layout}
+\end{figure}
+
+Se agregaron conectores \textit{SMA} para la entrada y salida
+\textcolor{red}{explicar por qué SMA?}. Para mejorar el ancho de banda de la
+transición, se realizó un tappering en el plano de tierra
+\textcolor{red}{explicar mejor esto, buscar el mail donde Andrés recomendó
+hacerlo}.
+
+Se agregaron agujeros de montaje en los 4 extremos de la placa. También se dejó
+un espacio al costado, para después poner un chasis alrededor de la placa.
+
+En todo el plano se agregaron vías, con una separación de \textcolor{red}{XXX
+mm}. Estas mejoran la puesta a tierra de todo el plano, reduciendo la impedancia
+del mismo.
+
+\textcolor{red}{se hizo un tappering desde el pad hasta el conector SMA? o fue
+por error?}
+
+En las capas inferior e intermedia 2 se usaron de plano de tierra,
+
+Se utilizaron componentes pequeños. Se pusieron muchas vias. Se hizo un
+tappering con los conectores SMA?
 
 \subsection{Layout del driver}
 
