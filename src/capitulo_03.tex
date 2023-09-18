@@ -98,11 +98,12 @@ alta impedancia. Esta tensión estará dada por el divisor entre $R_L$ y $R_s$,
 \end{equation}
 
 El tiempo de crecimiento de este escalón estará dado por dos componentes: un
-tiempo de transición del diodo SRD $t_t$, y un tiempo de carga $RC$ dado por el
-tiempo en que demora en cargarse el RC. \textcolor{red}{COMPLETAR CON EXPRESIÓN}
-\cite{an918}.
+tiempo de transición intrínseco del diodo SRD $t_t$, y un tiempo de carga $t_{RC}$  dado por la
+capacidad en reversa $C_{VR}$ del diodo SRD y la resistencia equivalente vista desde sus terminales \cite{an918}. El tiempo de crecimiento total estará dado por
 
-\textcolor{red}{EXPLICAR IMPORTANCIA DE BAJA CAPACIDAD PARALELO AL SRD}
+\begin{equation}
+    t_r = \sqrt{t_t^2+t_{RC}^2}
+\end{equation}
 
 Vemos por los marcadores de la figura, que estos tiempos son
 \qty{87.77}{\nano\second} y \qty{88.06}{\nano\second} respectivamente, por lo
@@ -113,7 +114,7 @@ que tenemos un tiempo de crecimiento
     \qty{290}{\pico\second}
 \end{equation}
 
-Como fuese explicado en la sección \textcolor{red}{AGREGAR REF\ref{TODO}}, este
+Como fuese explicado anteriormente, este
 tiempo de crecimiento estará dado por el tiempo de transición del diodo y por el
 tiempo del RC formado entre la capacidad de reversa del diodo y la resistencia
 vista desde los nodos del capacitor.
@@ -131,8 +132,7 @@ Cuando el \textit{stub} se encuentra abierto, es decir, terminado por una
 impedancia infinita, la señal propagada se verá reflejada con signo positivo, y
 en el caso de una línea de transmisión sin pérdidas, con un factor de ganancia
 unitario. En el caso de una línea de transmisión real, las pérdidas resultaran
-en un factor de atenuación. \textcolor{red}{chequear esto de la atenuación, y lo
-q sigue de las aplicaciones de un stub abierto}.  Este efecto permite generar
+en un factor de atenuación. Este efecto permite generar
 resonancias en ciertas frecuencias, útiles para filtrado de señales o adaptación
 de impedancias.
 
@@ -216,8 +216,7 @@ explicado anteriormente. La amplitud por la amplitud de la fuente, la relación
 entra la impedancia de carga $Z_L$ y la del generador $Z_g$ y por el largo del
 stub.
 
-Como fuese explicado en secciones anteriores \textcolor{red}{EXPLICAR EN QUÉ
-SECCIÓN}, el escalón de tensión generado en el SRD tiene una magnitud dada por
+Como fuese explicado en la sección \ref{sec:srd_sharpener}, el escalón de tensión generado en el SRD tiene una magnitud dada por
 
 \begin{equation}
     \Delta V = V_l \cdot \frac{R_L}{R_L+R_s}
@@ -294,14 +293,8 @@ de conducción del SRD. De ser $0$ esta impedancia, la corriente sería infinita
 
 En la figura \ref{fig:stub_generator_sim_result} se observa un zoom sobre el
 pulso obtenido. Tiene una amplitud de \qty{1.728}{\volt}, y una duración
-de \qty{180}{\pico\second} \textcolor{red}{por qué no es 60*2=120?}
-\textcolor{red}{verificar que la amplitud coincida con la expresión anterior}.
-Se observa que el pulso presenta un sobretiro negativo, una no idealidad no
+de \qty{180}{\pico\second}. Se observa que el pulso presenta un sobretiro negativo, una no idealidad no
 contemplada hasta ahora en el modelo presentado.
-
-\textcolor{red}{Hablar sobre la falta de reflexiones en el stub por ser de 50
-ohm, q es la impedancia q ve una vez q se abre el SRD? ver q pasa si movemos esa
-Zo?}
 
 \begin{figure}[tbp]
     \centering
@@ -576,8 +569,7 @@ una impedancia en ese mismo orden de valores. De esta manera,
 La capacidad debe estar por arriba de \qty{3.2}{\nano\farad}, valores fácilmente
 obtenibles en los tamaños de encapsulados objetivo.
 
-\textcolor{red}{explicar q vamos incluso más arriba de esto para q la tensión en
-el capacitor sea constante y no una triangular}
+Para un valor $C$ de capacidad por encima de los \qty{3.2}{\nano\farad}, la tensión sobre el capacitor tendrá una forma triangular, con una amplitud pico a pico inversamente proporcional al valor de capacidad. Para minimizar la amplitud de esta señal triangular, usaremos un valor muy por encima del límite de \qty{3.2}{\nano\farad}, siendo el valor elegido de \qty{100}{\nano\farad}.
 
 En la siguiente sección, asumiendo un filtrado ideal, es decir, donde se filtra
 por completo el valor medio $V_m$ y se transmiten los harmónicos sin distorsión,
@@ -1097,8 +1089,8 @@ debe cumplir la llave
     \qty{2.4}{\volt})     \\
     $f_{in}$                &   Typ \qty{10}{\mega\hertz} \\
     $\tau_{r}$ / $\tau_{f}$ &   Max \qty{10}{\nano\second} \\
-    $V_{dd}$                &   \qty{5}{\volt} - \qty{8}{\volt} \textcolor{red}{chequear} \\
-    $I_{out}$               &   Max \qty{200}{\milli\ampere} \textcolor{red}{chequear}  \\
+    $V_{dd}$                &   \qty{5}{\volt} - \qty{8}{\volt} \\
+    $I_{out}$               &   Max \qty{200}{\milli\ampere} \\
 \hline
 \end{tabular}
 \caption{Requerimientos de la llave para el driver.}
