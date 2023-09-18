@@ -315,15 +315,12 @@ generado}.
 
 \section{Diseño final del \textit{pulser}}
 
-\textcolor{red}{mostrar oscilaciones en el resultado anterior para justificar la
-inclusión del Schottky}
-
 Para compensar tanto las transmisiones de los flancos de la fuente de entrada y
 el sobretiro negativo observado, se agrega al generador un diodo rectificador en
 serie con la resistencia de carga $R_L$. Siendo la tensión de encendido del
 diodo mayor a la amplitud de los pulsos generados por las transiciones de la
 onda de entrada, estos no serán transmitidos a la carga $R_L$ debido a la acción
-de rectificación. En cuanto al sobretiro, tambien será filtrado debido al
+de rectificación. En cuanto al sobretiro, también será filtrado debido al
 bloqueo de de corriente en sentido negativo.
 
 Para un correcto funcionamiento del generador de pulsos, es fundamental que el
@@ -333,14 +330,14 @@ ultracorto sin degradación. Por esta razón se utiliza un diodo Schottky.
 El costo de este diodo es la perdida de amplitud en el pulso principal, dada por
 la magnitud de su tensión de encendido
 
-Para esta función de rectifiación, se utilizó un diodo Schottky MA4E2502H
+Para esta función de rectificación, se utilizó un diodo Schottky MA4E2502H
 \cite{MA4E2502H-datasheet}. Este diodo con aplicaciones en rango de frecuencias
-de microondas posee una muy baja capacidad total del orden de
-\qty{0.1}{\pico\farad} y capacidad e inductancia parásitas extremadamente bajas
+de microondas posee una muy baja capacidad total, del orden de
+\qty{0.1}{\pico\farad}, y capacidad e inductancia parásitas extremadamente bajas
 debido a su encapsulado. Esto permite trabajar en el ancho de banda necesario.
 Además el encapsulado es de montaje superficial, por lo que es fácilmente
-integrable. Su tensión de encendido es de \qty{0.65}{\milli\volt}, por lo que se
-perdería esa amplitud del pulso de salida.
+integrable. Su tensión de encendido es de \qty{650}{\milli\volt}, por lo que la
+amplitud perdida se encontrará en ese orden.
 
 \subsection{Simulaciones}
 
@@ -353,9 +350,9 @@ señal de entrada.
 
 En la figura \ref{fig:schottky_generator_result_pulse} se observa el pulso
 simulado. Con respecto al de la simulación sin rectificador, figura
-\ref{fig:stub_generator_sim_result}, se observa una caída en la amplitud de
-\textcolor{red}{COMPLETAR VALOR}, dada por la tensión de encendido del Schottky
-utilizado, y una anluación del sobretiro negativo.
+\ref{fig:stub_generator_sim_result}, se observa una perdida en la amplitud pico de
+\qty{400}{\milli\volt}, dada por la tensión de encendido del Schottky
+utilizado, y una anulación del sobretiro negativo.
 
 \begin{figure}[tbp]
     \centering
@@ -372,8 +369,111 @@ utilizado, y una anluación del sobretiro negativo.
 \end{figure}
 
 \section{Consumo del generador}
+\label{sec:pulser_power}
 
-Cálculos de cuánto consume el generador, cuanto disipan los componentes.
+El pulser final, que puede observarse en la captura del esquemático simulado en
+la figura \ref{fig:stub_generator_circuit}, está compuesto por 3 componentes: la
+resistencia serie $R_s$, el diodo SRD y el diodo Schottky. Calcularemos el
+consumo de potencia de los 3.
+
+Para un período de la señal cuadrada de entrada, podemos identificar 3 secciones
+
+\begin{itemize}
+    \item La sección positiva, en la que la tensión de la señal de entrada es
+        positiva, y la corriente la aproximaremos constante y positiva.
+    \item La sección de conducción negativa, en la que la tensión de la señal de
+        entrada se vuelve negativa, y la corriente es constante y también
+        negativa.
+    \item La sección de no conducción, en la que la señal de entrada es
+        negativa y ya no circula corriente debido a la transición al estado de
+        alta impedancia del SRD.
+\end{itemize}
+
+La corriente en el SRD y $R_s$ durante un período de la señal cuadrada tendrá 3
+valores: $I_+$ en el período positivo, $I_-$ en el de conducción negativa y $0$
+en la sección de no conducción. La corriente RMS es
+
+\begin{equation}
+    \begin{aligned}
+        I_{RMS}^2 &= \frac{1}{T} \cdot \int_{t_0}^{t_0+T} i(t)^2dt = \frac{1}{T}
+        \cdot \left( D \cdot T \cdot I_+^2 + T_s \cdot I_-^2 \right) \\
+        I_{RMS}^2 &= D \cdot I_+^2 + \frac{T_s}{T} \cdot I_-^2 \\
+        I_{RMS}^2 &< D \cdot I_+^2 + D' \cdot I_-^2 \\
+    \end{aligned}
+\end{equation}
+
+Podemos acotar a la corriente RMS con $D \cdot I_+^2 + D' \cdot I_-^2$.
+Despreciando la caída de tensión en el SRD, las expresiones de estas corrientes son
+
+\begin{equation}
+    \begin{aligned}
+        I_+ &= \frac{V_+}{R_s} \\
+        I_- &= \frac{V_-}{R_s} \\
+    \end{aligned}
+\end{equation}
+
+Tomando como tensión máxima \qty{10}{\volt}, tenemos que la corriente máxima será
+$I_M = \qty{200}{\milli\ampere}$.
+
+\begin{equation}
+    \begin{aligned}
+        I_{RMS}^2 &< D \cdot \left( \frac{V_+}{R_s} \right) ^2 + D' \cdot
+        \left( \frac{V_-}{R_s} \right) ^2 \\
+        I_{RMS}^2 &< D \cdot \left( \frac{\qty{10}{\volt}}{\qty{50}{\ohm}} \right) ^2 + D' \cdot
+        \left( \frac{\qty{10}{\volt}}{\qty{50}{\ohm}} \right) ^2 \\
+        I_{RMS}^2 &< \left( \frac{\qty{10}{\volt}}{\qty{50}{\ohm}} \right) ^2  \\
+        I_{RMS} &< \qty{200}{\milli\ampere} \\
+    \end{aligned}
+\end{equation}
+
+En cuanto a la corriente de la rama de salida, esta está será igual a
+
+\begin{equation}
+    i_o(t) = \frac{v_o(t)}{R_L}
+\end{equation}
+
+Podemos acotar el consumo tomando un pulso de peor caso de \qty{3}{\volt} de
+amplitud y \qty{0.5}{\nano\second} de duración.
+
+\begin{equation}
+    \begin{aligned}
+        V_{RMS}^2 &< \frac{1}{T} \cdot \int_{t_0}^{t_0+T} v(t)^2dt =
+        \frac{1}{\qty{100}{\nano\second}} \cdot \qty{0.5}{\nano\second} \cdot
+        \left( \cdot \qty{3}{\volt} \right )^2 \\
+        V_{RMS} &< \frac{\qty{3}{\volt}}{\sqrt{200}} \\
+        V_{RMS} &< \qty{213}{\milli\volt}
+    \end{aligned}
+\end{equation}
+
+En la impedancia de salida $Z_o$, esto resulta en una disipación de potencia
+
+\begin{equation}
+    \begin{aligned}
+        P_{o} &= \frac{V_{RMS}^2}{R_o} \\
+        P_{o} &= \frac{ \qty{213}{\milli\volt}^2}{ \qty{50}{\ohm}} \\
+        P_{o} &= \qty{0.3}{\milli\watt} \\
+    \end{aligned}
+\end{equation}
+
+Que representa una potencia prácticamente despreciable.
+
+En el caso del diodo Schottky, asumiendo una tensión de encendido constante
+durante la duración del pulso y de un valor igual a \qty{650}{\milli\volt},
+tenemos
+
+\begin{equation}
+    \begin{aligned}
+        P_{D} &< \frac{1}{T} \cdot \int_{t_0}^{t_0+T} v(t) \cdot i(t) dt =
+        \frac{1}{T} \cdot \int_{t_0}^{t_0+T} V_D \cdot \frac{v_o(t)}{R_o} dt \\
+        P_{D} &< \frac{1}{\qty{100}{\nano\second}} \cdot \left( \qty{0.5}{\nano\second} \cdot
+        \qty{650}{\milli\volt} \cdot \frac{\qty{3}{\volt}}{
+            \qty{50}{\ohm}} \right) \\
+        P_{D} &< \qty{0.2}{\milli\watt} \\
+    \end{aligned}
+\end{equation}
+
+La máxima potencia especificada por el fabricante es de \qty{50}{\milli\watt},
+por lo que nos encontramos muy por debajo del límite.
 
 \section{Diseño del \textit{driver}}
 
@@ -1105,8 +1205,8 @@ fuentes de disipación, tenemos
 
 \begin{equation}
     \begin{aligned}
-        P_{M} = I_M^2 \cdot R_o &= \frac{T_{jM}-T_A}{\theta_{jA}} \\
-        I_M &= \sqrt{\frac{T_{jM}-T_A}{\theta_{jA}}} \cdot \frac{1}{R_o} \\
+        P_{M} = I_{RMS_{max}}^2 \cdot R_o &= \frac{T_{jM}-T_A}{\theta_{jA}} \\
+        I_{RMS_{max}} &= \sqrt{\frac{T_{jM}-T_A}{\theta_{jA}}} \cdot \frac{1}{R_o} \\
     \end{aligned}
 \end{equation}
 
@@ -1118,10 +1218,10 @@ Entonces tenemos
 
 \begin{equation}
     \begin{aligned}
-        I_M &= \sqrt{\frac{ \qty{125}{\celsius}-
+        I_{RMS_{max}} &= \sqrt{\frac{ \qty{125}{\celsius}-
         \qty{25}{\celsius}}{\qty[per-mode=fraction]{51.2}{\celsius\per\watt}
         \cdot 1.5 }} \cdot \frac{1}{ \qty{4.78}{\ohm} } \\
-        I_M &= \qty{240}{\milli\ampere}
+        I_{RMS_{max}} &= \qty{240}{\milli\ampere}
     \end{aligned}
 \end{equation}
 
