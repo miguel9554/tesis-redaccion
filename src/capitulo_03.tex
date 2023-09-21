@@ -348,6 +348,9 @@ onda de entrada, estos no serán transmitidos a la carga $R_L$ debido a la acci�
 de rectificación. En cuanto al sobretiro, también será filtrado debido al
 bloqueo de de corriente en sentido negativo.
 
+\textcolor{red}{Mencionar lo de las oscilaciones, citar algún paper q diga q
+ocurran, aunque no las veamos en las simulaciones actuales}.
+
 Para un correcto funcionamiento del generador de pulsos, es fundamental que el
 rectificador sea lo suficientemente rápido como para transmitir el pulso
 ultracorto sin degradación. Por esta razón se utiliza un diodo Schottky.
@@ -1558,6 +1561,20 @@ En las capas inferior e intermedia 2 se usaron de plano de tierra,
 
 Se utilizaron componentes pequeños. Se pusieron muchas vias. Se hizo un
 tappering con los conectores SMA?
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/layout_simulation_sch.png}
+    \caption{Esquemático de simulación de layout}
+    \label{fig:layout_simulation_sch}
+\end{figure}
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/layout_simulation_result.png}
+    \caption{Resultado de simulación layout}
+    \label{fig:layout_simulation_result}
+\end{figure}
 
 \subsection{Layout del driver}
 
