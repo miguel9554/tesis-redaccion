@@ -144,10 +144,42 @@ El caso de interés para el circuito generador de pulsos, es el del \textit{stub
 cortocircuitado, ya que la reflexión de señal con fase opuesta, permite generar
 un pulso en base a una forma de onda creciente o decreciente.
 
-\begin{figure}[tbp]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/placeholder.jpg}
-    \caption{Reflexiones en un \textit{stub} cortocircuitado.}
+    \begin{tikzpicture}
+
+        \def\Td{1}
+
+        \def\step(#1){max(erf(#1),0)}
+        \def\reflectedStep(#1){-\step(#1-\Td)}
+        \def\pulse(#1){\step(#1)+\reflectedStep(#1)}
+
+        \begin{axis}[
+        xlabel=$t$,
+        ylabel=$V$,
+        xmin=-3, xmax=3,
+        ymin=-1.2, ymax=1.2,
+        samples=400,
+        axis lines=center,
+        xtick={\Td},
+        ytick={0.84270079295},
+        xticklabels={$T_d$},
+        yticklabels={$A$},
+        clip=false,
+        legend pos=outer north east,
+        ]
+
+
+        \addplot[blue, thick, domain=-3:3] {\step(x)};
+        \addlegendentry{Escalón}
+        \addplot[red, thick, domain=-3:3] {\reflectedStep(x)};
+        \addlegendentry{Reflexión}
+        \addplot[green, thick, domain=-3:3] {\pulse(x)};
+        \addlegendentry{Pulso}
+
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Generación de pulsos en base a reflexiones}
     \label{fig:stub_time_domain_waveforms}
 \end{figure}
 
@@ -1470,6 +1502,27 @@ obtener el largo necesario para obtener un retardo de \qty{60}{\pico\second}.
         L &= \qty{10.85}{\milli\meter}
     \end{aligned}
 \end{equation}
+
+Con los parámetros de la línea obtenidos, se realiza una simulación del
+generador, reemplazando la línea ideal por una real. En la figura
+\ref{fig:real_stub_simulation_sch} se observa el esquemático simulado. En la
+figura \ref{fig:real_stub_simulation_result} puede observarse el resultado. El
+pulso obtenido tiene una amplitud de \qty{352}{\milli\volt} y una duración de
+\qty{140}{\pico\second}.
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/real_stub_simulation_sch.png}
+    \caption{Esquemático de simulación con \textit{stub} real}
+    \label{fig:real_stub_simulation_sch}
+\end{figure}
+
+\begin{figure}[tbp]
+    \centering
+    \includegraphics[width=\textwidth]{images/real_stub_simulation_result.png}
+    \caption{Resultado de simulación con \textit{stub} real}
+    \label{fig:real_stub_simulation_result}
+\end{figure}
 
 \subsubsection{Layout}
 
