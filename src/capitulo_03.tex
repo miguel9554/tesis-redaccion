@@ -1,29 +1,30 @@
 \chapter{Diseño}
 
-\section{SRD como afilador de flanco}
+\section{SRD como acelerador de flanco}
 \label{sec:srd_sharpener}
 
-En la sección \textcolor{red}{AGREGAR REF\ref{TODO}} fue explicado como un diodo
-\textit{SRD} funciona como afilador de flanco.
-
-En la figura \ref{fig:srd_sharpener} puede observarse un circuito que demuestra
+Como fuese explicado anteriormente, el diodo SRD puede utilizarse para acelerar
+flancos. Esta funcionalidad combinada con un stub permite generar pulsos de gran
+velocidad de crecimiento y ancho controlable. Para explicar el funcionamiento
+del generador, empezaremos explicando el funcionamiento del circuito acelerador
+de flancos. En la figura \ref{fig:srd_sharpener} puede observarse un circuito que demuestra
 el funcionamiento.
 
 \begin{figure}
   \centering
     \includegraphics[width=0.6\textwidth]{images/srd_sharpener_circuit.png}
-    \caption{Circuito afilador de flanco con SRD}
+    \caption{Circuito acelerador de flanco con SRD}
     \label{fig:srd_sharpener}
 \end{figure}
 
 El circuito está compuesto por un generador de cuadrada lento, con tiempos de
 crecimiento y decrecimiento de \qty{5}{\nano\second}, en serie una resistencia
-de fuente $R_s$ de valor \qty{50}{\ohm}. La carga del circuito es la resistencia
-$R_L$ de \qty{50}{\ohm}.
+de fuente $R_s$ de valor \qty{50}{\ohm} y un diodo SRD. La carga del circuito es
+la resistencia $R_L$ de \qty{50}{\ohm}.
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/srd_sharpener_result.png}
+    \includegraphics[width=\textwidth]{images/srd_sharpener_result.png}
     \caption{Resultado de simulación.}
     \label{fig:srd_sharpener_result}
 \end{figure}
@@ -31,7 +32,7 @@ $R_L$ de \qty{50}{\ohm}.
 En la figura \ref{fig:srd_sharpener_result} se observa el resultado de la
 simulación. Vemos que, hasta aproximadamente \qty{85}{\nano\second}, la señal de
 salida $V_o$ es igual a la señal de entrada, afectada por el divisor entre $R_L$
-y $R_s$, $\frac{R_L}{R_L+R_s}$. Durante este tiempo, el \textit{SRD} presenta
+y $R_s$, $\frac{R_L}{R_L+R_s} = 0.5$. Durante este tiempo, el \textit{SRD} presenta
 una baja impedancia. En la porción positiva de la señal de entrada $V_p$, esto
 es coincidente con un diodo usual, ya que el mismo se encuentra polarizado en
 directa. En lo que destaca el \textit{SRD} de un diodo usual, es que luego de que la
@@ -40,39 +41,30 @@ se debe al gran tiempo de vida de sus portadores minoritarios, lo que requiere
 un tiempo apreciable para descargarlos y pasar al estado de alta impedancia.
 
 Se observa en la forma de onda de $V_o$ que esta transición se da alrededor de
-\qty{85}{\nano\second}, done la tensión de salida cae abruptamente a $0$. En la
-figura \ref{fig:srd_sharpener_result} puede observarse el comportamiento
-de la corriente. Se observa la misma caída abrupta en los
+\qty{85}{\nano\second}, donde la tensión de salida cae abruptamente a $0$. En la
+forma de onda de la corriente se observa la misma caída abrupta en los
 \qty{85}{\nano\second}, y una inversión en el signo de la corriente con la
 inversión en el signo de la cuadrada de entrada.
 
-\begin{figure}[tbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/srd_sharpener_result_rise_time.png}
-    \caption{Tiempo de crecimiento.}
-    \label{fig:srd_sharpener_result_rise_time}
-\end{figure}
-
 Llamaremos corriente de inyección de carga $I_F$ a la corriente que circula por
 el \textit{SRD} con sentido positivo. Esta corriente determina la carga
-almacenada en el mismo, y ambas se relacionan mediante \cite{an918},
+$Q_F$ almacenada en el mismo, y ambas se relacionan mediante \cite{an918}
 \cite{moll1969}
 
 \begin{equation}
     Q_F = I_F \cdot \tau \cdot \left( 1 - e^{-t_F/\tau}\right)
 \end{equation}
 
-Para el circuito presentado, la corriente $I_F$ estará dada por
+Para el circuito presentado, siendo $V_h$ el valor de la tensión positiva de
+la señal cuadrada de entrada, la corriente $I_F$ estará dada por
 
 \begin{equation}
     I_{F} = \frac{V_h}{R_s+R_L}
 \end{equation}
 
-con $V_h$ el valor de la tensión positiva de la señal cuadrada de entrada.
-
-Para la corriente de extracción de carga $I_R$, que es la corriente que extrae
-carga durante el tiempo en el que el \textit{SRD} se encuentra en un estado de
-baja impedancia y la corriente que circula es negativa, tenemos la siguiente
+Para la corriente de extracción de carga $I_R$, que es la corriente existente
+durante la porción negativa de la señal cuadrada de entrada en la que el
+\textit{SRD} se encuentra en un estado de baja impedancia, tenemos la siguiente
 expresión
 
 \begin{equation}
@@ -81,7 +73,18 @@ expresión
 
 con $V_l$ el valor de la tensión negativa de la señal cuadrada de entrada.
 
-En la figura \ref{fig:srd_sharpener_result_rise_time}, puede observarse el
+El tiempo de descarga del diodo $t_s$ es el tiempo que tarda la corriente
+negativa en remover todas las cargas almacenadas durante la porción positiva.
+Por definición, es el tiempo entre el cambio de signo de la corriente en el
+diodo, y la caída a $0$ de la corriente. Este tiempo se relaciona con las
+corrientes $I_F$ e $I_R$ y el tiempo de vida de los portadores minoritarios
+$\tau$ mediante \cite{an918}
+
+\begin{equation}
+    \frac{t_s}{\tau} = \ln \left( 1 + \frac{I_F}{I_R} \right)
+\end{equation}
+
+En la figura \ref{fig:srd_sharpener_result}, puede observarse el
 tiempo de crecimiento del escalón generado con el apagado del \textit{SRD}. Se
 toma el tiempo de crecimiento \qty{10}{\percent}-\qty{90}{\percent}. Siendo que
 el escalón de tensión se da entre \qty{-2.5}{\volt} y \qty{0}{\volt}, tenemos
@@ -123,6 +126,11 @@ vista desde los nodos del capacitor.
 \label{sec:generador_pulsos_stub}
 
 \subsection{Principios del \textit{stub}}
+
+Agregando una linea de transmisión terminada en tierra en paralelo con el
+acelerador de flancos descripto anteriormente, es posible formar pulsos con un
+tiempo de crecimiento igual al tiempo de crecimiento del escalón generado por la
+apertura del SRD, y un ancho proporcional al largo de la línea de transmisión.
 
 Un \textit{stub} consiste de una línea de transmsión conectada en paralelo al
 camino de la señal. Su efecto sobre la señal dependerá de su impedancia
@@ -184,20 +192,20 @@ un pulso en base a una forma de onda creciente o decreciente.
 \end{figure}
 
 En la figura \ref{fig:stub_time_domain_waveforms} se observa el principio de
-funcionamiento. Se observa un pulso de entrada, formado por una forma de onda de
-tipo escalón, en nuestro caso este escalón será el mismo que en la figura
-\ref{srd_sharpener_result_rise_time}. Este escalón se ve reflejado con polaridad
-opuesta, y se suma al escalón de entrada.
+funcionamiento del generador de pulsos en base a un stub. En línea azul, se
+observa un escalón que actúa como señal de entrada, en nuestro caso será el
+mismo que en la figura \ref{fig:srd_sharpener_result}. Por acción del stub, este
+escalón se ve reflejado con polaridad opuesta, arribando al nodo de entrada con
+un retraso $T_d$. Esta reflexión se suma al escalón de entrada, resultando en la
+formación de un pulso. El ancho del pulso dependerá de $T_d$ y de la velocidad
+de crecimiento del escalón de entrada. De esta manera, se puede controlar el
+ancho del pulso ajustando el largo de la línea, que determina el valor de $T_d$.
 
-Dado el tiempo de propagación de la línea de transmisión $T$, vemos que el
-tiempo que tarda el pulso de entrada en reflejarse es $2*T$, el tiempo de un
-camino de ida y vuelta. Dado que el pulso se forma cuando vuelve la componente
-reflejada, vemos que el ancho de pulso estará dado por $2*T$. De esta forma, la
-duración temporal del pulso y, por lo tanto, el ancho de banda del sistema,
-estará dado por la longitud $L$ del \textit{stub}.
-
-El tiempo de propagación $T$ está dado por la velocidad de propagación en la
-línea de transmisión $v_p$ y el largo de la línea $L$.
+Definiendo al tiempo de propagación de la línea de transmisión $T$, vemos que el
+tiempo $T_d$ que demora el pulso de entrada en reflejarse es $2*T$, el tiempo de
+un camino de ida y vuelta.  El tiempo de propagación $T$ está dado por la
+velocidad de propagación en la línea de transmisión $v_p$ y el largo de la línea
+$L$.
 
 En un medio con permisividad relativa $\kappa$ y permeabilidad magnética
 relativa unitaria, la velocidad de propagación está dada por \cite{pozar2011}
@@ -214,49 +222,58 @@ mediante métodos numéricos iterativos. El punto a resaltar es que, dada una
 determinada estructura de línea de transmisión y sus materiales, se puede
 considerar a $\kappa_{eff}$ una constante del circuito.
 
-Es interesante notar que $\kappa_{eff}$ es una función del corte transversal de
-la línea de transmisión, y no de su dimensión longitudinal. De esta manera,
-$\kappa_{eff}$ es independiente del largo $L$ de la línea \cite{pozar2011}.
+Es interesante notar que para una línea de transmisión con modo de propagación
+TEM, $\kappa_{eff}$ es una función del corte transversal de la línea de
+transmisión, y no de su dimensión longitudinal. De esta manera, $\kappa_{eff}$
+es independiente del largo $L$ de la línea \cite{pozar2011}.
 
-Entonces, el ancho de pulso $T_p$ está dado por
+Entonces, el tiempo $T_d$ estará dado por
 
 \begin{equation}
     T_p = 2 \cdot T = 2 \cdot \frac{L}{v_p} =2 \cdot \sqrt{\kappa_{eff}} \cdot \frac{L}{c_0}
 \end{equation}
 
-De esta forma, se puede diseñar el largo de línea $L$ para obtener un ancho de
-pulso $T_p$ deseado
+De esta forma, se puede diseñar el largo de línea $L$ para obtener un tiempo
+$T_d$ deseado
 
 \begin{equation}
     \label{eq:stub_length_vs_delay}
     L = \frac{T_p}{2} \cdot \frac{c_0}{\sqrt{\kappa_{eff}}}
 \end{equation}
 
-De esta manera, el largo $L$ queda determinado por el ancho de pulso deseado
-$T_p$ y la constante de propagación de la línea de transmisión utilizada
-$\kappa_{eff}$.
+El tiempo $T_d$ es el tiempo en el que el pulso formado alcanza su valor máximo
+$A$. El ancho del pulso $T_p$ dependerá de $T_d$ y también del tiempo de
+crecimiento $t_r$ de la señal de entrada. La forma del pulso estará dada por la
+relación entre $t_r$ y $T_d$. Para casos en los que $T_d \approx t_r$, la forma
+del pulso será aproximadamente gaussiana y podemos tomar la aproximación
+
+\begin{equation}
+    T_p \approx 2 \cdot T_d
+\end{equation}
+
+Donde la aproximación indica que el ancho del pulso $T_p$ tendrá un orden de
+magnitud $2 \cdot T$. Para una relación precisa entre las variables, es
+necesario contemplar el tiempo de crecimiento $t_r$.
 
 \subsection{Generador de pulsos SRD+\textit{stub}}
 
-Agregando un \textit{stub} cortocircuitado al afilador de flancos SRD
-descripto anteriormente, podemos formar un generador de pulsos ultracortos. El
-SRD genera un flanco rápido, y este flanco es convertido en un pulso
-mediante la reflexión con fase opuesta en el \textit{stub}. 
+A continuación se analizará el agregado de un stub al acelerador de flancos
+basado en SRD descripto anteriormente. El SRD generará el flanco rápido, el stub
+generará el pulso en base a este flanco de entrada, determinando el ancho del
+pulso con su longitud. La amplitud del pulso estará dado por la amplitud de la
+señal cuadrada de entrada, y por la relación entra la impedancia de carga $Z_L$
+y la del generador $Z_g$.
 
-El ancho de pulso es controlado por el largo del \textit{stub} como fuese
-explicado anteriormente. La amplitud por la amplitud de la fuente, la relación
-entra la impedancia de carga $Z_L$ y la del generador $Z_g$ y por el largo del
-stub.
-
-Como fuese explicado en la sección \ref{sec:srd_sharpener}, el escalón de tensión generado en el SRD tiene una magnitud dada por
+Como fuese explicado en la sección \ref{sec:srd_sharpener}, el escalón de
+tensión generado en el SRD tiene una magnitud dada por
 
 \begin{equation}
     \Delta V = V_l \cdot \frac{R_L}{R_L+R_s}
 \end{equation}
 
-El ancho del pulso, estará dado por el valor de este escalón en el instante en
+La amplitud del pulso $A$ estará dada por el valor de este escalón en el instante en
 el que el pulso reflejado se recombina, como puede observarse en la figura
-\textcolor{red}{FIGURA MOSTRANDO REFLEXIÓN STUB}. Si asumimos que el escalón
+\ref{fig:stub_time_domain_waveforms}. Si asumimos que el escalón
 crece como un sistema de primer orden con constante de tiempo $\tau$, el valor
 del escalón en función del tiempo es
 
@@ -264,21 +281,21 @@ del escalón en función del tiempo es
   V(t) = \Delta V \left( 1-e^{-\frac{t}{\tau}}\right)
 \end{equation}
 
-Siendo el tiempo que tarda el pulso en reflejarse ida y vuelta $2T$ o $T_p$, la
+Siendo el tiempo que tarda el pulso en reflejarse ida y vuelta $2T$ o $T_d$, la
 amplitud del pulso estará dada por
 
 \begin{equation}
     \label{eq:A_p}
-    A_p = V(2T) = V_l \cdot \frac{R_L}{R_L+R_s} \left( 1-e^{-\frac{2T}{\tau}}\right)
+    A_p = V(T_d) = V_l \cdot \frac{R_L}{R_L+R_s} \left( 1-e^{-\frac{T_d}{\tau}}\right)
 \end{equation}
 
 Vemos que $\Delta V$ es el máximo valor que puede alcanzar el pulso, siendo la
-relación $\frac{2T}{\tau}$ la que determina que porcentaje de este valor tomará
-el pulso. Para $ \tau \ll T $, será $e^{-\frac{2T}{\tau}} \approx 1$, y por lo
+relación $\frac{T_d}{\tau}$ la que determina qué porcentaje de este valor tomará
+el pulso. Para $ \tau \ll T_d $, será $e^{-\frac{T_d}{\tau}} \approx 1$, y por lo
 tanto $A_p \approx 0$. Este es el mismo resultado que intuitivamente se
 obtendría, que para señales con una variación temporal $\tau$ mucho menor al
-tiempo de propagación en el \textit{stub} $T$, la señal será filtrada por el
-efecto de puesto a tierra.
+tiempo de propagación en el \textit{stub} $T_d$, la señal será filtrada por el
+efecto de puesta a tierra.
 
 Para el caso de la señal de escalón generada por el SRD, es fácil obtener un
 tiempo de crecimiento del orden de los cientos de picosegundos, por lo que su
@@ -287,11 +304,11 @@ el flanco, mayor amplitud.
 
 En la figura \ref{fig:stub_generator_circuit} podemos observar un esquemático
 del generador de pulsos basado en SRD y \textit{stub}. La fuente es simétrica,
-con amplitudes de \qty{\pm 5}{\volt}. La impedancia de fuente $Z_g$ se encuentra
-perfectamente adaptada a la de carga $Z_L$, siendo ambas de \qty{50}{\ohm}. La
-línea de transmisión es ideal, caracterizada únicamente por su impedancia
-característica, \qty{50}{\ohm} en este caso, y su retardo de propagación,
-\qty{60}{\pico\second} en este caso.
+con amplitudes de \qty{\pm 2.5}{\volt}. La impedancia de fuente $Z_g$ se
+encuentra perfectamente adaptada a la de carga $Z_L$, siendo ambas de
+\qty{50}{\ohm}. La línea de transmisión es ideal, caracterizada únicamente por
+su impedancia característica, \qty{50}{\ohm} en este caso, y su retardo de
+propagación, \qty{60}{\pico\second} en este caso.
 
 \begin{figure}[tbp]
     \centering
@@ -319,14 +336,14 @@ Es interesante notar que en este caso, los valores de la corriente están dados
 por $\frac{V_p}{R_s}$ y no $\frac{V_p}{R_s+R_L}$ como en la sección
 \ref{sec:srd_sharpener}. Esto se debe a que el \textit{stub} actua como un
 cortocircuito sobre $R_L$, anulando su impedancia. Es importante notar que,
-entonces, $R_S$ tiene la función de limitación de corriente durante las etapas
+entonces, $R_S$ tiene la función de limitación de corriente durante la etapa
 de conducción del SRD. De ser $0$ esta impedancia, la corriente sería infinita
 (en rigor, se vería limitada únicamente por la resistencia serie del SRD)
 
-En la figura \ref{fig:stub_generator_sim_result} se observa un zoom sobre el
-pulso obtenido. Tiene una amplitud de \qty{1.728}{\volt}, y una duración
-de \qty{180}{\pico\second}. Se observa que el pulso presenta un sobretiro negativo, una no idealidad no
-contemplada hasta ahora en el modelo presentado.
+En la figura \ref{fig:stub_generator_sim_result} también se observa un zoom sobre el
+pulso obtenido. Tiene una amplitud de \qty{847}{\milli\volt} y una duración de
+\qty{180}{\pico\second}. Se observa que el pulso presenta un sobrepico negativo,
+una no idealidad no contemplada hasta ahora en el modelo presentado.
 
 \begin{figure}[tbp]
     \centering
@@ -341,15 +358,12 @@ generado}.
 \section{Diseño final del \textit{pulser}}
 
 Para compensar tanto las transmisiones de los flancos de la fuente de entrada y
-el sobretiro negativo observado, se agrega al generador un diodo rectificador en
+el sobrepico negativo observado, se agrega al generador un diodo rectificador en
 serie con la resistencia de carga $R_L$. Siendo la tensión de encendido del
 diodo mayor a la amplitud de los pulsos generados por las transiciones de la
 onda de entrada, estos no serán transmitidos a la carga $R_L$ debido a la acción
-de rectificación. En cuanto al sobretiro, también será filtrado debido al
+de rectificación. En cuanto al sobrepico, también será filtrado debido al
 bloqueo de de corriente en sentido negativo.
-
-\textcolor{red}{Mencionar lo de las oscilaciones, citar algún paper q diga q
-ocurran, aunque no las veamos en las simulaciones actuales}.
 
 Para un correcto funcionamiento del generador de pulsos, es fundamental que el
 rectificador sea lo suficientemente rápido como para transmitir el pulso
@@ -363,24 +377,22 @@ Para esta función de rectificación, se utilizó un diodo Schottky MA4E2502H
 de microondas posee una muy baja capacidad total, del orden de
 \qty{0.1}{\pico\farad}, y capacidad e inductancia parásitas extremadamente bajas
 debido a su encapsulado. Esto permite trabajar en el ancho de banda necesario.
-Además el encapsulado es de montaje superficial, por lo que es fácilmente
+Además, el encapsulado es de montaje superficial por lo que es fácilmente
 integrable. Su tensión de encendido es de \qty{650}{\milli\volt}, por lo que la
 amplitud perdida se encontrará en ese orden.
-
-\subsection{Simulaciones}
 
 En la figura \ref{fig:pulser_w_schottky_sch} se observa un esquemático del
 generador de pulsos con el rectificador incluido. En la figura
 \ref{fig:pulser_w_schottky_sim_result} se observa el resultado de la
 simulación. Para este caso, en la salida se encuentra únicamente el pulso
-principal, habiéndose anulados los pulsos generados por las transiciones de la
+principal, habiéndose bloqueado los pulsos generados por las transiciones de la
 señal de entrada.
 
-En la figura \ref{fig:schottky_generator_result_pulse} se observa el pulso
+En la figura \ref{fig:pulser_w_schottky_sim_result} se observa el pulso
 simulado. Con respecto al de la simulación sin rectificador, figura
 \ref{fig:stub_generator_sim_result}, se observa una perdida en la amplitud pico de
 \qty{400}{\milli\volt}, dada por la tensión de encendido del Schottky
-utilizado, y una anulación del sobretiro negativo.
+utilizado, y una anulación del sobrepico negativo.
 
 \begin{figure}[tbp]
     \centering
@@ -400,7 +412,7 @@ utilizado, y una anulación del sobretiro negativo.
 \label{sec:pulser_power}
 
 El pulser final, que puede observarse en la captura del esquemático simulado en
-la figura \ref{fig:stub_generator_circuit}, está compuesto por 3 componentes: la
+la figura \ref{fig:pulser_w_schottky_sch}, está compuesto por 3 componentes: la
 resistencia serie $R_s$, el diodo SRD y el diodo Schottky. Calcularemos el
 consumo de potencia de los 3.
 
@@ -419,7 +431,8 @@ Para un período de la señal cuadrada de entrada, podemos identificar 3 seccion
 
 La corriente en el SRD y $R_s$ durante un período de la señal cuadrada tendrá 3
 valores: $I_+$ en el período positivo, $I_-$ en el de conducción negativa y $0$
-en la sección de no conducción. La corriente RMS es
+en la sección de no conducción. Definiendo a $D$ como el ciclo de trabajo de la
+señal de entrada y al ciclo complementario $D'=1-D$, la corriente RMS es
 
 \begin{equation}
     \begin{aligned}
@@ -441,7 +454,7 @@ Despreciando la caída de tensión en el SRD, las expresiones de estas corriente
 \end{equation}
 
 Tomando como tensión máxima \qty{10}{\volt}, tenemos que la corriente máxima será
-$I_M = \qty{200}{\milli\ampere}$.
+$I_M = \frac{ \qty{10}{\volt}}{ \qty{50}{\ohm}} = \qty{200}{\milli\ampere}$.
 
 \begin{equation}
     \begin{aligned}
@@ -505,30 +518,44 @@ por lo que nos encontramos muy por debajo del límite.
 
 \section{Diseño del \textit{driver}}
 
-Dado que uno de los objetivos del trabajo es un generador de pulsos que pueda
-ser controlado por la salida digital de un sistema embebido, y dado que estas
-salidas son en la mayoría de los casos unipolares y de baja capacidad de carga,
-es necesario incluir en el prototipo una etapa \textit{driver}.
+El pulser desarrollado permite generar pulsos ultracortos con un circuito
+extremadamente simple. Como fuese explicado anteriormente, la amplitud del pulso
+generado depende linealmente de la amplitud de la señal cuadrada de entrada, y
+el consumo de corriente del pulser también es lineal con la amplitud. Este
+consumo es considerable, ya que es todo el consumo de polarización del SRD. En
+cuanto a los niveles de tensión de la señal cuadarada, es necesario que sean
+positivo y negativo para poder polarizar en directa e inversa al SRD en los
+ciclos de la señal.
 
-La función de esta etapa es, en base a un pulso digital de entrada de control, y
+Estos requerimientos de carga, amplitud y polaridad vuelven impracticable conectar
+directamente la salida digital de un sistema embebido a la entrada del pulser.
+Estas salidas suelen tener poca capacidad de carga, y niveles de tensión igual a
+$0$ y \qty{3.3}{\volt} o \qty{5}{\volt} en el mejor de los casos.
+
+Dado que uno de los objetivos del trabajo es un generador de pulsos que pueda
+ser directamente controlado por la salida digital de un sistema embebido, y
+dadas los requerimientos sobre la señal de entrada del pulser, es necesario
+desarrollar una etapa driver que permita con una señal unipolar y de baja
+capacidad de carga, controlar la generación de pulsos.
+
+La función de esta etapa es, en base a un pulso digital de entrada de control y
 una fuente de alimentación continua, generar el pulso bipolar necesario para el
-funcionamiento del \textit{pulser}. Este pulso bipolar tendrá un ciclo de
-trabajo y un período dados por el ciclo de trabajo y el período del pulso
-unipolar de entrada. Es necesario también que el \textit{driver} presente una
-baja carga al pulso unipolar.
+funcionamiento del \textit{pulser}. Tanto el período como ciclo de trabajo de
+este pulso bipolar serán iguales a los del pulso unipolar de entrada. Es
+necesario también que el \textit{driver} presente una baja carga a la entrada.
 
 En la figura \ref{fig:driver_block_diagram} se observa un diagrama en bloques
 del driver propuesto. El mismo está compuesto por dos componentes principales
 que brindan dos funciones diferenciadas, la llave y el capacitor. A la entrada
-es excitado por la señal digital de control, y a la salida tiene una carga
-$Z_L$. La carga en este caso será el pulser, por lo tanto será una carga no
-lineal, ya que como se mostró en secciones anteriores, la corriente que consume
-tiene una abrupta caída a 0 cuando se abre el SRD.
+es excitado por la señal digital de control, y a la salida está cargado por una
+impedancia $Z_L$. La carga en este caso será el pulser, por lo tanto será una
+carga no lineal, ya que como se mostró en secciones anteriores, la corriente que
+consume tiene una abrupta caída a 0 en el instante que se genera el pulso.
 
 \begin{figure}[tbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/driver.drawio.png}
-    \caption{Diagrama en bloques del driver}
+    \includegraphics[width=0.5\textwidth]{images/driver.drawio.png}
+    \caption{Diagrama en bloques del driver propuesto}
     \label{fig:driver_block_diagram}
 \end{figure}
 
@@ -537,10 +564,10 @@ esta manera, la corriente que consume la carga es entregada por la fuente y no
 por la señal de control digital. A la salida de la llave se generará una señal
 cuadrada unipolar, pero a diferencia de la entrada, esta conmutará entre
 $V_{dd}$ y tierra, mientras que a la entrada se conmuta entre $V_{dig}$ y
-tierra. De esta manera, la llave logra presentarle una carga baja y constante a
+tierra, siendo $V_{dig}$ la tensión de alimentación del sistema digital de
+control. De esta manera, la llave logra presentarle una carga baja y constante a
 la salida digital, y amplifica la conmutación a todo el rango disponible con la
-fuente de alimentación. Esta es una aproximación ideal, en realidad será todo el
-rango de la fuente de alimentación menos la caída que tenga el bloque.
+fuente de alimentación.
 
 A la salida de la llave tenemos entonces una señal cuadrada unipolar, con
 amplitud pico a pico igual a $V_{dd}$, es decir, toda la amplitud disponible de
@@ -553,20 +580,15 @@ implementación de cada uno de estos bloques.
 
 \subsection{Filtro pasa altos}
 
-Sabemos que un pulso cuadrado unipolar de período $T$ tendrá un espectro dado
-por una componente de continua con el valor medio $V_{m}$, y múltiples
-harmónicos de $T$, cada uno con una amplitud que decae con $\frac{1}{n}$.
-\textcolor{red}{agregar una referencia que banque esto}.
-
-Entonces, podemos pensar al pulso unipolar como la suma de un pulso bipolar de
-valor medio 0, y una constante con valor igual al valor medio del pulso
-unipolar. Entonces, podemos obtener al pulso bipolar restándole al unipolar su
-valor medio.
-
-Teniendo en cuenta que el valor medio es la componente de DC del pulso, podemos
-lograr este resultado pasando el pulso unipolar por un filtro pasa altos. El ancho
-de banda de este filtro debe ser tal que filtre la componente de continua y no
-distorsione las componentes alternas, que se encuentran a partir de $T$.
+El objetivo del filtro pasa altos es convertir el pulso unipolar en uno bipolar.
+Esta conversión se hará restándole al pulso unipolar su valor medio $V_m$.
+Estando el espectro de un pulso cuadrado de período $T$ compuesto por una
+componente de continua con el valor medio $V_{m}$ y múltiples harmónicos de $T$,
+cada uno con una amplitud que decae con $\frac{1}{n}$ \cite{hsu1970analisis},
+podemos pensar esta operación de resta de valor medio como un filtrado pasa
+altos.  El ancho de banda de este filtro debe ser tal que filtre la componente
+de continua y no distorsione las componentes alternas, que se encuentran a
+partir de $T$.
 
 Sabemos que un filtro pasa altos de primer orden con frecuencia de corte $f_c$
 tiene una característica de magnitud que presenta atenuación desde continua hasta
@@ -604,7 +626,11 @@ una impedancia en ese mismo orden de valores. De esta manera,
 La capacidad debe estar por arriba de \qty{3.2}{\nano\farad}, valores fácilmente
 obtenibles en los tamaños de encapsulados objetivo.
 
-Para un valor $C$ de capacidad por encima de los \qty{3.2}{\nano\farad}, la tensión sobre el capacitor tendrá una forma triangular, con una amplitud pico a pico inversamente proporcional al valor de capacidad. Para minimizar la amplitud de esta señal triangular, usaremos un valor muy por encima del límite de \qty{3.2}{\nano\farad}, siendo el valor elegido de \qty{100}{\nano\farad}.
+Para un valor $C$ de capacidad por encima de los \qty{3.2}{\nano\farad}, la
+tensión sobre el capacitor tendrá una forma triangular, con una amplitud pico a
+pico inversamente proporcional al valor de capacidad. Para minimizar la amplitud
+de esta señal triangular, usaremos un valor muy por encima del límite de
+\qty{3.2}{\nano\farad}, siendo el valor elegido de \qty{100}{\nano\farad}.
 
 En la siguiente sección, asumiendo un filtrado ideal, es decir, donde se filtra
 por completo el valor medio $V_m$ y se transmiten los harmónicos sin distorsión,
@@ -645,20 +671,19 @@ Entonces, reconocemos que $V_-$ es $V_l$ en la ecuación \ref{eq:A_p}.
     A_p = V_{dd} \cdot D \cdot \frac{R_L}{R_L+R_s} \left( 1-e^{-\frac{2T}{\tau}}\right)
 \end{equation}
 
-Entonces, tanto el valor absoluto de $V_{dd}$ como el valor de $D$ incrementan
-linealmente la amplitud del pulso a la salida. Aumentar $V_{dd}$ tiene como
-límite la conducción de corriente máxima en los componentes del circuito,
-mientras que $D$ tiene como límite superior el tiempo de descarga $T_s$,
-teniendo que se ser $T*(1-D) > T_s$, es decir, el tiempo en el que la cuadrada
-bipolar tiene el valor $V_l$ tiene que ser suficiente para la remoción de todas
-las cargas en el SRD.
+Vemos que tanto $V_{dd}$ como $D$ incrementan linealmente la amplitud del pulso
+a la salida. Aumentar $V_{dd}$ tiene como límite la conducción de corriente
+máxima en los componentes del circuito, mientras que $D$ tiene como límite
+superior el tiempo de descarga $T_s$, teniendo que se ser $T*(1-D) > T_s$, es
+decir, el tiempo en el que la cuadrada bipolar tiene el valor $V_l$ tiene que
+ser suficiente para la remoción de todas las cargas en el SRD.
 
 \subsubsection{Pasa altos con \textit{pulser}}
 \label{sec:carga_no_lineal}
 
 Simulamos el circuito pasa altos utilizando como carga al pulser. En la figura
 \ref{fig:highpass_filter_nonlinear_load_sch} puede observarse el esquemático
-simulado. A la entrada, tenemos una fuente unipolar de \qty{5}{\volt} de
+simulado. A la entrada tenemos una fuente unipolar de \qty{5}{\volt} de
 amplitud, con un ciclo de trabajo $D=0.5$. En base a
 \ref{eq:square_linear_load_highpassed_values}, esperamos en el nodo
 $V_{bipolar}$ una señal cuadrada simétrica con amplitudes de
@@ -689,7 +714,7 @@ consistente con el valor en estado estacionario de la tensión en el capacitor,
 que es \qty{-1.9}{\volt}, y no \qty{-2.5}{\volt.}
 
 En cuanto al nodo de salida $V_o$, vemos que no desarrolla los pulsos esperados,
-y que encuentra constante en \qty{0}{\volt}. Esto es consistente con la forma de
+encontrándose constante en \qty{0}{\volt}. Esto es consistente con la forma de
 onda bipolar generada: al presentar un nivel de tensión positivo de mayor
 magnitud al negativo, aplicándose ambos niveles durante el mismo tiempo (es
 decir $D=0.5$), es esperado que la carga inyectada al SRD no sea removida, no
@@ -1075,8 +1100,8 @@ la tensión en el capacitor serie, logrando una señal bipolar que logra cargar 
 descargar al SRD permitiendo la generación de pulsos.
 
 Para terminar de demostrar su funcionamiento, repetimos la simulación del
-esquemático de la figura \ref{fig:highpass_nonlinear_w_shunt_sch}, ahora con un
-ciclo de trabajo $D=0.8$. En la figura
+esquemático de la figura \ref{fig:sch_highpass_non_linear_w_shunt_simulation},
+ahora con un ciclo de trabajo $D=0.8$. En la figura
 \ref{fig:highpass_non_linear_w_shunt_simulation_result_80_dc} se observa el
 resultado. Ahora se logra el efecto descripto anteriormente, mediante el
 incremento del ciclo de trabajo $D$ decrece la tensión $V_{+}$ y aumenta
@@ -1109,10 +1134,17 @@ La ecuación se encuentra consistente con el resultado obtenido en la simulació
 
 \subsection{Implementación de la llave}
 
+Cómo fuese explicado anteriormente, el bloque de llave en el diagrama de la
+figura \ref{fig:driver_block_diagram} cumple la función de conmutar entre $0$ y
+$V_{dd}$ según la señal de control de entrada. En esta sección se discute la
+implementación de este bloque, empezando por un análisis de los requerimientos
+del mismo y siguiendo con la realización de un circuito que los cumpla.
+
 \subsubsection{Requisitos}
 
-En la tabla \ref{tab:llave_requirements} se describen los requerimientos que
-debe cumplir la llave
+En la tabla
+\ref{tab:llave_requirements} se describen los requerimientos que debe cumplir la
+llave
 
 \begin{table}
 \centering
@@ -1135,7 +1167,7 @@ debe cumplir la llave
 El requerimiento de tensión de entrada es debido al sistema objetivo de
 integración del prototipo, en el que los sistemas digitales de control trabajan
 con un $V_{DD}$ de \qty{3.3}{\volt}. Además, este nivel de tensión es versátil
-en cuanto a que permite trabajar con otro tipo de salidas, como $TTL$
+en cuanto a que permite trabajar con otro tipo de salidas, como $CMOS$
 \qty{5}{\volt}.
 
 La frecuencia de  entrada se debe a la $PRF$ objetivo de \qty{10}{\mega\hertz}.
@@ -1164,14 +1196,17 @@ El requerimiento de $V_{dd}$ se debe al rango de tensiones de alimentación de
 interés del sistema. Estas son fácilmente obtenibles en las plataformas a las
 que se apunta integrar el prototipo.
 
+El requisito de consumo es en base al número de consumo del pulser obtenido en
+la sección \ref{sec:pulser_power}.
+
 \subsubsection{Llave utilizada}
 
 En base a todos estos requerimientos, se optó por un circuito integrado
-comercial \textit{gate driver}. Estos dispositivos son utilizados generalmente
-para conmutar la compuerta de un transistor CMOS de potencia en base a  una
-señal digital de baja capacidad de carga. Debido a la similitud entre este caso
-de uso y el de este trabajo, fue fácil encontrar un dispositivo que cumpla con
-los requisitos de la tabla \ref{tab:llave_requirements}.
+comercial \textit{gate driver}. Estos dispositivos son utilizados para conmutar
+la compuerta de un transistor CMOS de potencia en base a una señal digital de
+baja capacidad de carga. Debido a la similitud entre este caso de uso y el de
+este trabajo, fue fácil encontrar un dispositivo que cumpla con los requisitos
+de la tabla \ref{tab:llave_requirements}.
 
 El integrado seleccionado fue el LM5114 \cite{LM5114_datasheet}. En la figura
 \ref{fig:lm5114_block_diagram} puede observarse un diagrama en bloques del
@@ -1400,21 +1435,27 @@ sección anterior.
 
 \section{Implementación en PCB}
 
-Se implementó en PCB el circuito diseñado. Se diseñaron dos placas distintas:
-una para el driver, y otra para el pulser. Se tomó esta decisión para darle más
-versatilidad al trabajo. De esta manera, el pulser puede utilizarse con otro
+En cuanto a la implementación física de los circuitos del driver y el pulser, se
+diseñaron placas distintas para cada uno. Se tomó esta decisión para darle
+más versatilidad al trabajo. De esta manera, el pulser puede utilizarse con otro
 eventual driver, el driver puede ser evaluado por separado antes de una medición
 final, y en caso de falla de diseño en alguno de los dos circuitos, la falla se
 mantiene contenida al modulo defectuoso y no a la totalidad del sistema.
 
-Se fabricaron las placas con el fabricante OSHPark. Se utilizó el servicio de 4
-capas y material FR408HR de Isola \cite{fr408_datasheet}. El material, a
-diferencia del FR4 más económico, presenta buena estabilidad en frecuencia para
-su constante dieléctrica y bajas perdidas, por lo que es apropiado para
-trabajar en el ancho de banda necesario. La constante dieléctrica presenta una
-variación menor al \qty{2}{\percent} en el rango \qty{100}{\mega\hertz} a
-\qty{10}{\giga\hertz}, y una tangente de pérdidas con mayor variación pero menor
-a \num{0.01} hasta \qty{10}{\giga\hertz}.
+Se optó por realizar las placas con el fabricante OSHPark. Se utilizó el servicio de 4
+capas y material FR408HR de Isola \cite{fr408_datasheet}. En ambos circuitos, el
+pulser y el driver, solo eran necesarias 2 capas, una de señal y una de tierra.
+Se eligió el proceso de 4 capas en lugar de 2 dado que este último presentaba
+un grosor de dieléctrico mayor, y dado el tamaño de las placas la diferencia en
+costo era despreciable.
+
+En cuanto al material del sustrato, FR408HR de Isola, a diferencia del FR4 más
+económico presenta buena estabilidad en frecuencia para su constante
+dieléctrica y bajas perdidas, por lo que es apropiado para trabajar en el ancho
+de banda necesario. La constante dieléctrica presenta una variación menor al
+\qty{2}{\percent} en el rango \qty{100}{\mega\hertz} a \qty{10}{\giga\hertz}, y
+una tangente de pérdidas con mayor variación pero menor a \num{0.01} hasta
+\qty{10}{\giga\hertz} \cite{fr408_datasheet}.
 
 En la tabla \ref{tab:oshpark_4_layer_stackup} se muestra el apilamiento de las
 capas del proceso de fabricación, con sus dimensiones y materiales. El proceso
@@ -1424,9 +1465,6 @@ frecuencia. Entre los dos pares se encuentra el núcleo FR4. Por sobre las capas
 cobre superior e inferior se encuentran capas de serigrafía y máscaras de
 soldadura, que a los efectos de cálculos de impedancia tienen un rol
 despreciable.
-
-\textcolor{red}{comentar q usamos la de 4 capas porque tenía un H más chico? xq
-era esto?}
 
 \begin{table}[htbp]
 \centering
@@ -1459,10 +1497,32 @@ era esto?}
 
 \subsection{Selección de componentes pasivos}
 
-Hablar de que se apuntó a usar componentes lo más pequeños posibles para
-eliminar las contribuciones de las impedancias parásitas
+Los componentes pasivos que se encuentran en el camino de la señal tienen que
+ser seleccionados cuidadosamente para evitar distorsiones indeseadas. Estos
+incluyen todos los que se encuentran entre la salida del LM5114 y el nodo de
+salida. Refiriendonos a la figura \ref{fig:lm5114_sim_sch}, estos serían $R_1$,
+$R_s$, $C_1$ y $C_2$.
+
+Dado el ancho de banda del sistema, los componentes pasivos a utilizar deben
+tener parásitos despreciables para las frecuencias de interés. Para esto, se
+seleccionaron componentes SMD. En cuanto al encapsulado seleccionado, se analizó
+el desempeño de cada uno en base a reportes de la literatura
+\cite{vishayFreqResp}.
+
+Cuanto más pequeño el encapsulado, menores parásitos y mayor ancho de banda. En
+contraparte, menores dimensiones implican mayor dificultad para la fabricación y
+menor capacidad de disipación de potencia. Elegir el encapsulado entonces
+consistió en encontrar el balance adecuado entre estos aspectos.
+
+Se optó por usar componentes 0603. Estos tienen una buena respuesta en
+frecuencia en el ancho de banda de trabajo, y su tamaño permite una fabricación
+manual de las placas. En cuanto a disipación de potencia, componentes en este
+encapsulado con disipaciones máximas de \qty{0.5}{\watt} se encuentran
+ampliamente disponibles y a un bajo precio.
 
 \subsection{Layout del pulser}
+
+\subsubsection{Diseño del \textit{stub}}
 
 Para el pulser, se utilizó la capa superior de cobre como plano de señal y la
 capa de cobre inferior a esta como tierra. De esta manera, se forma un linea de
@@ -1485,8 +1545,6 @@ parámetros configurados. Esto resultó en un ancho de pista de
     \caption{Calculo de línea de transmisión para obtener \qty{50}{\ohm}.}
     \label{fig:tline_width_calculation}
 \end{figure}
-
-\subsubsection{Diseño del \textit{stub}}
 
 Con la línea de transmisión a utilizar en el pulser determinada como una
 microtira de los parámetros dados por el proceso de fabricación de la tabla
@@ -1531,36 +1589,105 @@ pulso obtenido tiene una amplitud de \qty{352}{\milli\volt} y una duración de
 
 Una vez diseñada la línea de transmisión y simulada en \textit{ADS}, se exportó
 el layout obtenido en formato \textit{Gerber}. Este fue importado en el software
-de código abierto \textit{KiCad}, donde se realizaron cuestiones finales. En la
+de código abierto \textit{KiCad} donde se realizaron ajustes finales. En la
 figura \ref{fig:pulser_layout} puede observarse el resultado.
 
-\begin{figure}[tbp]
+\begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{images/pulser_layout.png}
-    \caption{Captura del PCB diseñado en \textit{KiCad}.}
-    \label{fig:pulser_layout}
+
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/pulser_layout.png}
+        \caption{Captura del PCB diseñado en \textit{KiCad}.}
+        \label{fig:pulser_layout}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/pulser_3d.png}
+        \caption{Renderizado 3D del PCB.}
+        \label{fig:pulser_3d}
+    \end{subfigure}
+
+    \caption{PCB diseñado para el pulser.}
+    \label{fig:pulser_pcb}
 \end{figure}
 
-Se agregaron conectores \textit{SMA} para la entrada y salida
-\textcolor{red}{explicar por qué SMA?}. Para mejorar el ancho de banda de la
-transición, se realizó un tappering en el plano de tierra
-\textcolor{red}{explicar mejor esto, buscar el mail donde Andrés recomendó
-hacerlo}.
+En todo el plano se agregaron vías, con una separación de
+\qty{0.5}{\milli\meter}. Estas mejoran la puesta a tierra de todo el plano,
+reduciendo la impedancia del mismo. También se agregaron agujeros de montaje en
+los 4 extremos de la placa para permitir el montaje de un eventual chasis.
 
-Se agregaron agujeros de montaje en los 4 extremos de la placa. También se dejó
-un espacio al costado, para después poner un chasis alrededor de la placa.
+Como fuese explicado anteriormente, se utilizó la capa superior de cobre como
+plano de señal, y la capa intermedia como plano de tierra. Las otras dos capas
+no fueron utilizadas, siendo puestas a tierra.
 
-En todo el plano se agregaron vías, con una separación de \textcolor{red}{XXX
-mm}. Estas mejoran la puesta a tierra de todo el plano, reduciendo la impedancia
-del mismo.
+Se agregaron conectores \textit{SMA} para la entrada y salida. Estos ofrecen
+una conexión segura y un buen rendimiento en el ancho de banda de trabajo,
+minimizando las pérdidas y reflexiones. Además, son de amplia disponibilidad y
+versatilidad.
 
-\textcolor{red}{se hizo un tappering desde el pad hasta el conector SMA? o fue
-por error?}
+El buen ancho de banda de los conectores SMA puede degradarse severamente si su
+interfaz con la línea microtira no es la adecuada. Para comprobar esta interfaz,
+se realizó una simulación en el software de elementos finitos \textit{HFSS}. Se
+realizó un modelo del sustrato de OSH Park, y se simuló el desempeño del conector
+soldado directamente a la placa.
 
-En las capas inferior e intermedia 2 se usaron de plano de tierra,
+En la figura \ref{fig:sma_improvement_setup} puede observarse la mejora
+propuesta. Esta consiste en un agujero en el plano de tierra, por debajo del
+conector. En la figura \ref{fig:sma_simulations_results} se observan los
+resultados para ambos casos. Se observa que la mejora propuesta resulta en un
+severo incremento del desempeño del sistema, logrando una perdida de retorno
+mejor a \qty{20}{\dB} y una atenuación menor a \qty{2}{\dB} en todo el ancho de
+banda de interés.
 
-Se utilizaron componentes pequeños. Se pusieron muchas vias. Se hizo un
-tappering con los conectores SMA?
+\begin{figure}
+    \centering
+
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/sma_simulation_setup.png}
+        \caption{Estructura simulada en HFSS.}
+        \label{fig:sma_simulation_setup}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/sma_improvement_setup.png}
+        \caption{Mejora propuesta para el conector SMA.}
+        \label{fig:sma_improvement_setup}
+    \end{subfigure}
+
+    \caption{Estructuras simuladas en HFSS.}
+        \label{fig:sma_simulations_setup}
+\end{figure}
+
+\begin{figure}
+    \centering
+
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/sma_simulation_result.png}
+        \caption{Desempeño del conector conectado directamente.}
+        \label{fig:sma_simulation_result}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/sma_improvement_result.png}
+        \caption{Desempeño del conector con la mejora propuesta.}
+        \label{fig:sma_improvement_result}
+    \end{subfigure}
+
+    \caption{Resultados de simulaciones en HFSS.}
+    \label{fig:sma_simulations_results}
+\end{figure}
+
+Para validar el diseño, se exportó a formato gerber, y luego fue importado
+dentro de ADS. El programa permite realizar extracciones de parásitos de la
+estructura en base a una simulación electromagnética. Utilizando esta función,
+se realizó una simulación del modelo del PCB. En la figura
+\ref{fig:layout_simulation_sch} se observa la simulación realizada.
+
+En la figura \ref{fig:layout_simulation_result} se observa el resultado de la
+simulación realizada. El pulso obtenido en este caso tiene una amplitud de
+\qty{500}{\milli\volt} y una duración de \qty{190}{\pico\second}. Se observan
+dos efectos no deseados que con las simulaciones anteriores no ocurrieron: un
+sobrepico negativo previo al pulso principal, y oscilaciones posteriores.
 
 \begin{figure}[tbp]
     \centering
@@ -1578,19 +1705,51 @@ tappering con los conectores SMA?
 
 \subsection{Layout del driver}
 
-Mostrar el layout del driver, explicar por qué se hizo así.
+En la figura \ref{fig:driver_pcb} se observa el PCB del driver. Este incluye al
+driver LM114 y al filtro pasa altos, y a circuiteria de soporte para
+alimentación y comunicación con la FPGA.
 
-Explicar lo del integrado para filtrar el ruido. Explicar que había un jumper
-para alimentación externa. Explicar que se usó PMOD para conectar a la FPGA.
+\begin{figure}
+    \centering
 
-Mostrar que se dejó un espacio para el capacitor paralelo en el LM114 para
-reducir el tiempo de crecimient. Al final no fue necesario.
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/driver_pcb.png}
+        \caption{Captura del PCB diseñado en \textit{KiCad}.}
+        \label{fig:driver_layout}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \includegraphics[width=\textwidth]{images/driver_3d_render.png}
+        \caption{Renderizado 3D del driver.}
+        \label{fig:driver_3d}
+    \end{subfigure}
 
-Explicar que se armó una plaquita para filtrar ruido de manera externa?
+    \caption{PCB diseñado para el driver.}
+    \label{fig:driver_pcb}
+\end{figure}
 
-\subsection{Simulación con parásitos extraídos}
+Para la alimentación, hay dos opciones disponibles: alimentar al driver
+directamente con una fuente externa, o alimentarlo con un un ADM7150. Este
+integrado provee la función de regulador lineal de ultra bajo ruido, con una
+salida fija de \qty{5}{\volt} y una corriente máxima de
+\qty{800}{\milli\ampere}. Para alimentar con mayores amplitudes, se dispone de
+la posibilidad de alimentar al LM5114 directamente con la fuente externa. Para
+seleccionar entre las dos opciones, la placa tiene dos jumpers.
 
-\section{Fabricación}
+Para la comunicación con la FPGA, se utilizó un conector PMOD macho. Este
+permite conectarse directamente a la placa. De los 12 pines que dispone, solo se
+utilizaron 3: dos para conexión de tierra, y uno para la señal de control. Esta
+señal de control es la que controla el LM5114, determinando la frecuencia y
+ciclo de trabajo de la señal cuadrada.
 
-Explicar algo sobre la fabricación? Complicaciones con los componentes chicos?
-O agregar al capitulo 4?
+Para el ruteo del LM5114 se minimizaron las distancias entre componentes de todo
+el camino de señal de la salida, para minimizar efectos parásitos. Se agregó a
+la salida un capacitor opcional C3, que permite bajar el tiempo de crecimiento
+de la señal de salida en caso de ser necesario.
+
+En toda la placa se agregaron vías para mejorar la conexión a tierra. Podría
+haberse evitado este paso ya que las señales del driver no son de gran ancho de
+banda, pero de todas maneras mejorar la impedancia del plano de tierra siempre
+ayuda. En este caso, alrededor de la placa se dejó un espacio de
+\qty{3}{\milli\meter} sin máscara antisoldante, para el agregado de un eventual
+chasis.
