@@ -1,8 +1,16 @@
 \chapter{Mediciones}
 
+\section{Introducción}
+
+En este capítulo se detallarán las mediciones realizadas sobre el prototipo. Se
+explicará el banco de mediciones conformado, con todos sus componentes. Se
+discutirá el desempeño medido del sistema en el contexto de los resultados
+reportados en la literatura. Al final del capitulo, se presentan una tabla y un
+gráfico comparando el desempeño obtenido con el reportado en otros trabajos.
+
 \section{Banco de medición}
 
-En la figura \ref{fig:banco_medicion} puede observarse un diagrama del banco de
+En la Figura \ref{fig:banco_medicion} puede observarse un diagrama del banco de
 medición. Consiste de los siguientes bloques:
 
 \begin{itemize}
@@ -11,19 +19,19 @@ medición. Consiste de los siguientes bloques:
       pulsos de salida, y con el ciclo de trabajo los valores de tensión del
       pulso de salida del \textit{driver}.
     \item Fuente de alimentación: provee la alimentación $V_{dd}$ para el
-      driver. El valor de esta tensión determina la amplitud pico a pico del
+     \textit{driver}. El valor de esta tensión determina la amplitud pico a pico del
       pulso de salida del \textit{driver}.
-    \item \textit{Driver}: cumplía la función de \textit{buffer} para la
-      \textit{FPGA}, presentando una alta impedancia a la salida de la misma.
+    \item \textit{Driver}: cumple la función de \textit{buffer} para la
+	FPGA, presentando una alta impedancia a la salida de la misma.
       Convierte el pulso unipolar de \qty{3.3}{\volt} en uno bipolar, con
       amplitud pico a pico igual a $V_{dd}$ (\qty{5}{\volt} o \qty{7}{\volt}).
-    \item \textit{Pulser}: el \textit{DUT}, genera pulsos ultra cortos en base 
+    \item \textit{Pulser}: el DUT, genera pulsos ultra cortos en base 
       a la salida del driver.
     \item Osciloscopio: instrumento de medición del experimento. Actúa como
       carga con su impedancia de entrada de \qty{50}{\ohm}.
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[t!]
   \centering
     \includegraphics[width=1\textwidth]{images/banco_medicion.drawio.png}
     \caption{Banco de medición}
@@ -37,42 +45,46 @@ TF2154}, en la figura \ref{fig:mediciones_fuente} puede observarse la misma.
 
 Presentaba limitación de corriente regulable e indicadores para la amplitud y la
 corriente suministrada, lo que permitía trabajar de manera segura, dentro de los
-límites de consumo obtenidos en las simulaciones anteriores
-\textcolor{red}{REEMPLAZAR ESTA REF \ref{TODO}}.
+límites de consumo obtenidos en las simulaciones anteriores.
 
-Como fuese explicado en la sección \textcolor{red}{REEMPLAZAR ESTA REF
-\ref{TODO}},
-la corriente máxima esperada en las condiciones de trabajo era menor a \qty{200}{\milli\ampere},
-por lo que se monitoreó durante todo el experimento que la corriente entregada por la fuente
-no supere este máximo teórico.
+Como fuese explicado en la sección \ref{sec:pulser_power}, la corriente máxima
+esperada en las condiciones de trabajo era menor a \qty{200}{\milli\ampere}, por
+lo que se monitoreó durante todo el experimento que la corriente entregada por
+la fuente no supere este máximo teórico.
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.3\textwidth]{images/mediciones_fuente.png}
-    \caption{Fuente de alimentación \textit{Marconi Instruments TF2154}.}
-    \label{fig:mediciones_fuente}
+\begin{figure}[t!]
+    \begin{minipage}[t]{0.5\linewidth}
+      \centering
+        \includegraphics[width=1\textwidth]{images/mediciones_fpga.png}
+        \caption{Placa de desarrollo FPGA para generación de señal de control.}
+        \label{fig:mediciones_fpga}
+    \end{minipage}
+    \begin{minipage}[t]{0.5\linewidth}
+        \centering
+        \includegraphics[width=1\textwidth]{images/sistema_medido_small.jpg}
+        \caption{FPGA, \textit{driver} y \textit{pulser}.}
+        \label{fig:sistema_medido}
+    \end{minipage}
 \end{figure}
-
 
 \subsection{FPGA}
 
-La \textit{FPGA} generaba el pulso unipolar cuadrado de entrada, que controla la
+La FPGA generaba el pulso unipolar cuadrado de entrada, que controla la
 $PRF$ y el ciclo de trabajo del pulso del driver. La placa utilizada fue
 \textit{Nexys-4 DDR} de Digilent \cite{digilent_nexys4ddr}, con un chip
 \textit{Artix-7} de Xilinx. En la figura \ref{fig:mediciones_fpga} puede
 observarse la misma. 
 
-Se utilizó una \textit{FPGA} para poder validar la utilidad del prototipo en el
-contexto de un sistema UWB como el descripto en \ref{}, en el que se dispone de
-señales de control digitales. Este componente del sistema es fácilmente
-reemplazable por otra \textit{FPGA} o sistema embebido.
-
-Las variables de ajuste del pulso unipolar de la \textit{FPGA} eran las siguientes
+Se utilizó una FPGA para poder validar la utilidad del prototipo en el contexto
+de un sistema UWB como el descripto en \cite{altieri2017}, en el que se dispone
+de señales de control digitales. Este componente del sistema es fácilmente
+reemplazable por otra FPGA o sistema embebido. Las variables de ajuste del pulso
+unipolar de la FPGA eran las siguientes
 
 \begin{itemize}
   \item Frecuencia: la frecuencia de la señal cuadrada de entrada es igual a la
     frecuencia de repetición de pulsos ($PRF$) del sistema, ya que controla la
-    frecuencia con la que el \textit{SRD} se prende y se apaga y, por lo tanto,
+    frecuencia con la que el SRD se prende y se apaga y, por lo tanto,
     la frecuencia de generación de pulsos.
   \item Ciclo de trabajo: el ciclo de trabajo de la señal cuadrada unipolar
     determina los extremos de tensión de la señal cuadrada bipolar de salida del
@@ -81,16 +93,9 @@ Las variables de ajuste del pulso unipolar de la \textit{FPGA} eran las siguient
     el capacitor serie del \textit{driver}.
 \end{itemize}
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.4\textwidth]{images/mediciones_fpga.png}
-    \caption{Placa de desarrollo \textit{Nexys-4 DDR}.}
-    \label{fig:mediciones_fpga}
-\end{figure}
+\textbf{Diseño implementado:}
 
-\subsubsection{Diseño implementado}
-
-El diseño implementado en la \textit{FPGA} consistía en un generador de cuadrada con
+El diseño implementado en la FPGA consistía en un generador de cuadrada con
 ciclo de trabajo y frecuencia variables. La interfaz del sistema consistió en
 
 \begin{itemize}
@@ -112,7 +117,7 @@ ciclo de trabajo y frecuencia variables. La interfaz del sistema consistió en
     \end{itemize}
 \end{itemize}
 
-En el anexo \ref{app:verilog} se encuentra el \textit{HDL} del diseño implementado.
+En el anexo \ref{app:verilog} se encuentra el HDL del diseño implementado.
 
 \subsection{Osciloscopio}
 
@@ -134,34 +139,44 @@ El instrumento posee configuraciones de impedancia de entrada seleccionables ent
 medición del prototipo, se seleccionó la entrada de \qty{50}{\ohm}, actuando
 esta impedancia como carga del generador de pulsos.
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.4\textwidth]{images/osciloscopio.png}
-    \caption{Osciloscopio \textit{Tektronix MSO 70404C}}
-    \label{fig:osciloscopio}
+\begin{figure}[t!]
+    \centering
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[trim=0 10cm 0 20cm, clip, width=.8\textwidth]{images/mediciones_fuente.jpg}
+        \caption{Fuente utilizada para alimentar el prototipo.}
+        \label{fig:mediciones_fuente}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/osciloscopio.png}
+        \caption{Osciloscopio \textit{Tektronix MSO 70404C} utilizado para la medición del pulso.}
+        \label{fig:osciloscopio}
+    \end{minipage}
 \end{figure}
 
-\subsubsection{Seguridad del instrumento}
+\subsection{Seguridad del instrumento}
 
 Debido a las prestaciones del osciloscopio, era fundamental garantizar la
-integridad del mismo en la medición del protipo. Dado que actuaba como carga del
-\textit{DUT}, se debía garantizar que bajo todas las condiciones de
+integridad del mismo en la medición del protio. Dado que actuaba como carga del
+DUT, se debía garantizar que bajo todas las condiciones de
 trabajo, la potencia entregada por el generador de pulsos se encuentre dentro de
 los límites determinados por el fabricante del equipo para evitar posibles daños.
 
-La máxima tensión de entrada se especifica en $5 \ V_{RMS}$ para una resolución
-$\geq \ 100 \ mV/div$ y $1 \ V_{RMS}$ para una resolución $< \ 100 \ mV/div$.
-Para garantizar la seguridad del equipo en cualquier caso, se toma como límite
-el valor de peor caso, $1 \ V_{RMS}$ (correspondiente a una resolución $\geq \
-100 \ mV/div$, para resoluciones menores a esta el límite es mayor).
+La máxima tensión de entrada se especifica en $5\text{V}_{RMS}$ para una
+resolución $\geq100m\text{V}/\text{div}$ y $1 \text{V}{RMS}$ para una resolución
+$<100 m\text{V}/\text{div}$.  Para garantizar la seguridad del equipo en
+cualquier caso, se toma como límite el valor de peor caso, $1\text{V}_{RMS}$
+(correspondiente a una resolución $\geq 100 m\text{V/div}$, para resoluciones
+menores a esta el límite es mayor).
 
 En condiciones normales de funcionamiento, la potencia disipada por la carga es
 mínima, ya que es la potencia que disipa el tren de pulsos en un carga de
-\qty{50}{\ohm}. Como fuese desarrollado en \textcolor{red}{REEMPLAZAR ESTA REF
-\ref{TODO}}, esta potencia está acotada por
-\textcolor{red}{\qty{9999}{\milli\watt}}, que en \qty{50}{\ohm} resultan en
-\textcolor{red}{$9999 \ V_{rms}$}, que se encuentran muy por debajo de los $1 \
-V_{RMS}$ especificados por el fabricante.
+\qty{50}{\ohm}. Como fuese desarrollado en la sección \ref{sec:pulser_power},
+esta potencia está acotada por \qty{0.3}{\milli\watt}, que en \qty{50}{\ohm}
+resultan en \qty{123}{\milli\voltRMS}, que se encuentran muy por debajo de los
+\qty{1}{\voltRMS} especificados por el fabricante.
 
 No solo es necesario analizar la disipación de potencia en condiciones normales
 de funcionamiento, sino también para el caso de una falla, ya que el principal
@@ -186,7 +201,7 @@ filtradas y permanecer con una amplitud considerable a la salida del
 Las mediciones consistieron en mediciones en el dominio del tiempo del pulso de
 salida. Utilizando funciones provistas por el osciloscopio, se midieron tiempo
 de crecimiento, tiempo de decaimiento, amplitud máxima, y ancho a medio máximo
-(\textit{FWHM} del inglés \textit{Full Width at Half Maximum}).
+(FWHM del inglés \textit{Full Width at Half Maximum}).
 
 Se realizaron distintas mediciones para distintas condiciones de trabajo del
 circuito. Se barrió para el pulso digital de entrada, el ciclo de trabajo, y
@@ -197,11 +212,11 @@ para la fuente de alimentación distintos valores de tensión.
         \qty{7}{\volt}.
         \begin{itemize}
             \item \qty{5}{\volt} por ser un valor fácilmente obtenible en los
-                sistemas \textit{UWB} de referencia.
+                sistemas {UWB} de referencia.
             \item \qty{7}{\volt} por ser la máxima amplitud tolerable por el circuito.
                 Tensiones de alimentación mayores a estas resultan en corrientes de
                 polarización mayores a las máximas admisibles dado los
-                dimensionamientos de las pistas de los \textit{PCBs}.
+                dimensionamientos de las pistas de los {PCBs}.
         \end{itemize}
     \item El ciclo de trabajo se barrió entre \qty{50}{\percent} y
         \qty{70}{\percent}.
@@ -213,50 +228,131 @@ para la fuente de alimentación distintos valores de tensión.
                 negativas decrecientes, y por lo tanto, amplitudes de pulso
                 decrecientes.
             \item La teoría no indicaba un límite superior para el ciclo de
-                trabajo. Sin embargo, este se observó en la práctica debido a no
-                idealidades en el pulso de salida del driver, que no era
-                perfectamente cuadrado.
+                trabajo. Sin embargo, este se observó en la práctica debido al
+                comportamiento no ideal del pulso de salida del \emph{driver},
+                que no era perfectamente cuadrado.
         \end{itemize}
 \end{itemize}
 
 En la figura \ref{fig:sistema_medido} puede observarse el \textit{pulser} junto con el
-\textit{driver} y la \textit{FPGA}.
+\textit{driver} y la FPGA.
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.4\textwidth]{images/sistema_medido.jpg}
-    \caption{\textit{FPGA}, \textit{driver} y \textit{pulser}.}
-    \label{fig:sistema_medido}
+\subsection{Mediciones del \textit{driver}}
+
+\begin{figure}[t!]
+    \begin{minipage}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[trim=0 1cm 0 0.5cm, clip, width=1\textwidth]{images/banco_pre_mediciones.jpg}
+        \caption{Banco de medición para el \textit{driver}.}
+        \label{fig:banco_pre_mediciones}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[width=1\textwidth]{images/medicion_driver_D_50.jpg}
+        \caption{Medición de driver para $D= \qty{50}{\percent}$}
+        \label{fig:medicion_driver_D_50}
+    \end{minipage}
 \end{figure}
-
-\subsection{Mediciones preliminares}
 
 Previo a las mediciones principales, se realizó una medición de la salida del driver,
 con el objetivo de validar el pulso bipolar generado.
 
-El motivo de esta medición previa, fue la limitada disponibilidad del
+El motivo de esta medición previa fue la limitada disponibilidad del
 osciloscopio de gran ancho de banda utilizado para la medición final del pulso.
 Esta pre-medición del pulso bipolar se realizó con un osciloscopio de bajo ancho
 de banda, ya que el objetivo era validar los niveles de tensión del pulso, y su
 correcta variación con la variación del ciclo de trabajo del pulso unipolar.
 
 En la figura \ref{fig:banco_pre_mediciones} puede observarse el banco de
-medición. Los resultados fueron los esperados y, por lo tanto, no se requirió
-ninguna iteración sobre la implementación del driver.
+medición. Se utilizó la FPGA para generar el pulso cuadrado unipolar, y se
+conectó la punta de un osciloscopio a los terminales de un conector SMA
+conectado a la salida del \textit{driver}. La entrada del osciloscopio se
+configuró en alta impedancia. La alimentación la proveyó una fuente de continua
+como se observa en la figura \ref{fig:banco_pre_mediciones}, con una
+alimentación de \qty{8}{\volt}. El osciloscopio utilizado en este caso no fue el
+Tektronix MSO 70404C de gran ancho de banda, sino uno comercial de
+\qty{50}{\mega\hertz}.
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.4\textwidth]{images/banco_pre_mediciones.jpg}
-    \caption{Banco de mediciones previas a la medición final del pulso.}
-    \label{fig:banco_pre_mediciones}
+En las figuras \ref{fig:medicion_driver_D_50}, \ref{fig:medicion_driver_D_71} y
+\ref{fig:medicion_driver_D_92} se observan los resultados obtenidos para distintas
+condiciones de ciclo de trabajo. En rojo se muestra la salida de la FPGA y en
+amarillo la salida del driver. Abajo y a la izquierda de las formas de onda,
+se observan la mediciones configuradas en el osciloscopio. La cantidad $V_p$ se
+corresponde a la amplitud pico-a-pico, $+D$ al ciclo de trabajo y $M_i$ al valor
+mínimo.
+
+Para la salida de la FPGA se observa que la escala es de \qty{1}{\volt} por
+división, notándose que la señal conmuta entre \qty{0}{\volt} y
+\qty{3.3}{\volt}. El valor pico a pico es ligeramente mayor, alrededor de
+\qty{3.8}{\volt} debido a sobrepicos presentes en la señal. El mismo comentario
+aplica para la salida del driver, que está alimentado por \qty{8}{\volt}, pero
+presenta una amplitud pico a pico de casi \qty{9}{\volt} debido a sobrepicos.
+
+En la tabla \ref{tab:mediciones_driver_resultados} se resumen los resultados
+obtenidos. Se observa una buena coincidencia entre los valores medidos y los
+predecidos. Es de interés destacar que para la porción negativa del pulso, se
+observa un sobrepico negativo, y que para mayores ciclos de trabajo, este
+sobrepico representa casi la totalidad del período negativo.
+
+En cuanto al valor positivo de la salida, es interesante notar que para el ciclo
+de trabajo de \qty{92}{\percent}, notando que la escala es de \qty{2}{\volt}, se
+observa un valor que oscila entre \qty{400}{\milli\volt} y
+\qty{800}{\milli\volt}. Este valor no es suficiente para polarizar en directa al
+SRD, por lo que quedan descartados ciclos de trabajo superiores a este valor
+para operar el pulser.
+
+\begin{figure}[t!]
+    \begin{minipage}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[width=1\textwidth]{images/medicion_driver_D_71.jpg}
+        \caption{Medición de driver para $D= \qty{71}{\percent}$}
+        \label{fig:medicion_driver_D_71}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[width=1\textwidth]{images/medicion_driver_D_92.jpg}
+        \caption{Medición de driver para $D= \qty{92}{\percent}$}
+        \label{fig:medicion_driver_D_92}
+    \end{minipage}
 \end{figure}
 
-\section{Resultados}
+\begin{table}[t!]
+    \centering
+    \begin{threeparttable}[b]
+        \begin{tabular}{ccc}
+        \hline
+            $D$ [\unit{\percent}] & $V_{-m}$ \tnote{a} & $V_{-e}$ \tnote{b} \\
+        \hline
+            50 & 4.4 & 4.5 \\
+            71 & 5.52 & 5.68 \\
+            92 & 6.884 & 7.36  \\
+        \hline
+    \end{tabular}
+    \begin{tablenotes}
+        \item [a] $V_-$ medido
+        \item [b] $V_-$ esperado según \ref{eq:v_minus_ideal_load}
+    \end{tablenotes}
+    \end{threeparttable}
+    \caption{Resultados de medición de \textit{driver}}
+    \label{tab:mediciones_driver_resultados}
+\end{table}
 
-En las figuras \ref{fig:mediciones_5v_50}, \ref{fig:mediciones_5v_70},
-\ref{fig:mediciones_7v_50}, \ref{fig:mediciones_7v_60},
-\ref{fig:mediciones_7v_70} pueden observarse los resultados en diversas capturas de pantalla
-tomadas del osciloscopio.
+\subsection{Medición de pulso}
+
+En las figuras \ref{fig:mediciones_5v} y \ref{fig:mediciones_7v} se observan las
+mediciones realizadas para $V_{cc}$ de \qty{5}{\volt} y \qty{7}{\volt}
+respectivamente. En ambos casos, se realizaron mediciones para dos ciclos de
+trabajo de la señal cuadrada de entrada: \qty{50}{\percent} y
+\qty{70}{\percent}.
+
+En las mediciones se observa una captura del osciloscopio. En todas las
+mediciones la entrada del osciloscopio fue configurada en \qty{50}{\ohm}, como
+fuese explicado anteriormente. En las capturas se observa la forma de onda del
+pulso medido, y en la parte inferior una tabla con diversos parámetros
+medidos por el instrumento. Las de interés en este caso con la amplitud, el
+ancho y los tiempos de crecimiento y caída.
 
 Se observó en las mediciones una amplitud de pulso creciente con mayor ciclo de
 trabajo y mayor amplitud de pulso, como era esperado. La menor amplitud de pulso
@@ -270,71 +366,79 @@ decrecimiento, que se mantuvieron constantes en \qty{90}{\pico\second}. Este
 resultado es el esperado para un \textit{pulser} basado en un \textit{stub}, ya
 que el ancho de pulso está determinado por el largo del \textit{stub}.
 
-En la tabla \ref{tab:mediciones_resultados} pueden observarse los resultados
+En cuanto a la forma del pulso, se observa una prácticamente gaussiana. Se
+observan no idealidades no contempladas en los modelos de simulación utilizados.
+Se observan oscilaciones tanto antes como después del pulso, y también un
+segundo de menor amplitud.
+
+En la tabla \ref{tab:mediciones_pulso_resultados} pueden observarse los resultados
 obtenidos. Para el ancho de banda, se utiliza el obtenido a partir de la
 \textit{PSD} del pulso medido. En la sección \ref{sec:comp_simulacion} se
 detalla cómo fue obtenido este valor.
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/mediciones/vcc_5v_duty_50.png}
-    \caption{Salida @ $V_{cc}$ \qty{5}{\volt}, D \qty{50}{\percent} }
-    \label{fig:mediciones_5v_50}
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/mediciones/vcc_5v_duty_50.png}
+        \caption{Pulso medido, $V_{cc}$ \qty{5}{\volt}, D \qty{50}{\percent} }
+        \label{fig:mediciones_5v_50}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/mediciones/vcc_5v_duty_70.png}
+        \caption{Pulso medido, $V_{cc}$ \qty{5}{\volt}, D \qty{70}{\percent} }
+        \label{fig:mediciones_5v_70}
+    \end{subfigure}
+    \caption{Pulsos medidos para $V_{cc} = \qty{5}{\volt}$}
+    \label{fig:mediciones_5v}
 \end{figure}
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/mediciones/vcc_5v_duty_70.png}
-    \caption{Salida @ $V_{cc}$ \qty{5}{\volt}, D \qty{70}{\percent} }
-    \label{fig:mediciones_5v_70}
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/mediciones/vcc_7v_duty_50.png}
+        \caption{Pulso medido, $V_{cc}$ \qty{7}{\volt}, D \qty{50}{\percent} }
+        \label{fig:mediciones_7v_50}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/mediciones/vcc_7v_duty_70.png}
+        \caption{Pulso medido, $V_{cc}$ \qty{7}{\volt}, D \qty{70}{\percent} }
+        \label{fig:mediciones_7v_70}
+    \end{subfigure}
+    \caption{Pulsos medidos para $V_{cc} = \qty{7}{\volt}$}
+    \label{fig:mediciones_7v}
 \end{figure}
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/mediciones/vcc_7v_duty_50.png}
-    \caption{Salida @ $V_{cc}$ \qty{7}{\volt}, D \qty{50}{\percent} }
-    \label{fig:mediciones_7v_50}
-\end{figure}
-
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/mediciones/vcc_7v_duty_60.png}
-    \caption{Salida @ $V_{cc}$ \qty{7}{\volt}, D \qty{60}{\percent} }
-    \label{fig:mediciones_7v_60}
-\end{figure}
-
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/mediciones/vcc_7v_duty_70.png}
-    \caption{Salida @ $V_{cc}$ \qty{7}{\volt}, D \qty{70}{\percent} }
-    \label{fig:mediciones_7v_70}
-\end{figure}
-
-\begin{table}
+\begin{table}[t!]
 \centering
 \begin{tabular}{ccccccc}
 \hline
 $V_{cc}$ [\unit{\volt}] & $D$ [\unit{\percent}] & $A$ [\unit{\volt}] &
-    $FWHM$ [\unit{\pico\second}] & $\qty{3}{\dB} \ B$ [\unit{\giga\hertz}]& $t_r$
+    FWHM [\unit{\pico\second}] & $\qty{3}{\dB} \ B$ [\unit{\giga\hertz}]& $t_r$
     [\unit{\pico\second}]& $t_f$ [\unit{\pico\second}]\\
 \hline
-5 & 50 & 0.380 & 159 & 7.5 & 93 & 88 \\
-5 & 70 & 0.625 & 161 & 3.6 & 93 & 91 \\
-7 & 50 & 0.702 & 162 & 4   & 93 & 93 \\
-7 & 60 & 0.909 & 164 & 4   & 94 & 95 \\
-7 & 70 & 1.120 & 165 & 2.8 & 95 & 96 \\
+5 & 50 & 0.380 & 159 & 5.5 & 93 & 88 \\
+5 & 70 & 0.625 & 161 & 2.8 & 93 & 91 \\
+7 & 50 & 0.702 & 162 & 2.9 & 93 & 93 \\
+7 & 70 & 1.120 & 165 & 2.5 & 95 & 96 \\
 \hline
 \end{tabular}
-\caption{Resultados de mediciones.}
-\label{tab:mediciones_resultados}
+\caption{Resultados de mediciones de pulso.}
+\label{tab:mediciones_pulso_resultados}
 \end{table}
 
-\subsection{Comparación con simulación}
+\subsubsection{Comparación contra simulación}
 \label{sec:comp_simulacion}
 
-En las figuras \ref{fig:plots_5v_50} a \ref{fig:psd_7v_70} pueden observarse los resultados de las
-mediciones obtenidas superpuestos con los resultados de simulación para las mismas condiciones de
-trabajo (amplitud de alimentación y ciclo de trabajo).
+En las figuras \ref{fig:pulses_5v_50} a \ref{fig:psd_7v_70} pueden observarse
+los resultados de las mediciones obtenidas superpuestos con los resultados de
+simulación para las mismas condiciones de trabajo (amplitud de alimentación y
+ciclo de trabajo).
 
 Para las simulaciones, se toman dos resultados:
 
@@ -352,8 +456,31 @@ Se realizan las comparaciones en el dominio del tiempo y de la frecuencia. Las
 comparaciones en el dominio del tiempo consisten en la superposición del pulso
 medido con los simulados. Para las comparaciones en el dominio de la frecuencia,
 se calculó el espectro de cada una de las formas de onda del dominio del tiempo.
-Para reducir el \textit{leakage} espectral, se utilizó una ventana de
-\textit{Hanning} \cite{oppenheim1999dsp}.
+Para realizar las comparaciones, se exportaron los resultados a formato CSV y se
+importaron dentro de un programa en python. Mediante las librerías numpy y
+plotly se realizaron los distintos graficos.
+
+En cuanto a la obtención de la PSD de cada pulso, en el código
+\ref{get_spectrum_python} se muestra la función utilizada para obtenerla. La
+misma reciba una secuencia de datos discretos \textit{x} y el tiempo de muestreo
+entre cada muestra $sample\_time$. Obtiene la PSD aplicando una ventana de
+\textit{Hanning} y normaliza por la norma $L^2$ de la
+ventana \cite{oppenheim1999dsp}.
+
+\begin{lstlisting}[language=Python, style=PythonStyle, caption=Función para obtener PSD,
+label=get_spectrum_python, float]
+import numpy as np
+
+def get_spectrum(x, sample_time):
+    w = np.hanning(len(x.shape))
+    s_win = np.linalg.norm(w, 2) ** 2
+    x_w = np.multiply(x, w)
+    X_W = np.fft.rfft(x_w)
+    P_xx = np.abs(X_W)**2 / s_win
+    P_xx_dB = 10 * np.log10(P_xx)
+    freq = np.fft.rfftfreq(x_w.shape[-1]) / sample_time
+    return pd.DataFrame({'frequency': freq, 'magnitude': P_xx_dB})
+\end{lstlisting}
 
 En el dominio del tiempo, se observa una buena coincidencia entre la amplitud de
 los pulsos y el ancho. Se observa una diferencia en el \textit{ringing} de
@@ -372,116 +499,123 @@ dispositivos, tanto el SRD como el Schottky. Las simulaciones predijeron correct
 la amplitud y el ancho de los pulsos resultantes, pero fallaron en predecir 
 el ringing y el pulso secundario.
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_5V_duty_50_time_domain.png}
-    \caption{Pulso @ $V_{cc}$ \qty{5}{\volt}, D \qty{50}{\percent} }
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/plots/Vcc_5V_duty_50_time_domain.png}
+        \caption{Pulso @ $V_{cc}$ \qty{5}{\volt}, D \qty{50}{\percent} }
+        \label{fig:pulses_5v_50}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/plots/Vcc_5V_duty_50_psd.png}
+        \caption{PSD @ $V_{cc}$ \qty{5}{\volt}, D \qty{50}{\percent} }
+        \label{fig:psd_5v_50}
+    \end{subfigure}
+    \caption{Pulsos y PSDs para $V_{cc}$ \qty{5}{\volt}, D \qty{50}{\percent} }
     \label{fig:plots_5v_50}
 \end{figure}
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_5V_duty_50_psd.png}
-    \caption{PSD @ $V_{cc}$ \qty{5}{\volt}, D \qty{50}{\percent} }
-    \label{fig:psd_5v_50}
-\end{figure}
-
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_5V_duty_70_time_domain.png}
-    \caption{Pulso @ $V_{cc}$ \qty{5}{\volt}, D \qty{70}{\percent} }
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/plots/Vcc_5V_duty_70_time_domain.png}
+        \caption{Pulso @ $V_{cc}$ \qty{5}{\volt}, D \qty{70}{\percent} }
+        \label{fig:pulses_5v_70}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/plots/Vcc_5V_duty_70_psd.png}
+        \caption{PSD @ $V_{cc}$ \qty{5}{\volt}, D \qty{70}{\percent} }
+        \label{fig:psd_5v_70}
+    \end{subfigure}
+    \caption{Pulsos y PSDs para $V_{cc}$ \qty{5}{\volt}, D \qty{70}{\percent} }
     \label{fig:plots_5v_70}
 \end{figure}
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_5V_duty_70_psd.png}
-    \caption{PSD @ $V_{cc}$ \qty{5}{\volt}, D \qty{70}{\percent} }
-    \label{fig:psd_5v_70}
-\end{figure}
-
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_7V_duty_50_time_domain.png}
-    \caption{Pulso @ $V_{cc}$ \qty{7}{\volt}, D \qty{50}{\percent} }
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/plots/Vcc_7V_duty_50_time_domain.png}
+        \caption{Pulso @ $V_{cc}$ \qty{7}{\volt}, D \qty{50}{\percent} }
+        \label{fig:pulses_7v_50}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/plots/Vcc_7V_duty_50_psd.png}
+        \caption{PSD @ $V_{cc}$ \qty{7}{\volt}, D \qty{50}{\percent} }
+        \label{fig:psd_7v_50}
+    \end{subfigure}
+    \caption{Pulsos y PSDs para $V_{cc}$ \qty{5}{\volt}, D \qty{50}{\percent} }
     \label{fig:plots_7v_50}
 \end{figure}
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_7V_duty_50_psd.png}
-    \caption{PSD @ $V_{cc}$ \qty{7}{\volt}, D \qty{50}{\percent} }
-    \label{fig:psd_7v_50}
-\end{figure}
-
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_7V_duty_60_time_domain.png}
-    \caption{Pulso @ $V_{cc}$ \qty{7}{\volt}, D \qty{60}{\percent} }
-    \label{fig:plots_7v_60}
-\end{figure}
-
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_7V_duty_60_psd.png}
-    \caption{PSD @ $V_{cc}$ \qty{7}{\volt}, D \qty{60}{\percent} }
-    \label{fig:psd_7v_60}
-\end{figure}
-
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_7V_duty_70_time_domain.png}
-    \caption{Pulso @ $V_{cc}$ \qty{7}{\volt}, D \qty{70}{\percent} }
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/plots/Vcc_7V_duty_70_time_domain.png}
+        \caption{Pulso @ $V_{cc}$ \qty{7}{\volt}, D \qty{70}{\percent} }
+        \label{fig:pulses_7v_70}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/plots/Vcc_7V_duty_70_psd.png}
+        \caption{PSD @ $V_{cc}$ \qty{7}{\volt}, D \qty{70}{\percent} }
+        \label{fig:psd_7v_70}
+    \end{subfigure}
+    \caption{Pulsos y PSDs para $V_{cc}$ \qty{7}{\volt}, D \qty{70}{\percent} }
     \label{fig:plots_7v_70}
 \end{figure}
 
-\begin{figure}
-  \centering
-    \includegraphics[width=0.6\textwidth]{images/plots/Vcc_7V_duty_70_psd.png}
-    \caption{PSD @ $V_{cc}$ \qty{7}{\volt}, D \qty{70}{\percent} }
-    \label{fig:psd_7v_70}
-\end{figure}
+\subsubsection{Comparación contra resultados de la literatura}
 
-\subsection{Comparación con resultados de la literatura}
+En la tabla \ref{tab:resultados_literatura} se resumen resultados reportados
+para generadores de pulsos \textit{UWB} en la literatura. En la figura
+\ref{fig:scatterplot_literature} se observan los valores de amplitud y duración
+reportados en un gráfico de dispersión.
 
-En la tabla \ref{tab:resultados_literatura} se resumen resultados reportados para generadores de
-pulsos \textit{UWB} en la literatura. En la figura \ref{fig:scatterplot_literature} se observan
-los valores de amplitud y duración reportados en un gráfico de dispersión.
-
-\begin{table}
-  \begin{threeparttable}[b]
+\begin{table}[t!]
+    \begin{threeparttable}[b]
+        {\footnotesize
+            \begin{tabular}{ccccccccc}
+                \hline
+                Ref. & $A$ [\unit{\volt}] & $FWHM$ [\unit{\pico\second}] &
+                Bal \tnote{a} & Bias & Dispositivos & $V_{cc}$ [\unit{\volt}] & $V_{in}$ [\unit{\volt}] & $PRF$ [\unit{\mega\hertz}] \\
+                \hline
+                \cite{rulikowski2004} & \num{\pm 0.896}, \num{\pm 1.6} \tnote{b} & 335, 511 & Sí & Int & SRD & 5 & TTL & 50 \\
+                \cite{protiva2009} & \num{-7.5} & 110 & No & Ext & SRD+3TBJ+SD & 12 & TTL & 5 \\
+                \cite{kamal2014} & \num{0.8} & 170 & No & Int & SRD & 4 & 4 & 10 \\
+                \cite{han2002} & \num{0.2} & 300 & No & Ext & SRD+2SD & ? & ? & 10 \\
+                \cite{han2005} & \num{-6}, \num{-4} & 150 & No & Int & SRD+L & ? & 5 & 12 \\
+                \cite{oloumi2018} & \num{1.27} \tnote{c} & 286 & No & Int & 2SRD+L & 10 & 10 \tnote{d} & ? \\
+                \textbf{Prop.} & \num{1.12} & 165 & No & Int & SRD+SD & 7 & CMOS  &
+                \num{10} \\
+            \end{tabular}
+        }
+        \begin{tablenotes}
+            \item [a] \textit{Balanceado}.
+            \item [b] la publicación presenta dos resultados, correspondientes a
+            circuitos con componentes concentrados y distribuidos.
+            \item [c] la publicación presenta múltiples resultados, se muestran
+            los mejores.
+            \item [d] la señal de entrada es senoidal.
+        \end{tablenotes}
+    \end{threeparttable}
+    \caption{Resultados reportados en la literatura}
     \label{tab:resultados_literatura}
-    {\footnotesize
-    \begin{tabular}{ccccccccc}
-        \hline
-        Referencia & $A$ [\unit{\volt}] & $FWHM$ [\unit{\pico\second}] &
-        Bal \tnote{a} & Bias & Dispositivos & $V_{cc}$ [\unit{\volt}] & $V_{in}$ [\unit{\volt}] & $PRF$ [\unit{\mega\hertz}] \\
-        \hline
-        \cite{rulikowski2004} & \num{\pm 0.896}, \num{\pm 1.6} \tnote{b} & 335, 511 & Sí & Int & SRD & 5 & TTL & 50 \\
-        \cite{protiva2009} & \num{-7.5} & 110 & No & Ext & SRD+3TBJ+SD & 12 & TTL & 5 \\
-        \cite{kamal2014} & \num{0.8} & 170 & No & Int & SRD & 4 & 4 & 10 \\
-        \cite{han2002} & \num{0.2} & 300 & No & Ext & SRD+2SD & ? & ? & 10 \\
-        \cite{han2005} & \num{-6}, \num{-4} & 150 & No & Int & SRD+L & ? & 5 & 12 \\
-        \cite{oloumi2018} & \num{1.27} \tnote{c} & 286 & No & Int & 2SRD+L & 10 & 10 \tnote{d} & ? \\
-        \textbf{Este trabajo} & \num{1.12} & 165 & No & Int & SRD+SD & 7 & CMOS  &
-        \num{10} \\
-    \end{tabular}
-}
-   \begin{tablenotes}
-     \item [a] \textit{Balanceado}.
-     \item [b] la publicación presenta dos resultados, correspondientes a
-       circuitos con componentes concentrados y distribuidos.
-     \item [c] la publicación presenta múltiples resultados, se muestran
-       los mejores.
-     \item [d] la señal de entrada es senoidal.
-   \end{tablenotes}
-  \end{threeparttable}
-  \caption{Resultados reportados en la literatura}
 \end{table}
 
 \begin{figure}
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.95]
   \begin{axis}[
     xlabel={$FWHM$ [\unit{\pico\second}]},
     ylabel={$A_{pkpk}$ [\unit{\volt}]},
@@ -527,7 +661,7 @@ se obtienen amplitudes pico a pico de pulso mayores a las de este trabajo. Es
 destacable que se obtienen mayores amplitudes usando una fuente de alimentación
 menor, de \qty{5}{\volt}. En cuanto al ancho de pulso, ambos pulsos presentan
 duraciones mayores que las de nuestro trabajo. En cuanto a la complejidad, el
-\textit{pulser} está implementado solamente con 1 \textit{SRD} y componentes
+\textit{pulser} está implementado solamente con 1 SRD y componentes
 distribuidos o concentrados, dependiendo de la versión, por lo que es más simple
 que nuestro trabajo. El \textit{driver} presenta la misma complejidad en ambos
 casos, ya que está implementado con un solo circuito integrado. Nuestro trabajo

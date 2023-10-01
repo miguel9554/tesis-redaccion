@@ -16,6 +16,38 @@
 \usepackage{circuitikz}
 \usepackage{subcaption}
 
+% Para que las caption de las tables diga "Tabla" en lugar de "Cuadro"
+\captionsetup[table]{name=Tabla}
+
+% Para mostrar "Código" en lugar de "Listing"
+\renewcommand{\lstlistingname}{Código}
+
+% From https://www.overleaf.com/learn/latex/Code_listing#Code_styles_and_colours
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{PythonStyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+% Customizaciones para listing de verilog
 \lstdefinestyle{VerilogStyle}{
   language=Verilog,
   basicstyle=\ttfamily\small,
@@ -27,8 +59,11 @@
   breaklines=true
 }
 
+% Unidades custom
 \DeclareSIUnit{\mil}{mil}
+\DeclareSIUnit{\voltRMS}{V_{RMS}}
 
+% Declaramos la función matemática "erf" para graficarla más adelante
 \makeatletter
 \pgfmathdeclarefunction{erf}{1}{%
   \begingroup
@@ -39,7 +74,7 @@
     \pgfmathparse{1/(1+0.3275911*\x)}%
     \edef\t{\pgfmathresult}%
     \pgfmathparse{%
-      1 - (((((1.061405429*\t -1.453152027)*\t) + 1.421413741)*\t 
+      1 - (((((1.061405429*\t -1.453152027)*\t) + 1.421413741)*\t
       -0.284496736)*\t + 0.254829592)*\t*exp(-(\x*\x))}%
     \edef\y{\pgfmathresult}%
     \pgfmathparse{(\sign)*\y}%
@@ -47,4 +82,3 @@
   \endgroup
 }
 \makeatother
-

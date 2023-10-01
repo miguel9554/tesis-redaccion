@@ -7,8 +7,8 @@ Como fuese explicado anteriormente, el diodo SRD puede utilizarse para acelerar
 flancos. Esta funcionalidad combinada con un stub permite generar pulsos de gran
 velocidad de crecimiento y ancho controlable. Para explicar el funcionamiento
 del generador, empezaremos explicando el funcionamiento del circuito acelerador
-de flancos. En la figura \ref{fig:srd_sharpener} puede observarse un circuito que demuestra
-el funcionamiento.
+de flancos. En la figura \ref{fig:srd_sharpener} puede observarse un circuito
+que demuestra el funcionamiento.
 
 \begin{figure}
   \centering
@@ -649,6 +649,7 @@ En nuestro caso, la señal unipolar a la salida de la llave tiene valores
 $V_+=V_{dd}$ y $V_-=0$, por lo que tiene un valor medio
 
 \begin{equation}
+    \label{eq:v_minus_ideal_load}
     V_m = D \cdot V_{dd}
 \end{equation}
 
