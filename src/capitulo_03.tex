@@ -310,7 +310,7 @@ encuentra perfectamente adaptada a la de carga $Z_L$, siendo ambas de
 su impedancia característica, \qty{50}{\ohm} en este caso, y su retardo de
 propagación, \qty{60}{\pico\second} en este caso.
 
-\begin{figure}[tbp]
+\begin{figure}[t!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/stub_generator_circuit.png}
     \caption{Generador de pulsos basado en \textit{stub}}
@@ -345,17 +345,14 @@ pulso obtenido. Tiene una amplitud de \qty{847}{\milli\volt} y una duración de
 \qty{180}{\pico\second}. Se observa que el pulso presenta un sobrepico negativo,
 una no idealidad no contemplada hasta ahora en el modelo presentado.
 
-\begin{figure}[tbp]
+\begin{figure}[t!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/stub_generator_sim_result.png}
     \caption{Resultado de simulación de generador con \textit{stub}}
     \label{fig:stub_generator_sim_result}
 \end{figure}
 
-\textcolor{red}{En algún lado calcular y simular el ancho de banda del pulso
-generado}.
-
-\section{Diseño final del \textit{pulser}}
+\section{Generador de pulsos con \textit{stub} y rectificador}
 
 Para compensar tanto las transmisiones de los flancos de la fuente de entrada y
 el sobrepico negativo observado, se agrega al generador un diodo rectificador en
@@ -394,19 +391,86 @@ simulado. Con respecto al de la simulación sin rectificador, figura
 \qty{400}{\milli\volt}, dada por la tensión de encendido del Schottky
 utilizado, y una anulación del sobrepico negativo.
 
-\begin{figure}[tbp]
+\begin{figure}[t!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/pulser_w_schottky_sch.png}
     \caption{\textit{Pulser} final incluyendo diodo Schottky}
     \label{fig:pulser_w_schottky_sch}
 \end{figure}
 
-\begin{figure}[tbp]
+\begin{figure}[t!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/pulser_w_schottky_sim_result.png}
     \caption{Resultado de simulación de generador con rectificador}
     \label{fig:pulser_w_schottky_sim_result}
 \end{figure}
+
+\section{Ancho de banda del pulso}
+\label{sec:pulse_bandwidth}
+
+Tanto para dimensionar correctamente los sistemas por los que el pulso será
+transmitido como para calcular diversas métricas de desempeño, es fundamental la
+figura de ancho de banda del pulso. Se obtendra la misma en base a estimaciones
+teóricas y resultados extraídos de las simulaciones realizadas.
+
+En un sistema de primer orden, pueden relacionarse el tiempo de crecimiento $\tau_r$ con el ancho de banda del sistema $B$ mediante \cite{oppenheim1999dsp}
+
+\begin{equation}
+    B = \frac{0.35}{\tau_r}
+\end{equation}
+
+Entonces, podemos encontrar el ancho de banda $B$ necesario en un sistema para
+transmitir una señal con tiempo de crecimiento $\tau_r$ en base a esta relación.
+
+Como puede observarse en el esquema de la figura
+\ref{fig:stub_time_domain_waveforms}, el pulso crecerá durante un tiempo $T_d$,
+con $T_d$ el tiempo de ida y vuelta en el stub. Es decir, la señal crecerá
+durante $T_d$. Podemos tomar a este tiempo como el $t_r$ de un sistema de primer
+orden. De esa manera, tenemos un ancho de banda $B$ dado por
+
+\begin{equation}
+    \begin{aligned}
+        B &= \frac{0.35}{T_d} \\
+        B &= \frac{0.35}{ \qty{120}{\pico\second}} \\
+        B &= \qty{2.92}{\giga\hertz} \\
+    \end{aligned}
+\end{equation}
+
+Para pulsos gaussianos, existe una relación entre su ancho temporal y el tiempo
+de crecimiento. Esta es \cite{paschotta_gaussian_bandwidth}
+
+\begin{equation}
+    B = \frac{0.44}{\tau_p}
+\end{equation}
+
+Bajo esta definición, tenemos un ancho de banda
+
+\begin{equation}
+    \begin{aligned}
+        B &= \frac{0.44}{T_d} \\
+        B &= \frac{0.44}{ \qty{120}{\pico\second}} \\
+        B &= \qty{3.67}{\giga\hertz} \\
+    \end{aligned}
+\end{equation}
+
+Tenemos dos estimaciones de ancho de banda, \qty{2.92}{\giga\hertz} y
+\qty{3.67}{\giga\hertz}. Podemos comparar estas figuras con el ancho de banda
+del pulso de la simulación realizada. Para esto, calculamos el ancho de banda de
+\qty{3}{\dB} del pulso de la figura \ref{fig:pulser_w_schottky_sim_result}. En
+la figura \ref{fig:pulse_bandwidth_simulation} se observa el pulso junto a su
+espectro. De los marcadores, se observa un ancho de banda de \qty{3}{\dB}
+\qty{3.26}{\giga\hertz}.
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/pulse_bandwidth_simulation.jpg}
+    \caption{Espectro del pulso de la figura \ref{fig:pulser_w_schottky_sim_result}}
+    \label{fig:pulse_bandwidth_simulation}
+\end{figure}
+
+Dadas las dos estimaciones teóricas de ancho de banda y el resultado de la
+simulación, se tomará como estimación de ancho de banda del pulso
+\qty{3.5}{\giga\hertz}.
 
 \section{Consumo del generador}
 \label{sec:pulser_power}

@@ -59,6 +59,7 @@ la fuente no supere este máximo teórico.
         \caption{Placa de desarrollo FPGA para generación de señal de control.}
         \label{fig:mediciones_fpga}
     \end{minipage}
+    \hfill
     \begin{minipage}[t]{0.5\linewidth}
         \centering
         \includegraphics[width=1\textwidth]{images/sistema_medido_small.jpg}
@@ -69,7 +70,7 @@ la fuente no supere este máximo teórico.
 
 \subsection{FPGA}
 
-La FPGA generaba el pulso unipolar cuadrado de entrada, que controla la
+La FPGA generaba el pulso unipolar cuadrado de entrada, que controlaba la
 $PRF$ y el ciclo de trabajo del pulso del driver. La placa utilizada fue
 \textit{Nexys-4 DDR} de Digilent \cite{digilent_nexys4ddr}, con un chip
 \textit{Artix-7} de Xilinx. En la figura \ref{fig:mediciones_fpga} puede
@@ -96,7 +97,8 @@ unipolar de la FPGA eran las siguientes
 \textbf{Diseño implementado:}
 
 El diseño implementado en la FPGA consistía en un generador de cuadrada con
-ciclo de trabajo y frecuencia variables. La interfaz del sistema consistió en
+ciclo de trabajo y frecuencia variables. La interfaz del sistema era la
+siguiente
 
 \begin{itemize}
   \item Los botones \textit{BTNL} y \textit{BTNR} controlaban el ciclo de
@@ -123,11 +125,11 @@ En el anexo \ref{app:verilog} se encuentra el HDL del diseño implementado.
 
 El osciloscopio fue utilizado para realizar la medición en el dominio del tiempo
 del pulso generado. Para una medición exitosa, era indispensable que este
-instrumento cuente con los requerimientos de ancho de banda del pulso. Como fuese
-explicado en \textcolor{red}{REEMPLAZAR ESTA REF \ref{TODO}}, el ancho de banda
-esperado para el pulso era de \qty{3.6}{\giga\hertz}.
+instrumento cuente con los requerimientos de ancho de banda del pulso. Como
+fuese explicado en \ref{sec:pulse_bandwidth}, el ancho de banda esperado para el
+pulso era de \qty{3.5}{\giga\hertz}.
 
-El osciloscopio utilizado fue \textit{Tektronix MSO 70404C}, en la figura 
+El osciloscopio utilizado fue un \textit{Tektronix MSO 70404C}, en la figura 
 \ref{fig:osciloscopio} puede observarse el mismo. El instrumento posee 
 \qty{4}{\giga\hertz} de ancho de banda analógico, y una tasa de muestreo
 de \qty[per-mode=symbol]{25}{\giga\siemens\per\second}, con la posibilidad de
@@ -158,11 +160,12 @@ esta impedancia como carga del generador de pulsos.
 
 \subsection{Seguridad del instrumento}
 
-Debido a las prestaciones del osciloscopio, era fundamental garantizar la
-integridad del mismo en la medición del protio. Dado que actuaba como carga del
-DUT, se debía garantizar que bajo todas las condiciones de
-trabajo, la potencia entregada por el generador de pulsos se encuentre dentro de
-los límites determinados por el fabricante del equipo para evitar posibles daños.
+Debido a las prestaciones del osciloscopio y su gran costo, era fundamental
+garantizar la integridad del mismo en la medición del experimento. Dado que
+actuaba como carga del DUT, se debía garantizar que bajo todas las condiciones
+de trabajo, la potencia entregada por el generador de pulsos se encuentre dentro
+de los límites determinados por el fabricante del equipo para evitar posibles
+daños.
 
 La máxima tensión de entrada se especifica en $5\text{V}_{RMS}$ para una
 resolución $\geq100m\text{V}/\text{div}$ y $1 \text{V}{RMS}$ para una resolución
@@ -552,7 +555,7 @@ el ringing y el pulso secundario.
         \caption{PSD @ $V_{cc}$ \qty{7}{\volt}, D \qty{50}{\percent} }
         \label{fig:psd_7v_50}
     \end{subfigure}
-    \caption{Pulsos y PSDs para $V_{cc}$ \qty{5}{\volt}, D \qty{50}{\percent} }
+    \caption{Pulsos y PSDs para $V_{cc}$ \qty{7}{\volt}, D \qty{50}{\percent} }
     \label{fig:plots_7v_50}
 \end{figure}
 
