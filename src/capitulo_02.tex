@@ -2,30 +2,218 @@
 
 \section{Introducción}
 
-Introducir acá brevemente qué es un diodo SRD, sus diferencias con diodos
-"usuales" de juntura, sus aplicaciones, y los aspectos que analizaremos.
+En este capitulo se explicará el funcionamiento del diodo SRD.  Estos pertenecen
+a una familia de dispositivos de juntura denominada junturas de almacenamiento
+de carga \cite{moll1962}. Estos dispositivos se caracterizan por su
+característica de recuperación inversa.
 
-El diodo SRD pertenece a una familia de dispositivos de juntura denominada
-junturas de almacenamiento de carga \cite{moll1962}. Estos dispositivos se
-caracterizan por su característica de recuperación reversa.
+Se empezará explicando principios básicos de funcionamiento de diodos de
+juntura, luego el proceso de recuperación inversa en un diodo, y luego una
+descripción del diodo SRD y sus modelos de simulación.
 
-\section{Proceso de recuperación reversa}
+\section{Introducción a diodos}
 
-En la figura \ref{fig:diode_reverse_recovery} se observa el proceso de recuperación reversa de un diodo. El mismo
-se encuentra polarizado en directa con una corriente $I_f$, y en el instante
-$t_0$ se aplica una corriente negativa $I_r$. Durante un tiempo $t_s$,
-denominado tiempo de almacenamiento (\textit{storage time} en inglés), el diodo
-permanece en un estado de baja impedancia, conduciendo corriente. Luego de este
-tiempo, durante $t_t$ se da el tiempo de transición (\textit{transition time} o
-\textit{decay time} en inglés). Durante este tiempo, la impedancia de la juntura
-transiciona de bajo a alto, interrumpiendo la conducción de corriente. El tiempo
-total $t_s+t_t$ es denominado tiempo de recuperación $t_r$.
+Un diodo es un dispositivo electrónico caracterizado por una relación
+tensión-corriente asimétrica, presentando una impedancia muy baja en un sentido
+de circulación de corriente y muy alta en el opuesto. Por esta característica
+tienen aplicaciones como rectificadores, tanto en circuitos de potencia como de
+comunicaciones.
+
+\subsection{Física de la juntura}
+\label{sec:junction_physics}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.8\textwidth]{images/pn_junction_equilibruim.png}
+        \caption{Juntura PN en equilibrio.}
+        \label{fig:pn_junction_equilibruim}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/pn_junction_under_bias.png}
+        \caption{Juntura PN bajo polarización a) directa y b) inversa.}
+        \label{fig:pn_junction_under_bias}
+    \end{subfigure}
+    \caption{Juntura PN en equilibrio y en polarización. Tomadas de
+    \cite{Sze2006}.}
+    \label{fig:pn_junction_plots}
+\end{figure}
+
+El funcionamiento del diodo se basa en una juntura. Esta puede ser
+semiconductor-semiconductor, como en un diodo de juntura pn, semiconductor-metal
+como en un diodo Schottky, semiconductor-semiconductor-semiconductor como en un
+diodo PIN, o demás variaciones. Los principios físicos de funcionamiento de toda
+esta familia de dispositivos se basa en la física de la densidad de portadores
+en estos materiales y sus distintos fenómenos de transporte
+\cite{neamen2012semiconductor}.
+
+Existen dos fenómenos de transporte en una juntura: la difusión y el arrastre.
+La primera se debe al fenómeno físico de difusión, en el que un gradiente de
+densidad resulta en una corriente desde las zonas con mayor concentración a las
+de menor. La corriente de arrastre se debe al campo eléctrico existente en la
+juntura.
+
+\subsubsection{Juntura en equilibrio}
+\label{sec:pn_junction_equilibruim}
+
+En una juntura pn en equilibrio, las corrientes de difusión y arrastre se
+encuentran perfectamente balanceadas. Debido a los gradientes de concentración
+de portadores en la juntura, alrededor de la misma se forma una zona vacía de
+portadores, denominada zona desierta o zona de carga espacial. En esta zona,
+debido a la ausencia de portadores minoritarios, se desarrolla una densidad de
+carga, debido a los iones no compensados. Esta zona resulta en un campo
+eléctrico que a su vez genera una corriente de arrastre que compensa a la de
+difusión.
+
+Entonces, el ancho de esta zona desierta dependerá del dopaje en ambos
+materiales y de la geometría de los mismos, dado que el mismo es el necesario
+para compensar la corriente de difusión. En la figura
+\ref{fig:pn_junction_equilibruim} se observa un esquema de la situación. En
+ambos materiales se desarrollan zonas desiertas, de anchos $W_{Dp}$ y $W_{Dn}$
+con carga total de $W_{Dp} \cdot N_A$ y $W_{Dn} \cdot N_D$.
+
+Es una caso de interés el de una juntura muy asimétrica, en la que $N_A >> N_D$
+o $N_A << N_D$. Por la neutralidad de carga, las cargas almacenadas en cada zona
+desierta $Q_N$ y $Q_P$ deben ser iguales. En el caso de una juntura muy
+asimétrica, esto resulta en el ancho de la zona fuertemente dopada siendo casi
+cero, es decir $W_{Dp} \approx 0$ si $N_A >> N_D$ o $W_{Dn} \approx 0$ si $N_D
+>> N_A$.
+
+La aproximación de juntura muy asimétrica es de interés ya que puede ser
+aplicada a cierto tipo de junturas, como la metal-semiconductor o la
+semiconductor dopado-semiconductor intrínseco. La primera aplica para diodos
+Schottky mientras que la segunda es de utilidad en diodos PIN y SRD.
+
+\subsubsection{Juntura polarizada}
+
+Una vez que se aplica una tensión $V_D$ entre los terminales del dispositivo, el
+ancho de esta zona varía, descompensado el equilibrio entre las corrientes de
+difusión y arrastre. Una tensión $V_D > 0$ resulta en un achicamiento de la zona
+desierta, una reducción del campo eléctrico y una corriente neta de difusión.
+Para $V_D < 0$, la zona de vaciamiento aumenta, aumentando el campo eléctrico y
+resultando en una corriente neta de arrastre.
+
+En la figura \ref{fig:pn_junction_under_bias} se observa como varían las
+densidades de portadores y el ancho de la zona desierta. Para tensiones
+positivas (polarización directa), el ancho de la zona desierta disminuye y las
+densidades de portadores minoritarios están en exceso de las de equilibrio, y
+para inversa, la zona desierta se incrementa y las densidades caen por debajo de
+las de equilibrio.
+
+Este exceso de portadores minoritarios para polarización directa resulta en una
+corriente considerable, y la baja densidad en inversa en una corriente casi
+nula. Este es el efecto mencionado anteriormente de asimetría en la conducción
+de corriente.
+
+Según el valor de $V_D$ se determinan dos regímenes de operación distintos: el
+régimen de directa, en el que la corriente es considerable, y régimen de
+inversa, en el que la corriente es prácticamente nula.
+
+\subsection{Relación I-V}
+
+Cómo fuese explicado en la sección \ref{sec:junction_physics}, existe una
+relación entre la tensión $V_D$ aplicada entre los terminales del diodo y la
+corriente $I_D$ por el mismo. Se explicó cualitativamente cómo tensiones
+positivas resultan en circulación de corrientes y negativas en corriente nula.
+Cuantitativamente esta relación puede expresarse de la siguiente manera
+\cite{neamen2012semiconductor}
+
+\begin{equation}
+    I = I_S \left( e^{\frac{V_D}{V_T}}-1\right).
+\end{equation}
+
+El parámetro $I_S$ depende del diseño del diodo, y la tensión $V_T$ es una
+tensión fuertemente dependiente de la temperatura. Para diodos de silicio, esta
+expresión suele ser aproximada a orden 0 como una corriente $I=0$ para $V<
+\qty{0.6}{\volt}$, y para corrientes $I>0$ una tensión fija de $V =
+\qty{0.6}{\volt}$.
+
+Esta es una relación estática, es decir, la relación obtenida una vez
+extinguidos todos los transitorios. Linealizando a partir de un cierto punto de
+operación estático, es posible desarrollar un modelo dinámico de pequeña señal.
+Este está compuesto por una resistencia $r_D$, una capacidad de difusión $c_D$ y
+una capacidad de juntura $C_j$. La capacidad de difusión tiene su fundamento
+físico en el cambio en la carga almacenada en el dispositivo por el proceso de
+difusión, y la capacidad de juntura en la variación del ancho de la zona
+desierta con la tensión $V_D$. Al variar el ancho, varía la carga almacenada en
+la misma, por lo que tiene un efecto capacitivo. En la figura
+\ref{fig:diode_model} se observa el modelo de pequeña señal.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \begin{adjustbox}{scale=0.8}
+            \begin{circuitikz}[american]
+                \draw (0,4) to[open] (0,3);
+                \draw (0,3) to[D*, l=$D$, v=$V_D$, i=$I_D$] (0,1);
+                \draw (0,1) to[open] (0,0);
+            \end{circuitikz}
+        \end{adjustbox}
+        \caption{Tensión y corriente en un diodo.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \begin{adjustbox}{scale=0.8}
+            \begin{circuitikz}[american]
+                \draw (-1,4) to[open, v=$V_D$] (-1,0);
+                \draw (2,4) to[short, i=$I_D$] (2,3);
+                \draw (0,3) to[short] (4,3);
+                \draw (0,3) to[R, l=$R_D$] (0,1); % Resistor R_D
+                \draw (2,3) to[C, l=$C_D$] (2,1); % Capacitor C_D
+                \draw (4,3) to[C, l=$C_j$] (4,1); % Capacitor C_j
+                \draw (0,1) to[short] (4,1);
+                \draw (2,1) to[short, i=$I_D$] (2,0);
+            \end{circuitikz}
+        \end{adjustbox}
+        \caption{Modelo de pequeña señal del diodo.}
+    \end{subfigure}
+    \caption{Modelo de diodo.}
+    \label{fig:diode_model}
+\end{figure}
+
+Para modelar el comportamiento dinámico de gran señal, es necesario contemplar
+la física de las transiciones entre los estados de directa e inversa. La
+transición de directa a inversa se denomina proceso de recuperación inversa, y
+es el proceso en que el diodo SRD es distintivo. A continuación se analizará en
+detalle la física de esta transición.
+
+\section{Proceso de recuperación inversa}
+
+En la figura \ref{fig:diode_reverse_recovery} se observa el proceso de
+recuperación inversa de un diodo. El mismo se encuentra polarizado en directa
+con una corriente $I_f$, y en el instante $t_0$ se aplica una corriente negativa
+$I_r$. Durante un tiempo $t_s$, denominado tiempo de almacenamiento
+(\textit{storage time} en inglés), el diodo permanece en un estado de baja
+impedancia, conduciendo corriente. Luego de este tiempo, durante $t_t$ ($t_2$ en
+la figura) se da el tiempo de transición (\textit{transition time} o
+\textit{decay time} en inglés).  Durante este tiempo, la impedancia de la
+juntura transiciona de bajo a alto, interrumpiendo la conducción de corriente.
+El tiempo total $t_s+t_t$ es denominado tiempo de recuperación $t_{rr}$.
 
 \begin{figure}[t]
-  \centering
-    \includegraphics[width=0.4\textwidth]{images/diode_reverse_recovery.jpeg}
-    \caption{Recuperación reversa de un diodo.}
-    \label{fig:diode_reverse_recovery}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.6\textwidth]{images/diode_reverse_recovery.png}
+        \caption{Recuperación inversa de un diodo. Tomado de
+        \cite{neamen2012semiconductor}}
+        \label{fig:diode_reverse_recovery}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/carrier_concentrations_turnoff.jpg}
+        \caption{Evolución de densidad de portadores en el proceso de
+        recuperación inversa. Tomado de \cite{neamen2012semiconductor}}
+        \label{fig:carrier_concentrations_turnoff}
+    \end{subfigure}
+    \caption{Proceso de recuperación inversa en un diodo.}
+    \label{fig:pn_reverse_recovery_plots}
 \end{figure}
 
 Cada una de estas fases está relacionada a distintos procesos físicos que se dan
@@ -50,28 +238,21 @@ portadores mayor a la de una juntura en reversa. El tiempo de transición $t_t$
 esta asociado al tiempo que demoran estas densidades en caer a sus valores de
 estado estacionario.
 
-En la figura \ref{carrier_concentrations_turnoff} se observa la evolución
+En la figura \ref{fig:carrier_concentrations_turnoff} se observa la evolución
 temporal de las densidades. Se observa que en $t=0^-$ las densidades en los
 extremos de la zona de vaciamiento están en sus valores máximos, y en $t_4=t_s$
 caen a sus valores de equilibrio térmico. Sin embargo, en este instante las
 densidades en el cuerpo de la juntura no están en sus valores de estado
 estacionario $t=\inf$.
 
-\begin{figure}[t]
-  \centering
-    \includegraphics[width=0.4\textwidth]{images/carrier_concentrations_turnoff.jpg}
-    \caption{Evolución de densidad de portadores en el proceso de recuperación.}
-    \label{fig:carrier_concentrations_turnoff}
-\end{figure}
-
 \section{Diodos de almacenamiento de carga}
 \label{sec:charge_storage_diodes}
 
 En \cite{moll1962} de desarrolla la teoría de los diodos de almacenamiento de
 carga. Estos se caracterizan por su particular comportamiento de recuperación
-reversa.
+inversa.
 
-En un diodo de juntura "usual", tanto el tiempo de almacenamiento como el de
+En un diodo de juntura usual, tanto el tiempo de almacenamiento como el de
 transición tienen un orden de magnitud similar al tiempo de vida de los
 portadores minoritarios $\tau_m$, o MCL del inglés \textit{Minority Carrier
 Lifetime}. La característica distintiva de los diodos de almacenamiento de
@@ -79,9 +260,9 @@ carga, es que el tiempo de almacenamiento mantiene su orden de magnitud de
 $\tau_m$, pero el tiempo de transición $t_t$ es mucho menor. \cite{moll1962}
 
 En aplicaciones de conmutación de señal, es deseado que el tiempo de
-recuperación $t_r$ sea lo menor posible. Esto minimiza las pérdidas de potencia
-y maximiza la frecuencia de operación. En aplicaciones de generación de pulsos o
-multiplicación de frecuencia, no es deseado un $t_r$ mínimo.
+recuperación $t_{rr}$ sea lo menor posible. Esto minimiza las pérdidas de
+potencia y maximiza la frecuencia de operación. En aplicaciones de generación de
+pulsos o multiplicación de frecuencia, no es deseado un $t_{rr}$ mínimo.
 
 La combinación de tiempo de almacenamiento $t_s$ finito y tiempo de transición
 $t_t$ muy corto es de utilidad en aplicaciones de generación de pulsos o
@@ -101,7 +282,7 @@ generar pulsos ultra cortos o harmónicos altos de la señal de entrada.
 \begin{figure}[t]
   \centering
     \includegraphics[width=0.4\textwidth]{images/charge_storage_diode_waveforms.jpg}
-    \caption{Formas de onda en rectificadores}
+    \caption{Formas de onda en rectificadores. Tomado de \cite{moll1962}.}
     \label{fig:charge_storage_diode_waveforms}
 \end{figure}
 
@@ -118,16 +299,31 @@ transición $t_t$.
 En \cite{moll1962} se demuestra que, siendo $x_0$ la distancia desde el centro
 de la juntura al centro de gravedad de la distribución de portadores, el tiempo
 $t_t$ será proporcional a $x_0^2/D$, con $D$ la constante de difusión promedio.
+Se demuestra también que a mayor carga almacenada en el diodo, mayor es el valor
+de $x_0$. Es decir, un incremento de la carga trae un incremento en la
+dispersión de la distribución de la carga con respecto al centro de la juntura.
+Es entonces que existe una relación inversa entre carga almacenada $Q$ y tiempo
+de transición $t_t$: a mayor carga $Q$, mayor $x_0$ y mayor $t_t$.
 
-También se demuestra una relación inversa entre carga almacenada y velocidad de
-transición $t_t$.
+Otra limitante para $t_t$ es la capacidad de la juntura $C_j$. Esta capacidad
+debe ser descargada en la transición, por lo que mayores valores de $C_j$
+resultan en un $t_t$ más lento.
+
+$C_j$ y la carga almacenada $Q$ están relacionadas a través del área de la
+juntura $A$. La capacidad $C_j$ varía directamente con el área mientras que la
+carga inversamente. Es decir, mayor área, mayor capacidad y menor carga por
+unidad de área. Entonces, existe un compromiso en el diseño del diodo con
+respecto al área: mayores áreas resultan en menor densidad de carga pero mayor
+capacidad y viceversa. \cite{moll1962}
 
 \section{Diodo SRD}
 \label{sec:srd_diode}
 
 El diodo SRD, del inglés \textit{Step Recovery Diode}, diodo de recuperación en
 escalón, es un tipo de diodo de almacenamiento de carga, con las características
-de los mismos descriptas anteriormente \cite{moll1969}.
+de los mismos descriptas en la sección \ref{sec:charge_storage_diodes}.
+
+\subsection{Física del dispositivo}
 
 El diodo es un un diodo PIN, es decir, un semiconductor intrínseco, la capa I,
 entre dos semiconductores P y N. En la figura \ref{fig:srd_diode_structure} se
@@ -150,19 +346,37 @@ dopadas. Esto resulta en una almacenamiento de portadores en la zona intrinseca
 $i$, y barreras de potencial que fuerzan a los portadores a mantenerse en la
 zona $i$.
 
-\begin{figure}[t]
-  \centering
-    \includegraphics[width=0.4\textwidth]{images/srd_diode_structure.jpg}
-    \caption{Estructura física del diodo SRD.}
-    \label{fig:srd_diode_structure}
-\end{figure}
+La capa I tiene un efecto importante sobre la capacidad de juntura. Debido a que
+las junturas $p^+i$ y $in^+$ son del tipo fuertemente asimétricas, como fuese
+explicado en la sección \ref{sec:pn_junction_equilibruim}, la zona de
+vaciamiento se encuentra prácticamente confinada a la región I. Debido a esto,
+la región de vaciamiento es esencialmente invariable con la tensión $V_D$. Esto
+resulta en una capacidad de juntura $C_j$ independiente de la tensión y muy
+chica \cite{maas2003} \cite{Sze2006} \cite{moll1969}.
 
 \begin{figure}[t]
-  \centering
-    \includegraphics[width=0.4\textwidth]{images/srd_impurity_profile.jpg}
-    \caption{Densidad de dopaje en SRD.}
-    \label{fig:srd_impurity_profile}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.8\textwidth]{images/srd_diode_structure.jpg}
+        \caption{Estructura física del diodo SRD. Tomado de \cite{maas2003}.}
+        \label{fig:srd_diode_structure}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.8\textwidth]{images/srd_impurity_profile.jpg}
+        \caption{Densidad de dopaje en SRD. Tomado de \cite{moll1969}}
+        \label{fig:srd_impurity_profile}
+    \end{subfigure}
+    \caption{Geometría y dopaje en un SRD.}
+    \label{fig:srd_gemotry_and_doping}
 \end{figure}
+
+\subsection{Proceso de recuperación}
+
+Analizaremos ahora las características del proceso de recuperación en un diodo
+SRD.
 
 Para encontrar el tiempo de almacenamiento $t_s$ en un diodo SRD, puede
 plantearse la ecuación de continuidad de carga \cite{moll1962} \cite{moll1969}
@@ -212,17 +426,26 @@ PIN o SRD. En el caso del diodo SRD, el tiempo $\tau_m$ es considerable, por lo
 que el tiempo de descarga $t_s$ es largo, típicamente decenas de nanosegundos, y comparable con el período de la señal de entrada.
 
 Para el tiempo de transición $t_t$, en \cite{moll1969} se establece una regla
-empírica que determina que será proporcional al largo de la zona $i$, con una
+empírica que determina que será proporcional al ancho de la zona $i$, con una
 relación de \qty{10}{\pico\second} por cada \qty{1}{\micro\meter} de longitud.
+La fenomenología de esta relación está relacionada a la relación del tiempo de
+transición $t_t$ con la distancia entre el centro de la juntura y el centro de
+masa de la distribución de carga $x_o$ explicada en \cite{moll1962}. A mayor
+ancho de la zona $I$, se incrementa el valor de $x_o$ y de esta manera aumenta
+el tiempo de transición.
 
 El tiempo de transición es entonces, una cantidad que queda totalmente
 determinada por el diseño del diodo. Esta variable tiene una dependencia con
-otras, como por ejemplo la capacidad de reversa $C$ y la tensión de ruptura
+otras, como por ejemplo la capacidad de juntura $C_j$ y la tensión de ruptura
 $V_{br}$. Esta última disminuye con el volumen de la zona $i$, por lo que hay
 una relación de compromiso entre $t_t$ y $V_{br}$. Siendo que este último valor
 determina la potencia máxima en operaciones de multiplicación de frecuencia,
 existe una relación de compromiso entre máxima frecuencia de operación y máxima
 potencia \cite{moll1969}.
+
+En la sección \ref{sec:charge_storage_diodes} se explicó la relación entre
+capacidad de juntura $C_j$ y tiempo de transición, que se encuentran acopladas a
+través del área de la juntura $A$.
 
 \section{Modelos circuitales y de simulación}
 \label{sec:srd_simulation_models}
@@ -246,13 +469,15 @@ junto a un gráfico de su capacidad en función del tensión.
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{images/srd_switched_model.jpg}
-        \caption{Modelo de capacidad conmutada del SRD.}
+        \caption{Modelo de capacidad conmutada del SRD. Tomada de
+        \cite{moll1969}}
         \label{fig:srd_switched_model}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{images/srd_capacity_vs_voltaje.jpg}
-        \caption{Característica de capacidad en función de tensión para SRD.}
+        \caption{Característica de capacidad en función de tensión para SRD.
+        Tomada de \cite{moll1969}}
         \label{fig:srd_capacity_vs_voltaje}
     \end{subfigure}
     \caption{Características del modelo de SRD.}
@@ -355,36 +580,61 @@ por esto que se utilizó el modelo de \cite{zhang1995}.
 
 \begin{figure}[t]
   \centering
-    \includegraphics[width=0.4\textwidth]{images/srd_circuit_model.jpg}
+    \begin{circuitikz}[scale=0.8, transform shape]
+    \node[spdt, rotate=-90] (sw) {};
+        \draw   (sw.in)     node[above] {}   to [short] ++ (1,0) coordinate
+        (aux1)
+        (sw.out 1)  node[below] {}   to [short] ++ (+0.2,0) to [C, l=$C_r$] ++
+        (0,-2) coordinate (aux2)
+        (sw.out 2)  node[below] {}   to [short] ++ (-0.2,0) to [C, l_=$C_f$] ++
+        (0,-2) |- (aux2);
+        \draw (aux1) to[short] ++ (0.5,0)
+                     to [short] ++ (0.5,0)
+                     to [short] ++ (0,-1)
+                     to[D, l=$D$] ++ (0,-1) |- (aux2);
+        \draw (aux2) to[short] ++ (0.4,0) to [short] ++ (0,-0.5)
+                     to [R=$R_s$] ++ (0,-1.5)
+                     to [L=$L_p$] ++ (0,-2) coordinate (aux3);
+        \draw (aux1) to[short] ++ (0,1) coordinate (aux4);
+        \draw (aux4) to[short] ++ (2,0) to[C=$C_p$] ++ (0,-8) |- (aux3);
+        \draw (aux4) to[short, -o] ++ (-3,0) coordinate (aux5);
+        \draw (aux5) to[open, i^=$I_D$] (aux4);
+        \draw (aux3) to[short, -o] ++ (-3,0)
+                     to[open, v^=$V_D$, european,] (aux5);
+    \end{circuitikz}
     \caption{Modelo de simulación del SRD.}
     \label{fig:srd_circuit_model}
 \end{figure}
 
-\section{SRD utilizado}
+\section{Selección de SRD}
 
-Para la implementación del generador de pulsos de este trabajo, se seleccionó un
+Para la implementación del generador de pulsos de este trabajo se seleccionó un
 diodo SRD MMD830 de MACOM \cite{mmd830-datasheet}. Este pertenece a la familia
-de diodos SRD MMDx.  Dentro de la familia, hay diversos modelos, con distintas
-características. En la tabla se muestran algunos
+de diodos SRD MMDx.  Dentro de la familia hay diversos modelos con métricas de
+desempeño proporcionales a su precio. En la tabla \ref{tab:mmdx_performance} se
+muestran algunos dispositivos de la familia.
 
 Se decidió este diodo por un balance entre desempeño y costo. Al momento de su
-adquisición, en agostod de 2022, el mismo tenía un costo de USD 54. Al momento
-de la redacción de este trabajo, el costo del mismo es de USD 33. La gran
-varación se debió al faltante de semiconductores que se experimentó en ese
-momento. El dispositivo tiene un costo elevado a comparación de semiconductores
-usuales que están en el rango de .1-5 USD, pero es un costo bajo como para
-realizar una plataforma de bajo costo.
+adquisición, en agosto de 2022, el mismo tenía un costo de USD 54. Al momento de
+la redacción de este trabajo, el costo del mismo es de USD 33. La gran variación
+se debió al faltante de semiconductores que se experimentó en ese momento. El
+dispositivo tiene un costo elevado a comparación de semiconductores usuales que
+están en el rango de .1-5 USD, pero no deja de ser un valor aceptable para la
+implementación de una plataforma de bajo costo.
 
-La familia viene en distintos tipos de encapsulados. Los hay desde bare die,
-beam lead hasta plástico o cerámico. Dado los distintos parástios que cada
-encapsulado tiene, tanto por su material como por su tamaño, el desmpeño de los
-dispostivos presenta grandes variaciones. Por ejemplo, el tiempo de transición
-$t_t$ más rápido de todos es de \qty{30}{\pico\second}, para el MMDB30-B11 en
-en beam lead. Este presenta una capacidad de juntura de \qty{0.20}{\pico\second}
-y una tensión de ruptura de \qty{14}{\volt}. En el otro extremo, el más lento de
-todos es el MMD0803 en encapsulado de vidrio, con un tiempo de transición de
-\qty{400}{\pico\second}, capacidad total de \qty{6.15}{\pico\farad}, y tensión
-de ruptura de \qty{70}{\volt}
+La familia viene en distintos tipos de encapsulados. Los hay desde \textit{bare
+die} y \textit{beam lead} hasta plástico, cerámico o vidrio. Dado los distintos
+parásitos que cada encapsulado tiene, tanto por su material como por su tamaño,
+el desempeño de los dispositivos presenta grandes variaciones. Por ejemplo, el
+tiempo de transición $t_t$ más rápido de todos es de \qty{30}{\pico\second},
+para el MMDB30-B11 en en \textit{beam lead}. Este presenta una capacidad de
+juntura de \qty{0.20}{\pico\farad} y una tensión de ruptura de \qty{14}{\volt}.
+En el otro extremo, el más lento de todos es el MMD0803 en encapsulado de
+vidrio, con un tiempo de transición de \qty{400}{\pico\second}, capacidad total
+de \qty{6.15}{\pico\farad}, y tensión de ruptura de \qty{70}{\volt}. Estas
+relaciones son consistentes y predecibles por el modelo teórico del
+funcionamiento físico de los dispositivos presentado en la sección
+\ref{sec:srd_diode}.
 
 Entre los distintos encapsulados, se mantienen las figuras de tiempo de vida de
 portadores $\tau_m$ y tiempo de transición $t_t$ para los mismos modelos. Lo que
@@ -410,12 +660,14 @@ MMD835-0805-2 & 15 & 0.36 & 0.86 & 10 & 20  & 50  & 70 \\
 \hline
 \end{tabular}
 \caption{Desempeño de familia de SRD MMDx de MACOM.}
+\label{tab:mmdx_performance}
 \end{table}
 
-El encapsulado elegido es uno cerámico, el 0805-2. En la figura puede observarse
-un diagrama del mismo, con sus dimensiones en mils y mm. Es un encapsulado muy
-pequeño, de \qty{2.16}{\milli\meter}x \qty{1.40}{\milli\meter}. En la hoja de
-datos se especifican su capacidad $C_p$ e inductancia $L_p$ parásitas en
+El encapsulado elegido es uno cerámico, el 0805-2. En la figura
+\ref{fig:srd_0805_outline} puede observarse un diagrama del mismo, con sus
+dimensiones en mils y mm. Es un encapsulado muy pequeño, de
+\qty{2.16}{\milli\meter} por \qty{1.40}{\milli\meter}. En la hoja de datos se
+especifican su capacidad $C_p$ e inductancia $L_p$ parásitas en
 \qty{0.06}{\pico\farad} y \qty{0.4}{\nano\henry} respectivamente.
 
 \begin{figure}[t]
@@ -427,8 +679,10 @@ datos se especifican su capacidad $C_p$ e inductancia $L_p$ parásitas en
 
 \subsection{Validación de modelo}
 
-Para validar el modelo propuesto para el SRD, y comprobar el desmpeño del diodo
-seleccionado, se realizaron simulaciones en el software ADS.
+Para validar el modelo propuesto para el SRD, y comprobar el desempeño del diodo
+seleccionado, se realizaron simulaciones en el software ADS. Para el modelo se
+utilizó el descripto en la sección \ref{sec:srd_simulation_models} y presentado
+en \cite{zhang1995}.
 
 En la figura \ref{fig:srd_model_ads} se observa el modelo implementado para el
 SRD. El mismo contiene las inductancias y capacidad parásitas del encapsulado
@@ -446,7 +700,8 @@ dispositivo definido simbólicamente. Este es un tipo de dispositivos disponible
 en ADS que permiten definir una relación arbitraria entre las variables del
 dispositivo. En este caso, se define una relación entre la carga $Q(t)$ y la
 tensión $v(t)$, definiendo de esta manera un capacitor no lineal. El capacitor
-definido es el descripto en la sección \ref{sec:srd_simulation_models}.
+definido es el descripto en la sección \ref{sec:srd_simulation_models} y
+presentado en \cite{zhang1995}.
 
 Como el capacitor no lineal definido contempla tanto la capacidad de difusión
 como la capacidad de juntura del diodo, en el modelo de diodo utilizado para
@@ -454,6 +709,8 @@ modelar la juntura, se define una capacidad de juntura de \qty{0}{\pico\farad},
 para evitar modelar dos veces la misma. De esta manera, la juntura únicamente
 modela la relación IV del diodo, $i_D(t) = I_S \left(
 e^{\frac{v_D(t)}{V_T}}-1\right)$.
+
+\subsection{Simulación}
 
 Con el modelo de SRD definido, se valida su comportamiento con una simulación.
 En la figura \ref{fig:srd_validation_schematic} puede observarse el circuito
@@ -517,246 +774,3 @@ simulación realizada, $t_t$ es nulo, por lo que el tiempo de crecimiento $t_r$
 observado es igual a $t_{RC}$. En esta simulación la única capacidad es la de
 juntura, en una simulación con extracción de parásitos, se contemplarían las
 capacidades de las estructuras adyacentes.
-
-*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***
-
-\textcolor{red}{Hablar de dependencia de tiempo de crecimiento con carga
-almacenada? Podemos decir que no tuvimos en cuenta esto por simplicidad.}
-
-El diodo SRD es un diodo con un tiempo de vida de portadores minoritarios (MCL
-del inglés \textit{Minority Carrier lifetime}). Esta característica resulta en
-almacenamiento de carga en el mismo durante el período de conducción positiva.
-De esta manera, si se aplica una corriente positiva y luego una negativa, el
-dioodo permanecerá en un estado de baja impedancia, es decir, de conducción,
-durante una porción de tiempo de corriente negativa. Es decir, la trancisión de
-un estado de baja impedancia a uno de alta tiene un tiempo considerable.
-
-Otra característica del diodo, es que una vez que la carga es removida, la
-trancisión al estado de alta impedancia es muy rápida, del orden de los
-picosegundos. Esta combinación de retraso en transición a estado de alta
-impedancia y rápida conmutación, permite la generación de escalones de amplitud
-de tiempo muy corto y amplitud considerable.
-
-El retraso en la transición permite el desarrollo de una amplitud considerable
-en el diodo. En comparación a un diodo usual, en el que transición es de muy
-corto tiempo. Este retraso permite la generación de una amplitud considerable, y
-luego se da un escalón de amplitud igual a esta, y con una velocidad igual a la
-del diodo, que es muy rápido.
-
-Al momento del apagado del diodo, su corriente cae a 0, resultando en una
-tensión igual a 0 en su cátodo. En un diodo usual, con un bajo MCL, al momento
-del apagado la tensión en el ánodo es pequeña en magnitud. En el caso de un
-diodo SRD con un MCL considerable, en el momento del apagado la tensión del
-ánodo se desarrolló hasta un valor considerable. La magnitud de está tensión
-dependerá de la relación entre la constante de crecimiento de la fuente que
-mueva al ánodo y el MCL. De esta manera, al momento del apagado se genera un
-escalón de amplitud considerable. La velocidad de esta transición depende de la
-velocidad de transición intrínseca del diodo y de los parásitos del nodo, y dada
-la gran velocidad del diodo este escalón será rápido.
-
-En cuanto a la geometría del diodo, este es un diodo PIN, es decir, un diodo con
-una capa de semiconductor intrínseco entre dos capas P y N. Para el diodo SRD,
-la capa I debe ser muy fina. Esto es mejor que un diodo con un dopaje lineal.
-
-El tiempo de recuperación de un diodo SRD está limitado por el tiempo de
-descarga de la capacidad de juntura.
-
-A orden 0, el diodo SRD puede modelarse como un capacitor de dos estados: en
-directa como un capacitor de capacidad infinita, y en reversa como un capacitor
-de capacidad muy pequeña, con tiempo de transición 0 entre estados
-\cite{moll1969}.
-
-Un modelo más fidedigno, incorpora los efectos de recombinación para expresar a
-$C_{fwd}$ como una capacidad finita, dada por el MCL.
-
-En cuanto al tiempo de transición $t_t$, podemos mejorar el modelo y
-considerarlo finito, y estará dado por el tiempo que demoran en extraerse los
-portadores libres en el volumen de ancho $W$ y área $A$ (¿de la zona I?). En
-esta transición, también habrá una perdida de potencia por conmutación.
-
-El tiempo de transición $t_t$ está relacionado al ancho $W$ y el área $A$ de la
-capa I. Por lo tanto, también a $V_{BR}$ y $C_{REV}$, y por lo tanto a la
-capacidad de disipación de potencia, que es proporcional a $V_{BR} \cdot C_{REV}
-\cdot f$. Por lo que tendremos una relación de compromiso entre tiempo de
-transición y disipación de potencia. \textcolor{red}{Buscar de donde sale esa
-relación con potencia disipada}
-
-El modelo de capacidad conmuta tiene una histeresis. Cuando se conmuta desde el
-estado de directa al de inversa, esta conmutación no es instantánea, ya que se
-requiere la remoción de toda la carga almacenada. En el modelo ideal de
-capacidad $C_{FWD}$ infinita, la carga a remover es toda la carga inyectada
-durante el período de conducción. Cuando contemplamos el MCL, la carga contempla
-la que ya fue recombinada, por lo que el tiempo se vuelve menor.
-
-Para contemplar los efectos de recombinación, planteamos la ecuación de
-continuidad teniendo en cuenta el MCL
-
-\begin{equation}
-    \frac{dQ}{dt} = I-\frac{Q}{\tau_R}
-\end{equation}
-
-Una corriente constante $I_F$ resultará en una carga almacenada de
-
-\begin{equation}
-    Q_F = I_F \cdot \tau_R
-\end{equation}
-
-El tiempo de descarga será el tiempo que le toma a la corriente negativa remover
-toda esta carga almacenada $Q_F$.
-
-Cuál es la diferencia entre MCL y transit time? En \cite{maas2003} dice que, por
-separado, el SRD debe
-
-\begin{itemize}
-    \item Tener un tiempo largo de almacenamiento, i.e. tiempo largo de
-        recombinación
-    \item Tener una zona de vaciamiento angosta, para que los efectos de tiempo
-        de transito no afecten la eficiencia en altas frecuencias
-\end{itemize}
-
-Entonces, no son lo mismo. Parecería que sí, en otras derivaciones donde se
-obtienen expresiones para las transiciones de on-off en un PN usual, y el
-transit time se usa casi igual que el MCL acá.
-
-El tiempo largo de recombinación, permite que se inyecte carga en la región I y
-que está NO se recombine, es decir, quede almacenada ahí. Si el tiempo de
-recombinación fuera corto, la carga no se almacenaría, porque se vería
-recombinada rápidamente.
-
-En reversa, la región de vaciamiento incluye a la región I. El ancho $d$ está
-dominado por el ancho de la región intrinséca, y recordando que la capacidad en
-reversa es
-
-\begin{equation}
-    C_s = \frac{\epsilon_s \cdot A}{d}
-\end{equation}
-
-La capacidad de reversa es prácticamente constante, independiente del voltaje y
-muy chica. \cite{maas2003}
-
-Como el silicio es un material con un MCL largo en comparación a GaAs, suele
-utilizarse para SRD.
-
-Es importante que el diodo tenga una baja resistencia serie para minimizar las
-pérdidas.
-
-
-Como el silicio es un material con un MCL largo en comparación a GaAs, suele
-utilizarse para SRD.
-
-Es importante que el diodo tenga una baja resistencia serie para minimizar las
-pérdidas.
-
-En el modelo de SPICE del diodo pn, hay un transit time. Este parámetro modela
-la capacidad de difusión, siendo la carga almacenada en directa
-\cite{CMUlecture}
-
-\begin{equation}
-    Q_p = I_p \cdot \tau_T
-\end{equation}
-
-De vuelta, cuál es la relación entre tiempo de transito y tiempo de vida de
-portadores minoritarios?
-
-En \cite{CMUlecture}, dice que la MCL $\tau_n$ es cuanto sobrevive una particula
-en promedio. Junto a esta cantidad y la constante de difusión $D_n$, definimos
-un largo de difusión
-
-\begin{equation}
-    L_n = \sqrt{\tau_n \cdot D_n}
-\end{equation}
-
-La relación entre el largo físico $W$ y y $L_n$ nos dice cuanta recombinación
-habrá
-
-\begin{itemize}
-    \item $W << L_n$: no hay recombinación en la base, concentración de
-        portadores lineal
-    \item $W >> L_n$: casi toda la carga se recombina en la base, la
-        concentración es exponencial, cayendo a 0 cerca de la base.
-\end{itemize}
-
-Per \href{https://en.wikipedia.org/wiki/Carrier_lifetime}{Wikipedia}, el
-carrier lifetime es el tiempo promedio que le toma a un portador recombinarse.
-Ahora, la apromixación de diodo corto dice que NO hay recombinación, solo en los
-extremos, no? De esa manera, $L_n$ de arriba sale de $W$. Cómo se define MCL?
-
-Están relacionados MCL con $t_t$? Tendría sentido que a mayor MCL mayor $t_t$.
-Entonces MCL tiene que ser grande pero no tanto. Serán ambas dependientes del
-ancho de la capa I? Por eso tienen una capa I fina, a comparación de un dido PIN
-usual.
-
-Buscando diodos PIN, los primeros que aparecen en digikey, tienen todos MCL por
-arriba de los 500 ns. Entonces, no es máximo MCL lo que queremos. Mepa que es
-combinación de MCL largo, para retrasar el apagado, y rápida transición, osea
-baja $t_t$.
-
-En \cite{moll1969}, dice que los procesos físicos en el apagado de un SRD son
-muy similares a los de un diodo PIN, lo que cambia son los ordenes de magnitud.
-Un diodo pin tiene una capa I de 50 a 1000 micrones, mientras que el SRD tiene
-una en el rango de 0.5 a 4.
-
-Efectivamente, \cite{moll1969} y \cite{kamal2014} dicen esto. Kamal habla del
-centro de masa de la carga, que depende de la geometría y del dopaje. Esto va
-dividio por la constante de difusión ambipolar.
-
-En \cite{moll1969}, dice que el tiempo que tarda la carga en removerse, que es
-el tiempo de la rampa, está dado por $W^2/8D$, y una vez que se cumple este
-tiempo, la resistencia se va a infinito con un delay de \qty{10}{\pico\second}
-por micron de I. Esto nos confirma lo que decíamos antes: I tiene que ser
-cortito para que la transición sea rápida.
-
-En una juntura PN, la recuperación reversa puede dividirse en dos partes: una de
-almacenamiento y una de decaímiento. En los diodos de juntura PN usuales, tanto
-tiempo de almacenamiento como tiempo de decaímiento tienen el mismo orden de
-magnitud que el tiempo de vida medio de los portadores minoritarios. En una
-familia de diodos de juntura, llamados diodos de almacenamiento de carga, este
-no es el caso, siendo el tiempo de almacenamiento del orden del MCL, pero el
-tiempo de decaímiento ordenes de magnitud menor \cite{moll1962}.
-
-El tiempo de almacenamiento está determinado por el tiempo que demoran las
-cargas de la juntura en ser removidas. La fase de decaimiento, se encuentra
-determinada por la corriente debida a cargas residuales. Para minimizar la
-duración de esta fase y, por lo tanto, maximizar la velocidad de crecimiento, es
-necesario que una vez que se extraen todas las cargas de la juntura, no queden
-portadores minoritarios. Esto se logra restringiendo los minoritarios para que
-se encuentren en la juntura o en su límite. \cite{moll1962}
-
-Las características constructivas del diodo son las que determinan estas
-propiedades. El MCL debe ser el máximo que la fabricación permita lograr,
-mientras que la corta fase de decaimiento se logra 
-
-La velocidad de crecimiento es  proporcional a $x_o^2/D$, con $x_o$ es la
-distancia entre el centro de la juntura y el centro de masa de la distribución
-de portadores inyectados. De esta manera, es claro que para lograr los tiempos
-de respuesta más rápidos posibles, es necesario que la carga almacenada se
-encuentre cerca del centro de la juntura. Esto puede lograrse con una
-\textit{graded junction}
-
-Hay una relación inversa: a más carga almacenada, mayor corrimiento del centro
-de de masa $x_o$ del centro de la juntura, y por lo tanto tiempo de crecimiento
-más lento.
-
-Esta relación también se ve entre capacidad del diodo y velocidad. A más
-capacidad, menor velocidad. A mayor área de juntura, más capacidad y menos
-velocidad.
-
-Para que los portadores se encuentren cerca de la juntura, es necesario que el
-perfil de dopaje sea graduado, y no en escalón. Esto parece decir en
-\cite{moll1962} cuando habla de "graded junction", sin embargo en
-\cite{moll1969} parece decir lo contrario, que el dopaje tiene que ser abrupto,
-como muestra en la figura 12.
-
-\cite{moll1962} hace una diferencia entre junturas "escalón", "graded" y PIN.
-
-\section{¿Acelerador de flancos?}
-
-Hablar sobre el SRD como acelerador de flancos. Capaz, depende, o podemos
-dejarlo en la parte de diseño, que ya está explicado.
-
-123, 467 469 557 584 762
