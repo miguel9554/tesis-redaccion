@@ -3,17 +3,18 @@
 \section{SRD como acelerador de flanco}
 \label{sec:srd_sharpener}
 
-Como fuese explicado anteriormente, el diodo SRD puede utilizarse para acelerar
-flancos. Esta funcionalidad combinada con un stub permite generar pulsos de gran
-velocidad de crecimiento y ancho controlable. Para explicar el funcionamiento
-del generador, empezaremos explicando el funcionamiento del circuito acelerador
-de flancos. En la figura \ref{fig:srd_sharpener} puede observarse un circuito
-que demuestra el funcionamiento.
+Como fuese explicado en el capitulo 2, el diodo SRD puede utilizarse para
+acelerar flancos. Esta funcionalidad combinada con un stub permite generar
+pulsos de gran velocidad de crecimiento y ancho controlable. Para explicar el
+funcionamiento del generador, empezaremos explicando el funcionamiento del
+circuito acelerador de flancos. En la figura \ref{fig:srd_sharpener} puede
+observarse un circuito que demuestra el funcionamiento.
 
 \begin{figure}
   \centering
     \includegraphics[width=0.6\textwidth]{images/srd_sharpener_circuit.png}
-    \caption{Circuito acelerador de flanco con SRD}
+    \caption{Circuito de ejemplo para ilustrar la utilidad del SRD como
+    acelerador de flanco.}
     \label{fig:srd_sharpener}
 \end{figure}
 
@@ -25,52 +26,57 @@ la resistencia $R_L$ de \qty{50}{\ohm}.
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=\textwidth]{images/srd_sharpener_result.png}
-    \caption{Resultado de simulación.}
+    \caption{A la izquierda las tensiones $V_p$ del generador y $V_o$ sobre el
+    diodo. A la derecha, detalle de la tensión sobre el diodo $V_o$ ilustrando el
+    acortamiento del tiempo de crecimiento.}
     \label{fig:srd_sharpener_result}
 \end{figure}
 
 En la figura \ref{fig:srd_sharpener_result} se observa el resultado de la
 simulación. Vemos que, hasta aproximadamente \qty{85}{\nano\second}, la señal de
 salida $V_o$ es igual a la señal de entrada, afectada por el divisor entre $R_L$
-y $R_s$, $\frac{R_L}{R_L+R_s} = 0.5$. Durante este tiempo, el \textit{SRD} presenta
-una baja impedancia. En la porción positiva de la señal de entrada $V_p$, esto
-es coincidente con un diodo usual, ya que el mismo se encuentra polarizado en
-directa. En lo que destaca el \textit{SRD} de un diodo usual, es que luego de que la
-tensión de entrada se invierta, este sigue presentando una baja impedancia. Esto
-se debe al gran tiempo de vida de sus portadores minoritarios, lo que requiere
-un tiempo apreciable para descargarlos y pasar al estado de alta impedancia.
+y $R_s$, es decir
 
-Se observa en la forma de onda de $V_o$ que esta transición se da alrededor de
+\begin{equation}
+    V_o(t < \qty{85}{\nano\second)} = V_p \times \frac{R_L}{R_L+R_s} = V_p
+    \times 0.5.
+\end{equation}
+Durante este tiempo, el SRD se encuentra en un estado de una baja impedancia. En
+la porción positiva de la señal de entrada $V_p$, esto es coincidente con un
+diodo de juntura usual, ya que el mismo se encuentra polarizado en directa. En
+lo que destaca el SRD de un diodo usual, es que luego de que la tensión de
+entrada se invierta, este sigue presentando una baja impedancia. Esto se debe al
+gran tiempo de vida de sus portadores minoritarios, lo que requiere un tiempo
+apreciable para descargarlos y pasar al estado de alta impedancia. Se observa en
+la forma de onda de $V_o$ que esta transición se da alrededor de
 \qty{85}{\nano\second}, donde la tensión de salida cae abruptamente a $0$. En la
 forma de onda de la corriente se observa la misma caída abrupta en los
 \qty{85}{\nano\second}, y una inversión en el signo de la corriente con la
-inversión en el signo de la cuadrada de entrada.
+inversión en el signo de la cuadrada de entrada. Este colapso a $0$ de la
+corriente y tensión se debe al efecto de recuperación reversa descripto en el
+capitulo 2.
 
 Llamaremos corriente de inyección de carga $I_F$ a la corriente que circula por
-el \textit{SRD} con sentido positivo. Esta corriente determina la carga
+el SRD con sentido positivo. Esta corriente determina la carga
 $Q_F$ almacenada en el mismo, y ambas se relacionan mediante \cite{an918}
 \cite{moll1969}
 
 \begin{equation}
-    Q_F = I_F \cdot \tau \cdot \left( 1 - e^{-t_F/\tau}\right)
+    Q_F = I_F \times \tau \times \left( 1 - e^{-t_F/\tau}\right).
 \end{equation}
-
 Para el circuito presentado, siendo $V_h$ el valor de la tensión positiva de
 la señal cuadrada de entrada, la corriente $I_F$ estará dada por
 
 \begin{equation}
-    I_{F} = \frac{V_h}{R_s+R_L}
+    I_{F} = \frac{V_h}{R_s+R_L}.
 \end{equation}
-
 Para la corriente de extracción de carga $I_R$, que es la corriente existente
 durante la porción negativa de la señal cuadrada de entrada en la que el
-\textit{SRD} se encuentra en un estado de baja impedancia, tenemos la siguiente
+SRD se encuentra en un estado de baja impedancia, tenemos la siguiente
 expresión
-
 \begin{equation}
     I_{R} = \frac{V_l}{R_s+R_L}
 \end{equation}
-
 con $V_l$ el valor de la tensión negativa de la señal cuadrada de entrada.
 
 El tiempo de descarga del diodo $t_s$ es el tiempo que tarda la corriente
@@ -81,46 +87,51 @@ corrientes $I_F$ e $I_R$ y el tiempo de vida de los portadores minoritarios
 $\tau$ mediante \cite{an918}
 
 \begin{equation}
-    \frac{t_s}{\tau} = \ln \left( 1 + \frac{I_F}{I_R} \right)
+    \frac{t_s}{\tau} = \ln \left( 1 + \frac{I_F}{I_R} \right).
 \end{equation}
-
 En la figura \ref{fig:srd_sharpener_result}, puede observarse el
-tiempo de crecimiento del escalón generado con el apagado del \textit{SRD}. Se
+tiempo de crecimiento del escalón generado con el apagado del SRD. Se
 toma el tiempo de crecimiento \qty{10}{\percent}-\qty{90}{\percent}. Siendo que
 el escalón de tensión se da entre \qty{-2.5}{\volt} y \qty{0}{\volt}, tenemos
-que el punto de \qty{10}{\percent} es $V_{10\%} = -2.5 \ V \ \cdot 0.9 =  2.25 \
-V$, y el de \qty{90}{\percent} es $V_{90\%} = -2.5 \ V \ \cdot 0.1 =  -0.25 \
+que el punto de \qty{10}{\percent} es $V_{10\%} = -2.5 \ V \ \times 0.9 =  2.25 \
+V$, y el de \qty{90}{\percent} es $V_{90\%} = -2.5 \ V \ \times 0.1 =  -0.25 \
 V$.
 
 En cuanto a la magnitud del salto de tensión $\Delta V$, estará dado por el
-valor de la tensión en el cátodo del \textit{SRD} antes de que pase al estado de
+valor de la tensión en el cátodo del SRD antes de que pase al estado de
 alta impedancia. Esta tensión estará dada por el divisor entre $R_L$ y $R_s$,
 
 \begin{equation}
-    \Delta V = V_l \cdot \frac{R_L}{R_L+R_s}
+    \Delta V = V_l \times \frac{R_L}{R_L+R_s}.
 \end{equation}
-
 El tiempo de crecimiento de este escalón estará dado por dos componentes: un
 tiempo de transición intrínseco del diodo SRD $t_t$, y un tiempo de carga $t_{RC}$  dado por la
 capacidad en reversa $C_{VR}$ del diodo SRD y la resistencia equivalente vista desde sus terminales \cite{an918}. El tiempo de crecimiento total estará dado por
 
 \begin{equation}
-    t_r = \sqrt{t_t^2+t_{RC}^2}
+    t_r = \sqrt{t_t^2+t_{RC}^2}.
 \end{equation}
-
 Vemos por los marcadores de la figura, que estos tiempos son
 \qty{87.77}{\nano\second} y \qty{88.06}{\nano\second} respectivamente, por lo
 que tenemos un tiempo de crecimiento
 
 \begin{equation}
     t_r = \qty{87.77}{\nano\second} - \qty{88.06}{\nano\second} =
-    \qty{290}{\pico\second}
+    \qty{290}{\pico\second}.
 \end{equation}
+Como fuese explicado anteriormente, este tiempo de crecimiento estará dado por
+el tiempo de transición del diodo y por el tiempo del RC formado entre la
+capacidad de reversa del diodo y la resistencia vista desde los nodos del
+capacitor.
 
-Como fuese explicado anteriormente, este
-tiempo de crecimiento estará dado por el tiempo de transición del diodo y por el
-tiempo del RC formado entre la capacidad de reversa del diodo y la resistencia
-vista desde los nodos del capacitor.
+De esta manera observamos cómo un circuito compuesto por un SRD en serie con una
+fuente lenta con \qty{5}{\nano\second} de flanco permite generar a la salida un
+flanco extremadamente rápido, de \qty{290}{\pico\second} en este caso. Es
+interesante notar que la velocidad del flanco resultante es independiente del de
+entrada, por lo que este podría ser incluso más lento, y el flanco de salida de
+\qty{290}{\pico\second} se mantendría. En cuanto a la amplitud del flanco de
+salida, se demostró que es igual a la amplitud del generador lento afectado por
+el divisor resistivo entre la impedancia de carga y la impedancia de fuente.
 
 \section{Generador de pulsos con \textit{stub}}
 \label{sec:generador_pulsos_stub}
@@ -187,7 +198,7 @@ un pulso en base a una forma de onda creciente o decreciente.
 
         \end{axis}
     \end{tikzpicture}
-    \caption{Generación de pulsos en base a reflexiones}
+    \caption{Generación de pulsos en base a reflexiones.}
     \label{fig:stub_time_domain_waveforms}
 \end{figure}
 
@@ -202,45 +213,53 @@ de crecimiento del escalón de entrada. De esta manera, se puede controlar el
 ancho del pulso ajustando el largo de la línea, que determina el valor de $T_d$.
 
 Definiendo al tiempo de propagación de la línea de transmisión $T$, vemos que el
-tiempo $T_d$ que demora el pulso de entrada en reflejarse es $2*T$, el tiempo de
+tiempo $T_d$ que demora el pulso de entrada en reflejarse es $2 \times T$, el tiempo de
 un camino de ida y vuelta.  El tiempo de propagación $T$ está dado por la
 velocidad de propagación en la línea de transmisión $v_p$ y el largo de la línea
 $L$.
 
-En un medio con permisividad relativa $\kappa$ y permeabilidad magnética
+En un medio con permitividad relativa $\kappa$ y permeabilidad magnética
 relativa unitaria, la velocidad de propagación está dada por \cite{pozar2011}
 
 \begin{equation}
-  v_p = \frac{c_0}{\sqrt{\kappa}}
+  v_p = \frac{c_0}{\sqrt{\kappa}}.
 \end{equation}
-
-Para una línea de transmisión, es posible desarrollar una \textit{permisividad
-relativa efectiva} $\kappa_{eff}$, que es una función de la geometría de la
-línea y sus materiales \cite{pozar2011}. Esta función puede obtenerse a través
-de una forma cerrada, generalmente involucrando diversas aproximaciones, o
-mediante métodos numéricos iterativos. El punto a resaltar es que, dada una
+Para una línea de transmisión, es posible desarrollar una \textit{permitividad
+relativa efectiva} $\kappa_{\text{eff}}$, que es una función de la geometría de
+la línea y sus materiales \cite{pozar2011}. Esta función puede obtenerse a
+través de una forma cerrada, generalmente involucrando diversas aproximaciones,
+o mediante métodos numéricos iterativos. El punto a resaltar es que, dada una
 determinada estructura de línea de transmisión y sus materiales, se puede
-considerar a $\kappa_{eff}$ una constante del circuito.
+considerar a $\kappa_{\text{eff}}$ una constante del circuito.
 
 Es interesante notar que para una línea de transmisión con modo de propagación
-TEM, $\kappa_{eff}$ es una función del corte transversal de la línea de
-transmisión, y no de su dimensión longitudinal. De esta manera, $\kappa_{eff}$
-es independiente del largo $L$ de la línea \cite{pozar2011}.
+TEM, $\kappa_{\text{eff}}$ es una función del corte transversal de la línea de
+transmisión, y no de su dimensión longitudinal. De esta manera,
+$\kappa_{\text{eff}}$ es independiente del largo $L$ de la línea
+\cite{pozar2011}.
 
-Entonces, el tiempo $T_d$ estará dado por
+Para el caso de una línea no TEM, no es posible definir un $\kappa_{\text{eff}}$
+independiente de la longitud. Sin embargo, para ciertas líneas no TEM, es
+posible hacer una aproximación cuasi-TEM en determinado rango de frecuencia.
+Bajo esto apromixación, es posible definir una constante $\kappa_{\text{eff}}$.
+Este caso es de interés ya que la línea microtira utilizada en este trabajo es
+no TEM, pero aproximable como cuasi-TEM en todo el ancho de banda de operación.
+
+Utilizado la constante $\kappa_{\text{eff}}$ para la expresión de velocidad de
+propagación en la línea $v_p$, podemos encontrar la siguiente representación
+para el tiempo $T_d$
 
 \begin{equation}
-    T_p = 2 \cdot T = 2 \cdot \frac{L}{v_p} =2 \cdot \sqrt{\kappa_{eff}} \cdot \frac{L}{c_0}
+    T_d = 2 \times T = 2 \times \frac{L}{v_p} =\sqrt{\kappa_{\text{eff}}}
+    \times \frac{2L}{c_0}.
 \end{equation}
-
 De esta forma, se puede diseñar el largo de línea $L$ para obtener un tiempo
 $T_d$ deseado
 
 \begin{equation}
     \label{eq:stub_length_vs_delay}
-    L = \frac{T_p}{2} \cdot \frac{c_0}{\sqrt{\kappa_{eff}}}
+    L = \frac{T_d}{2} \times \frac{c_0}{\sqrt{\kappa_{\text{eff}}}}.
 \end{equation}
-
 El tiempo $T_d$ es el tiempo en el que el pulso formado alcanza su valor máximo
 $A$. El ancho del pulso $T_p$ dependerá de $T_d$ y también del tiempo de
 crecimiento $t_r$ de la señal de entrada. La forma del pulso estará dada por la
@@ -248,11 +267,10 @@ relación entre $t_r$ y $T_d$. Para casos en los que $T_d \approx t_r$, la forma
 del pulso será aproximadamente gaussiana y podemos tomar la aproximación
 
 \begin{equation}
-    T_p \approx 2 \cdot T_d
+    T_p \approx 2 \times T_d,
 \end{equation}
-
-Donde la aproximación indica que el ancho del pulso $T_p$ tendrá un orden de
-magnitud $2 \cdot T$. Para una relación precisa entre las variables, es
+donde la aproximación indica que el ancho del pulso $T_p$ tendrá un orden de
+magnitud $2 \times T$. Para una relación precisa entre las variables, es
 necesario contemplar el tiempo de crecimiento $t_r$.
 
 \subsection{Generador de pulsos SRD+\textit{stub}}
@@ -268,9 +286,8 @@ Como fuese explicado en la sección \ref{sec:srd_sharpener}, el escalón de
 tensión generado en el SRD tiene una magnitud dada por
 
 \begin{equation}
-    \Delta V = V_l \cdot \frac{R_L}{R_L+R_s}
+    \Delta V = V_l \times \frac{R_L}{R_L+R_s}.
 \end{equation}
-
 La amplitud del pulso $A$ estará dada por el valor de este escalón en el instante en
 el que el pulso reflejado se recombina, como puede observarse en la figura
 \ref{fig:stub_time_domain_waveforms}. Si asumimos que el escalón
@@ -278,17 +295,16 @@ crece como un sistema de primer orden con constante de tiempo $\tau$, el valor
 del escalón en función del tiempo es
 
 \begin{equation}
-  V(t) = \Delta V \left( 1-e^{-\frac{t}{\tau}}\right)
+  V(t) = \Delta V \left( 1-e^{-\frac{t}{\tau}}\right).
 \end{equation}
-
 Siendo el tiempo que tarda el pulso en reflejarse ida y vuelta $2T$ o $T_d$, la
 amplitud del pulso estará dada por
 
 \begin{equation}
     \label{eq:A_p}
-    A_p = V(T_d) = V_l \cdot \frac{R_L}{R_L+R_s} \left( 1-e^{-\frac{T_d}{\tau}}\right)
+    A_p = V(T_d) = V_l \times \frac{R_L}{R_L+R_s} \left(
+    1-e^{-\frac{T_d}{\tau}}\right).
 \end{equation}
-
 Vemos que $\Delta V$ es el máximo valor que puede alcanzar el pulso, siendo la
 relación $\frac{T_d}{\tau}$ la que determina qué porcentaje de este valor tomará
 el pulso. Para $ \tau \ll T_d $, será $e^{-\frac{T_d}{\tau}} \approx 1$, y por lo
@@ -313,7 +329,7 @@ propagación, \qty{60}{\pico\second} en este caso.
 \begin{figure}[t!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/stub_generator_circuit.png}
-    \caption{Generador de pulsos basado en \textit{stub}}
+    \caption{Generador de pulsos basado en \textit{stub}.}
     \label{fig:stub_generator_circuit}
 \end{figure}
 
@@ -348,7 +364,7 @@ una no idealidad no contemplada hasta ahora en el modelo presentado.
 \begin{figure}[t!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/stub_generator_sim_result.png}
-    \caption{Resultado de simulación de generador con \textit{stub}}
+    \caption{Resultado de simulación de generador con \textit{stub}.}
     \label{fig:stub_generator_sim_result}
 \end{figure}
 
@@ -394,83 +410,16 @@ utilizado, y una anulación del sobrepico negativo.
 \begin{figure}[t!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/pulser_w_schottky_sch.png}
-    \caption{\textit{Pulser} final incluyendo diodo Schottky}
+    \caption{\textit{Pulser} final incluyendo diodo Schottky.}
     \label{fig:pulser_w_schottky_sch}
 \end{figure}
 
 \begin{figure}[t!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/pulser_w_schottky_sim_result.png}
-    \caption{Resultado de simulación de generador con rectificador}
+    \caption{Resultado de simulación de generador con rectificador.}
     \label{fig:pulser_w_schottky_sim_result}
 \end{figure}
-
-\section{Ancho de banda del pulso}
-\label{sec:pulse_bandwidth}
-
-Tanto para dimensionar correctamente los sistemas por los que el pulso será
-transmitido como para calcular diversas métricas de desempeño, es fundamental la
-figura de ancho de banda del pulso. Se obtendra la misma en base a estimaciones
-teóricas y resultados extraídos de las simulaciones realizadas.
-
-En un sistema de primer orden, pueden relacionarse el tiempo de crecimiento $\tau_r$ con el ancho de banda del sistema $B$ mediante \cite{oppenheim1999dsp}
-
-\begin{equation}
-    B = \frac{0.35}{\tau_r}
-\end{equation}
-
-Entonces, podemos encontrar el ancho de banda $B$ necesario en un sistema para
-transmitir una señal con tiempo de crecimiento $\tau_r$ en base a esta relación.
-
-Como puede observarse en el esquema de la figura
-\ref{fig:stub_time_domain_waveforms}, el pulso crecerá durante un tiempo $T_d$,
-con $T_d$ el tiempo de ida y vuelta en el stub. Es decir, la señal crecerá
-durante $T_d$. Podemos tomar a este tiempo como el $t_r$ de un sistema de primer
-orden. De esa manera, tenemos un ancho de banda $B$ dado por
-
-\begin{equation}
-    \begin{aligned}
-        B &= \frac{0.35}{T_d} \\
-        B &= \frac{0.35}{ \qty{120}{\pico\second}} \\
-        B &= \qty{2.92}{\giga\hertz} \\
-    \end{aligned}
-\end{equation}
-
-Para pulsos gaussianos, existe una relación entre su ancho temporal y el tiempo
-de crecimiento. Esta es \cite{paschotta_gaussian_bandwidth}
-
-\begin{equation}
-    B = \frac{0.44}{\tau_p}
-\end{equation}
-
-Bajo esta definición, tenemos un ancho de banda
-
-\begin{equation}
-    \begin{aligned}
-        B &= \frac{0.44}{T_d} \\
-        B &= \frac{0.44}{ \qty{120}{\pico\second}} \\
-        B &= \qty{3.67}{\giga\hertz} \\
-    \end{aligned}
-\end{equation}
-
-Tenemos dos estimaciones de ancho de banda, \qty{2.92}{\giga\hertz} y
-\qty{3.67}{\giga\hertz}. Podemos comparar estas figuras con el ancho de banda
-del pulso de la simulación realizada. Para esto, calculamos el ancho de banda de
-\qty{3}{\dB} del pulso de la figura \ref{fig:pulser_w_schottky_sim_result}. En
-la figura \ref{fig:pulse_bandwidth_simulation} se observa el pulso junto a su
-espectro. De los marcadores, se observa un ancho de banda de \qty{3}{\dB}
-\qty{3.26}{\giga\hertz}.
-
-\begin{figure}[t!]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/pulse_bandwidth_simulation.jpg}
-    \caption{Espectro del pulso de la figura \ref{fig:pulser_w_schottky_sim_result}}
-    \label{fig:pulse_bandwidth_simulation}
-\end{figure}
-
-Dadas las dos estimaciones teóricas de ancho de banda y el resultado de la
-simulación, se tomará como estimación de ancho de banda del pulso
-\qty{3.5}{\giga\hertz}.
 
 \section{Consumo del generador}
 \label{sec:pulser_power}
@@ -500,66 +449,61 @@ señal de entrada y al ciclo complementario $D'=1-D$, la corriente RMS es
 
 \begin{equation}
     \begin{aligned}
-        I_{RMS}^2 &= \frac{1}{T} \cdot \int_{t_0}^{t_0+T} i(t)^2dt = \frac{1}{T}
-        \cdot \left( D \cdot T \cdot I_+^2 + T_s \cdot I_-^2 \right) \\
-        I_{RMS}^2 &= D \cdot I_+^2 + \frac{T_s}{T} \cdot I_-^2 \\
-        I_{RMS}^2 &< D \cdot I_+^2 + D' \cdot I_-^2 \\
+        I_{RMS}^2 &= \frac{1}{T} \times \int_{t_0}^{t_0+T} i(t)^2dt = \frac{1}{T}
+        \times \left( D \times T \times I_+^2 + T_s \times I_-^2 \right) \\
+        I_{RMS}^2 &= D \times I_+^2 + \frac{T_s}{T} \times I_-^2 \\
+        I_{RMS}^2 &< D \times I_+^2 + D' \times I_-^2. \\
     \end{aligned}
 \end{equation}
-
-Podemos acotar a la corriente RMS con $D \cdot I_+^2 + D' \cdot I_-^2$.
+Podemos acotar a la corriente RMS con $D \times I_+^2 + D' \times I_-^2$.
 Despreciando la caída de tensión en el SRD, las expresiones de estas corrientes son
 
 \begin{equation}
     \begin{aligned}
         I_+ &= \frac{V_+}{R_s} \\
-        I_- &= \frac{V_-}{R_s} \\
+        I_- &= \frac{V_-}{R_s}. \\
     \end{aligned}
 \end{equation}
-
 Tomando como tensión máxima \qty{10}{\volt}, tenemos que la corriente máxima será
 $I_M = \frac{ \qty{10}{\volt}}{ \qty{50}{\ohm}} = \qty{200}{\milli\ampere}$.
 
 \begin{equation}
     \begin{aligned}
-        I_{RMS}^2 &< D \cdot \left( \frac{V_+}{R_s} \right) ^2 + D' \cdot
+        I_{RMS}^2 &< D \times \left( \frac{V_+}{R_s} \right) ^2 + D' \times
         \left( \frac{V_-}{R_s} \right) ^2 \\
-        I_{RMS}^2 &< D \cdot \left( \frac{\qty{10}{\volt}}{\qty{50}{\ohm}} \right) ^2 + D' \cdot
+        I_{RMS}^2 &< D \times \left( \frac{\qty{10}{\volt}}{\qty{50}{\ohm}}
+        \right) ^2 + D' \times
         \left( \frac{\qty{10}{\volt}}{\qty{50}{\ohm}} \right) ^2 \\
         I_{RMS}^2 &< \left( \frac{\qty{10}{\volt}}{\qty{50}{\ohm}} \right) ^2  \\
-        I_{RMS} &< \qty{200}{\milli\ampere} \\
+        I_{RMS} &< \qty{200}{\milli\ampere}. \\
     \end{aligned}
 \end{equation}
-
 En cuanto a la corriente de la rama de salida, esta está será igual a
 
 \begin{equation}
-    i_o(t) = \frac{v_o(t)}{R_L}
+    i_o(t) = \frac{v_o(t)}{R_L}.
 \end{equation}
-
 Podemos acotar el consumo tomando un pulso de peor caso de \qty{3}{\volt} de
 amplitud y \qty{0.5}{\nano\second} de duración.
 
 \begin{equation}
     \begin{aligned}
-        V_{RMS}^2 &< \frac{1}{T} \cdot \int_{t_0}^{t_0+T} v(t)^2dt =
-        \frac{1}{\qty{100}{\nano\second}} \cdot \qty{0.5}{\nano\second} \cdot
-        \left( \cdot \qty{3}{\volt} \right )^2 \\
+        V_{RMS}^2 &< \frac{1}{T} \times \int_{t_0}^{t_0+T} v(t)^2dt =
+        \frac{1}{\qty{100}{\nano\second}} \times \qty{0.5}{\nano\second} \times
+        \left( \times \qty{3}{\volt} \right )^2 \\
         V_{RMS} &< \frac{\qty{3}{\volt}}{\sqrt{200}} \\
-        V_{RMS} &< \qty{213}{\milli\volt}
+        V_{RMS} &< \qty{213}{\milli\volt}.
     \end{aligned}
 \end{equation}
-
 En la impedancia de salida $Z_o$, esto resulta en una disipación de potencia
 
 \begin{equation}
     \begin{aligned}
         P_{o} &= \frac{V_{RMS}^2}{R_o} \\
         P_{o} &= \frac{ \qty{213}{\milli\volt}^2}{ \qty{50}{\ohm}} \\
-        P_{o} &= \qty{0.3}{\milli\watt} \\
+        P_{o} &= \qty{0.3}{\milli\watt}. \\
     \end{aligned}
 \end{equation}
-
 Que representa una potencia prácticamente despreciable.
 
 En el caso del diodo Schottky, asumiendo una tensión de encendido constante
@@ -568,17 +512,132 @@ tenemos
 
 \begin{equation}
     \begin{aligned}
-        P_{D} &< \frac{1}{T} \cdot \int_{t_0}^{t_0+T} v(t) \cdot i(t) dt =
-        \frac{1}{T} \cdot \int_{t_0}^{t_0+T} V_D \cdot \frac{v_o(t)}{R_o} dt \\
-        P_{D} &< \frac{1}{\qty{100}{\nano\second}} \cdot \left( \qty{0.5}{\nano\second} \cdot
-        \qty{650}{\milli\volt} \cdot \frac{\qty{3}{\volt}}{
+        P_{D} &< \frac{1}{T} \times \int_{t_0}^{t_0+T} v(t) \times i(t) dt =
+        \frac{1}{T} \times \int_{t_0}^{t_0+T} V_D \times \frac{v_o(t)}{R_o} dt \\
+        P_{D} &< \frac{1}{\qty{100}{\nano\second}} \times \left(
+        \qty{0.5}{\nano\second} \times
+        \qty{650}{\milli\volt} \times \frac{\qty{3}{\volt}}{
             \qty{50}{\ohm}} \right) \\
-        P_{D} &< \qty{0.2}{\milli\watt} \\
+        P_{D} &< \qty{0.2}{\milli\watt}. \\
+    \end{aligned}
+\end{equation}
+La máxima potencia especificada por el fabricante es de \qty{50}{\milli\watt},
+por lo que nos encontramos muy por debajo del límite.
+
+\section{Ancho de banda del pulso}
+\label{sec:pulse_bandwidth}
+
+Tanto para dimensionar correctamente los sistemas por los que el pulso será
+transmitido como para calcular diversas métricas de desempeño, es fundamental la
+figura de ancho de banda del pulso. Estimar en forma precisa el ancho de banda
+del pulso mediante cálculos teóricos es difícil dada la naturaleza no lineal del
+circuito y los diversos factores que intervienen para dar forma al pulso. De
+todas maneras, realizaremos algunos cálculos basados en modelos simples para
+intentar estimar a priori el ancho de banda del pulso que se obtendrá. Luego
+contrastaremos estos valores con la simulación del circuito.
+
+El modelo simplificado de pulso que asumiremos es uno gaussiano. Se encontrará
+una expresión para el ancho de banda del pulso gaussiano en función de su
+duración temporal, y finalmente se demostrará que el pulso gaussiano es una
+buena aproximación para el pulso simulado.
+
+\subsection{Ancho de banda de pulso gaussiano}
+
+Supongamos que el pulso tiene forma gaussiana con la siguiente expresión:
+\begin{equation}
+\label{eq:gaussian_pulse}
+p(t) = b e^{-a t^2}.
+\end{equation}
+Su transformada de Fourier es real y par y también tiene forma gaussiana:
+\begin{align}
+    \mathcal{F}(p)(f) &= \int f(t) e^{-2\pi j f t} dt\\
+    &= b\sqrt{\frac{\pi}{a}} e^{-\frac{(\pi f)^2}{a}}.
+\end{align}
+Para medir el ancho de banda podemos calcular la respuesta normalizada en dB:
+\begin{align}
+    H_{\text{norm}}(f) = 20 \log_{10} \bigg| \frac{\mathcal{F}(p)(f)}{\mathcal{F}(p)(0)}\bigg|  & = 20 \log_{10} e^{-\frac{(\pi f)^2}{a}}\\
+ &= -20 \pi^2 \log_{10}(e) \frac{f^2}{a} \ \ \ [\text{dB}].
+\end{align}
+Vemos entonces que el valor de $b$ no influye sobre el ancho de banda como era
+de esperarse. Ahora relacionamos el valor de $a$ con el valor FWHM (del inglés
+\textit{Full Width at Half Maximum}) medido del pulso. Este valor se define como
+la diferencia temporal entre los puntos en los que el puslo alcanza la mitad de
+su valor máximo. Definimos $t_M$, el tiempo que tarda el pulso en caer a 1/2 de
+su amplitud desde el maximo:
+\begin{align}
+    e^{-a t_M^2} &= \frac{1}{2}\\
+    a t_M^2 &= \log 2 \\
+    a = &= \frac{\log 2}{t_M^2}
+    \label{eq:gaussian_a_expression}
+\end{align}
+Tenemos entonces:
+\begin{align}
+    H_{\text{norm}}(f) = -20 \pi^2 \log_{10}(e) \frac{(f t_M)^2}{\log 2} \ \ \ [\text{dB}]
+\end{align}
+
+De la figura \ref{fig:pulser_w_schottky_sim_result} vemos que el FWHM está dado
+por la diferencia de tiempo entre los marcadores \textit{m2} y \textit{m3},
+siendo $FWHM= \qty{0.09}{\nano\second}$. Teniendo en cuenta que FWHM y $t_M$ se
+relacionan a través de $t_M=FWHM/2$, tenemos $t_M=\qty{0.045}{\nano\second}$.
+
+Llegamos entonces a una relación entre la respuesta en frecuencia normalizada en
+dB $H_{\text{norm}}(f)$ y la frecuencia $f$. En la figura
+\ref{fig:gaussian_pulse_freq_response} se observa un gráfico con esta relación.
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/gaussian_pulse_freq_response.png}
+    \caption{Respuesta en frecuencia normalizada del pulso gaussiano.}
+    \label{fig:gaussian_pulse_freq_response}
+\end{figure}
+
+Podemos despejar $f$ para de esta manera obtener la frecuencia $f$ en la que se
+realiza una cierta atenuación $H_{\text{norm}}$
+
+\begin{align}
+    f &= \sqrt{-\frac{\log 2 }{20 \pi^2 \log_{10}(e)} \frac{H_{\text{norm}}}{t_M^2}} \\
+    &\approx 0.09 \frac{\sqrt{|B|}}{t_M}.
+\end{align}
+Tomando una atenuación de $H_{\text{norm}}=-3$dB obtenemos el ancho de banda de
+\qty{3}{\dB} del pulso. En este caso, obtenemos
+
+\begin{equation}
+    \begin{aligned}
+        B_{\text{3dB}} &\approx 0.09 \frac{\sqrt{3}}{\qty{0.045}{\nano\second}}.  \\
+        B_{\text{3dB}} &\approx \qty{3.46}{\giga\hertz}.
+    \end{aligned}
+\end{equation}
+En sistemas UWB es usual tomar la definición de ancho de banda a \qty{10}{\dB}.
+Tomando esta definición llegamos a un ancho de banda de
+
+\begin{equation}
+    \begin{aligned}
+        B_{\text{10dB}} &\approx 0.09 \frac{\sqrt{10}}{\qty{0.045}{\nano\second}}.  \\
+        B_{\text{10dB}} &\approx \qty{6.32}{\giga\hertz}.
     \end{aligned}
 \end{equation}
 
-La máxima potencia especificada por el fabricante es de \qty{50}{\milli\watt},
-por lo que nos encontramos muy por debajo del límite.
+\subsection{Comparación contra simulación}
+
+Para validar la aproximación gaussiana, graficamos el pulso simulado de la
+figura \ref{fig:pulser_w_schottky_sim_result} junto al pulso obtenido con la
+ecuación \ref{eq:gaussian_pulse}. Para $b$ utilizamos la amplitud de pulso, que
+se observa del marcador \textit{m1} es \qty{446}{\milli\volt}. Para $a$,
+reemplazamos en \ref{eq:gaussian_a_expression} el valor
+$t_M=\qty{0.045}{\nano\second}$ y obtenemos $a=
+\qty{148.7}{\per\square\nano\second}$. En la figura
+\ref{fig:gaussian_pulse_comparison_w_simulation} se observa el resultado. Dado
+el buen acuerdo entre estimación y simulación, consideramos al ancho de banda
+del pulso como el calculado anteriormente.
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/gaussian_pulse_comparison_w_simulation.png}
+    \caption{Comparación de pulso simulado y gaussiano dado por
+    \ref{eq:gaussian_pulse}, con $a= \qty{148.7}{\per\square\nano\second}$ y
+    $b=\qty{446}{\milli\volt}$.}
+    \label{fig:gaussian_pulse_comparison_w_simulation}
+\end{figure}
 
 \section{Diseño del \textit{driver}}
 
@@ -619,7 +678,7 @@ consume tiene una abrupta caída a 0 en el instante que se genera el pulso.
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=0.5\textwidth]{images/driver.drawio.png}
-    \caption{Diagrama en bloques del driver propuesto}
+    \caption{Diagrama en bloques del driver propuesto.}
     \label{fig:driver_block_diagram}
 \end{figure}
 
@@ -657,10 +716,10 @@ partir de $T$.
 Sabemos que un filtro pasa altos de primer orden con frecuencia de corte $f_c$
 tiene una característica de magnitud que presenta atenuación desde continua hasta
 aproximadamente $f_c$, y una fase que varía \qty{90}{\degree} desde
-$\frac{f_c}{10}$ hasta $f_c \cdot 10$. Entonces, para filtrar la componente
+$\frac{f_c}{10}$ hasta $f_c \times 10$. Entonces, para filtrar la componente
 continua de la unipolar y transmitir la bipolar sin distorsión,
 es necesario que la frecuencia de la cuadrada sea mayor a 10 veces $f_c$, es
-decir $T > 10 \cdot f_c$, o $f_c < \frac{T}{10}$.
+decir $T > 10 \times f_c$, o $f_c < \frac{T}{10}$.
 
 Siendo la $PRF$ objetivo de \qty{10}{\mega\hertz}, el requerimiento sobre $f_c$
 es entonces $f_c < \qty{1}{\mega\hertz}$.
@@ -680,13 +739,12 @@ una impedancia en ese mismo orden de valores. De esta manera,
 \begin{equation}
     \begin{aligned}
         f_c &< \qty{1}{\mega\hertz} \\
-        \frac{1}{2\pi \cdot |Z| \cdot C} &< \qty{1}{\mega\hertz} \\
-        C &> \frac{1}{2\pi \cdot |Z| \cdot \qty{1}{\mega\hertz}} \\
-        C &> \frac{1}{2\pi \cdot \qty{50}{\mega\hertz} \cdot \qty{1}{\mega\hertz}} \\
-        C &> \qty{3.2}{\nano\farad} \\
+        \frac{1}{2\pi \times |Z| \times C} &< \qty{1}{\mega\hertz} \\
+        C &> \frac{1}{2\pi \times |Z| \times \qty{1}{\mega\hertz}} \\
+        C &> \frac{1}{2\pi \times \qty{50}{\mega\hertz} \times \qty{1}{\mega\hertz}} \\
+        C &> \qty{3.2}{\nano\farad}. \\
     \end{aligned}
 \end{equation}
-
 La capacidad debe estar por arriba de \qty{3.2}{\nano\farad}, valores fácilmente
 obtenibles en los tamaños de encapsulados objetivo.
 
@@ -706,17 +764,15 @@ El valor medio de la tensión $V_m$ en una señal cuadrada con valores $V_+$ y
 $V_-$, con período $T$ y ciclo de trabajo $D$ está dado por
 
 \begin{equation}
-    V_m = D \cdot V_+ + (1-D) \cdot V_-
+    V_m = D \times V_+ + (1-D) \times V_-.
 \end{equation}
-
 En nuestro caso, la señal unipolar a la salida de la llave tiene valores
 $V_+=V_{dd}$ y $V_-=0$, por lo que tiene un valor medio
 
 \begin{equation}
     \label{eq:v_minus_ideal_load}
-    V_m = D \cdot V_{dd}
+    V_m = D \times V_{dd}.
 \end{equation}
-
 La cuadrada desarrollada en la impedancia de carga $Z_L$ será la cuadrada
 unipolar a la salida de la llave, menos su valor medio. Esta señal tendrá
 entonces valores $V_+$ y $V_-$ dados por
@@ -724,23 +780,22 @@ entonces valores $V_+$ y $V_-$ dados por
 \begin{equation}
     \label{eq:square_linear_load_highpassed_values}
     \begin{aligned}
-        V_+ &= V_{dd}-V_m = V_{dd} \cdot (1-D) \\
-        V_- &= -V_m = -V_{dd} \cdot D \\
+        V_+ &= V_{dd}-V_m = V_{dd} \times (1-D) \\
+        V_- &= -V_m = -V_{dd} \times D. \\
     \end{aligned}
 \end{equation}
-
 Estos son los valores de la señal cuadrada unipolar que excitará al pulser.
 Entonces, reconocemos que $V_-$ es $V_l$ en la ecuación \ref{eq:A_p}.
 
 \begin{equation}
-    A_p = V_{dd} \cdot D \cdot \frac{R_L}{R_L+R_s} \left( 1-e^{-\frac{2T}{\tau}}\right)
+    A_p = V_{dd} \times D \times \frac{R_L}{R_L+R_s} \left(
+    1-e^{-\frac{2T}{\tau}}\right).
 \end{equation}
-
 Vemos que tanto $V_{dd}$ como $D$ incrementan linealmente la amplitud del pulso
 a la salida. Aumentar $V_{dd}$ tiene como límite la conducción de corriente
 máxima en los componentes del circuito, mientras que $D$ tiene como límite
-superior el tiempo de descarga $T_s$, teniendo que se ser $T*(1-D) > T_s$, es
-decir, el tiempo en el que la cuadrada bipolar tiene el valor $V_l$ tiene que
+superior el tiempo de descarga $T_s$, teniendo que se ser $T\times(1-D) > T_s$,
+es decir, el tiempo en el que la cuadrada bipolar tiene el valor $V_l$ tiene que
 ser suficiente para la remoción de todas las cargas en el SRD.
 
 \subsubsection{Pasa altos con \textit{pulser}}
@@ -753,7 +808,7 @@ amplitud, con un ciclo de trabajo $D=0.5$. En base a
 \ref{eq:square_linear_load_highpassed_values}, esperamos en el nodo
 $V_{bipolar}$ una señal cuadrada simétrica con amplitudes de
 \qty{\pm2.5}{\volt}. Siendo la constante de tiempo del circuito pasa altos $\tau
-\approx \qty{100}{\nano\farad} \cdot \qty{50}{\ohm} = \qty{5}{\micro\second}$,
+\approx \qty{100}{\nano\farad} \times \qty{50}{\ohm} = \qty{5}{\micro\second}$,
 el tiempo total de simulación es de \qty{50}{\micro\second} de manera tal de
 capturar 10 constantes y analizar el estado permanente del circuito.
 
@@ -798,15 +853,14 @@ mismo.
 
 Empezamos analizando el caso de una carga lineal, pero sin apelar a argumentos
 de función transferencia, ya que para el caso de una carga no lineal no son
-validos. Basaremos el análisis en el balance ampere-segundo en el capacitor
+válidos. Basaremos el análisis en el balance ampere-segundo en el capacitor
 \cite{Erickson_Robert_W_2020}. Este resultado establece que el valor medio de la
 corriente en un capacitor en estado estacionario es nulo.
 
 \begin{equation}
     \label{eq:capacitor_ampere_second_balance}
-    \langle i(t) \rangle = \int_{t_0}^{t_0+T} i(t)dt = 0
+    \langle i(t) \rangle = \int_{t_0}^{t_0+T} i(t)dt = 0.
 \end{equation}
-
 En caso de una carga $Z_L$ lineal, la corriente y la tensión están linealmente
 relacionadas, conduciendo al resultado de la sección anterior en el que tanto la
 tensión como la corriente tienen un valor medio 0. En el caso de la carga no
@@ -818,7 +872,7 @@ Asumiendo que en estado permanente el capacitor se carga a una tensión constant
 $V_C$, este valor será el que resulte de imponer el cumplimiento de la ecuación
 \ref{eq:capacitor_ampere_second_balance}.
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \begin{center}
         \begin{circuitikz}[american]
             \draw (0,3) to [V, l=$V_U$] (0,0)
@@ -827,57 +881,56 @@ $V_C$, este valor será el que resulte de imponer el cumplimiento de la ecuació
             (0,0);
         \end{circuitikz}
     \end{center}
-    \caption{Circuito pasa altos con carga lineal}
+    \caption{Circuito pasa altos con carga lineal.}
     \label{fig:sch_highpass_non_linear_load}
 \end{figure}
 
 Para el caso de una carga lineal, tenemos un circuito como el de
 \ref{fig:sch_highpass_non_linear_load}. Asumiendo que durante las porciones
 positivas y negativas de la tensión unipolar tenemos corrientes constantes $I_+$
-e $I_-$, aplicando \ref{eq:capacitor_ampere_second_balance} llegamos a 
+e $I_-$, aplicando \ref{eq:capacitor_ampere_second_balance} llegamos a
 
 \begin{equation}
     \label{eq:current_balance_capacitor_linear_load}
     \begin{aligned}
-        \int_{t_0}^{t_0+T} i(t)dt &= I_+ \cdot D - I_- \cdot D' = 0 \\
-        I_+ \cdot D &= I_- \cdot D' \\
+        \int_{t_0}^{t_0+T} i(t)dt &= I_+ \times D - I_- \times D' = 0 \\
+        I_+ \times D &= I_- \times D'. \\
     \end{aligned}
 \end{equation}
-
 En este caso, las corrientes son
 
 \begin{equation}
     \label{eq:highpass_currents_linear_load}
     \begin{aligned}
         I_+ &= \frac{V_U-V_C}{R} \\
-        I_- &= \frac{Vc}{R} \\
+        I_- &= \frac{Vc}{R}. \\
     \end{aligned}
 \end{equation}
-
 Reemplazando en \ref{eq:current_balance_capacitor_linear_load},
 
 \begin{equation}
     \label{eq:vc_linear_load}
     \begin{aligned}
-        \frac{V_U-V_C}{R} \cdot D &= \frac{Vc}{R} \cdot D' \\
-        V_U \cdot D &= V_C \cdot \left( D'+D \right) \\
-        V_C &= V_U \cdot D \\
+        \frac{V_U-V_C}{R} \times D &= \frac{Vc}{R} \times D' \\
+        V_U \times D &= V_C \times \left( D'+D \right) \\
+        V_C &= V_U \times D. \\
     \end{aligned}
 \end{equation}
-
-Es el mismo resultado que en la sección anterior.
+Es el mismo resultado que en la sección anterior. De esta manera, vemos que la
+aplicación \cite{eq:capacitor_ampere_second_balance} para un sistema lineal es
+consistente con el análisis de función transferencia como es esperado.
 
 \subsubsection{Carga no lineal}
 
 Ahora, supongamos una carga no lineal de las siguientes características: conduce
-durante todo el período positivo de la unipolar $D$, y una porción $\alpha \cdot
-D'$ de la porción negativa, con $\alpha \in \left[0, 1 \right]$. En la figura
-\ref{fig:alpha_definition_plot} se muestra gráficamente la definición. Un
-$\alpha=0$ corresponde a una carga que no conduce en la porción negativa, como
-un diodo usual, y una de $\alpha=1$ corresponde a una carga lineal. En nuestro
-caso, es $\alpha = 2 \cdot \frac{T_s}{T}$, con $T_s$ el tiempo de descarga del
-SRD, es decir, el tiempo que le toma  a la corriente negativa extraer todas las
-cargas inyectadas en la porción positiva.
+durante todo el período positivo de la unipolar $D$, y una porción $\alpha
+\times D'$ de la porción negativa, con $\alpha \in \left[0, 1 \right]$. En la
+figura \ref{fig:alpha_definition_plot} se muestra gráficamente la definición. Un
+valor de $\alpha=0$ corresponde a una carga que no conduce en la porción
+negativa, como un diodo usual, y una de $\alpha=1$ corresponde a una carga
+lineal. En nuestro caso, es $\alpha = 2 \times \frac{T_s}{T}$, con $T_s$ el
+tiempo de descarga del SRD, es decir, el tiempo que le toma  a la corriente
+negativa extraer todas las cargas inyectadas en la porción positiva.
 
 \begin{figure}[h!]
     \begin{center}
@@ -897,7 +950,7 @@ cargas inyectadas en la porción positiva.
             xtick={0,\D,\D+(1-\D)*\Alpha},
             ytick={\Iminus,\Iplus},
             domain=0:1,
-            xticklabels={$0$, $D \cdot T$, $\alpha \cdot D' \cdot T$},
+            xticklabels={$0$, $D \times T$, $\alpha \times D' \times T$},
             yticklabels={$I_{-}$, $I_{+}$},
           ]
 
@@ -911,50 +964,47 @@ cargas inyectadas en la porción positiva.
           \end{axis}
         \end{tikzpicture}
     \end{center}
-    \caption{Definición del parámetro $\alpha$}
+    \caption{Definición del parámetro $\alpha$.}
     \label{fig:alpha_definition_plot}
 \end{figure}
+
 En este caso, el balance de corrientes es
 
 \begin{equation}
     \label{eq:current_balance_capacitor_linear_load}
     \begin{aligned}
-        \int_{t_0}^{t_0+T} i(t)dt &= I_+ \cdot D - I_- \cdot \alpha \cdot D' = 0 \\
-        I_+ \cdot D &= I_- \cdot \alpha \cdot D' \\
+        \int_{t_0}^{t_0+T} i(t)dt &= I_+ \times D - I_- \times \alpha \times D' = 0 \\
+        I_+ \times D &= I_- \times \alpha \times D'. \\
     \end{aligned}
 \end{equation}
-
 Las corrientes $I_+$ e $I_-$ son las mismas que en
 \ref{eq:highpass_currents_linear_load}. Entonces, llegamos a
 
 \begin{equation}
     \label{eq:vc_non_linear_load_0}
     \begin{aligned}
-        \frac{V_U-V_C}{R} \cdot D &= \frac{Vc}{R} \cdot \alpha \cdot D' \\
-        V_U \cdot D &= V_C \cdot \left( \alpha \cdot D'+D \right) \\
-        V_C &= V_U \cdot \frac{D}{\alpha \cdot D' + D}  \\
+        \frac{V_U-V_C}{R} \times D &= \frac{Vc}{R} \times \alpha \times D' \\
+        V_U \times D &= V_C \times \left( \alpha \times D'+D \right) \\
+        V_C &= V_U \times \frac{D}{\alpha \times D' + D}.  \\
     \end{aligned}
 \end{equation}
-
 Definiendo a $\alpha'=\alpha-1$, tenemos
 
 \begin{equation}
     \label{eq:vc_non_linear_load}
     \begin{aligned}
-        \alpha \cdot D' &+ D \\
-        (1-\alpha') \cdot D' &+ D \\
-        \cdot D' - \alpha' \cdot D' &+ D \\
-        1 - \alpha' \cdot D' & \\
+        \alpha \times D' &+ D \\
+        (1-\alpha') \times D' &+ D \\
+        \times D' - \alpha' \times D' &+ D \\
+        1 - \alpha' \times D'. & \\
     \end{aligned}
 \end{equation}
-
 Llegamos a
 
 \begin{equation}
     \label{eq:vc_non_linear_load_final}
-        V_C = V_U \cdot \frac{D}{1-\alpha' \cdot D}
+        V_C = V_U \times \frac{D}{1-\alpha' \times D}.
 \end{equation}
-
 Vemos que para el caso de carga lineal $\alpha = 1 \ (\alpha'=0)$, la ecuación
 se convierte en la misma que \ref{eq:vc_linear_load} como es esperado.
 
@@ -981,7 +1031,7 @@ de la rama no lineal, ya que en el caso del pulser, cuando la rama conduce, su
 resistencia es igual a $R_s$. $R_{sh}$ es una resistencia propuesta para mitigar
 el efecto mencionando anteriormente.
 
-\begin{figure}[h!]
+\begin{figure}[t]
     \begin{center}
         \begin{circuitikz}[american]
             \draw (0,3) to [V, l=$V_U$] (0,0)
@@ -992,7 +1042,7 @@ el efecto mencionando anteriormente.
             (0,0);
         \end{circuitikz}
     \end{center}
-    \caption{pasa altos con carga no lineal en paralelo con lineal}
+    \caption{pasa altos con carga no lineal en paralelo con lineal.}
     \label{fig:circuit_non_linear_load_with_shunt}
 \end{figure}
 
@@ -1001,14 +1051,14 @@ Planteando el balance de corrientes en el capacitor, tenemos
 \begin{equation}
     \label{eq:current_balance_capacitor_linear_load}
     \begin{aligned}
-        \int_{t_0}^{t_0+T} i(t)dt &= \left( I_{+L} + I_{+NL} \right) \cdot D -
-        \left( I_{-L} \cdot \cdot D' + I_{-NL} \cdot \alpha \cdot D'
+        \int_{t_0}^{t_0+T} i(t)dt &= \left( I_{+L} + I_{+NL} \right) \times D -
+        \left( I_{-L} \times \times D' + I_{-NL} \times \alpha \times D'
         \right) = 0 \\
-        \left( I_{+L} + I_{+NL} \right) \cdot D &= \left( I_{-L} + I_{-NL} \cdot
-        \alpha \right) \cdot D' \\
+        \left( I_{+L} + I_{+NL} \right) \times D &= \left( I_{-L} + I_{-NL}
+        \times
+        \alpha \right) \times D'. \\
     \end{aligned}
 \end{equation}
-
 Siendo ambas expresiones $I_{\pm-L}$ e $I_{\pm-NL}$ las de
 \ref{eq:highpass_currents_linear_load} evaluando $R=R_{sh}$ y $R=R_{s}$
 respectivamente, llegamos a
@@ -1016,14 +1066,13 @@ respectivamente, llegamos a
 \begin{equation}
     \label{eq:vc_non_linear_load_with_shunt_0}
     \begin{aligned}
-        \left( \frac{V_U-V_C}{R_{sh}} + \frac{V_U-V_C}{R_{s}} \right) \cdot D &=
-        \left( \frac{Vc}{R_{sh}} + \frac{Vc}{R_{s}} \cdot \alpha \right) \cdot D' \\
-        \left( V_U - V_C \right) \cdot D \cdot \left( \frac{1}{R_{sh}} +
-        \frac{1}{R_s} \right) &= V_C \cdot D' \left( \frac{1}{R_{sh}} +
-        \frac{\alpha}{R_s} \right) \\
+        \left( \frac{V_U-V_C}{R_{sh}} + \frac{V_U-V_C}{R_{s}} \right) \times D &=
+        \left( \frac{Vc}{R_{sh}} + \frac{Vc}{R_{s}} \times \alpha \right) \times D' \\
+        \left( V_U - V_C \right) \times D \times \left( \frac{1}{R_{sh}} +
+        \frac{1}{R_s} \right) &= V_C \times D' \left( \frac{1}{R_{sh}} +
+        \frac{\alpha}{R_s} \right). \\
     \end{aligned}
 \end{equation}
-
 Reconocemos la expresión de la resistencia en paralelo de $R_{sh}$ y $R_s$, y la
 de $R_{sh}$ y $\frac{R_s}{\alpha}$, siendo el efecto de $\alpha$ el de reducir
 la resistencia en la porción negativa en $\alpha$.
@@ -1031,13 +1080,12 @@ la resistencia en la porción negativa en $\alpha$.
 \begin{equation}
     \label{eq:vc_non_linear_load_with_shunt_1}
     \begin{aligned}
-        \frac{V_U-V_C}{R_{sh} // R_{s}} \cdot D &= \frac{V_C}{R_{sh} //
-        \frac{R_{s}}{\alpha}} \cdot D'  \\
-        \frac{V_U}{R_{sh} // R_{s}} \cdot D &= V_C \left( \frac{D}{R_{sh}
-        // R_{s}} + \frac{D'}{R_{sh} // R_{s}} \right) \\
+        \frac{V_U-V_C}{R_{sh} // R_{s}} \times D &= \frac{V_C}{R_{sh} //
+        \frac{R_{s}}{\alpha}} \times D'  \\
+        \frac{V_U}{R_{sh} // R_{s}} \times D &= V_C \left( \frac{D}{R_{sh}
+        // R_{s}} + \frac{D'}{R_{sh} // R_{s}} \right). \\
     \end{aligned}
 \end{equation}
-
 Definiendo a $\alpha'=\alpha-1$ y desarrollando la expresión que acompaña a $V_C$,
 
 \begin{equation}
@@ -1046,22 +1094,21 @@ Definiendo a $\alpha'=\alpha-1$ y desarrollando la expresión que acompaña a $V
         \frac{1}{R_{sh}} + \frac{\alpha}{R_s} \right) \\
         D \left( \frac{1}{R_s} + \frac{1}{R_{sh}} \right) &+ (1-D) \left(
         \frac{1}{R_{sh}} + \frac{1}{R_s} \right) - (1-D) \frac{\alpha'}{R_s} \\
-        \frac{1}{R_{sh} // R_{s}} &- \frac{D' \cdot \alpha'}{R_s} \\
+        \frac{1}{R_{sh} // R_{s}} &- \frac{D' \times \alpha'}{R_s}. \\
     \end{aligned}
 \end{equation}
-
 Reemplazando en \ref{eq:vc_non_linear_load_with_shunt_1}
 
 \begin{equation}
     \label{eq:vc_non_linear_load_with_shunt_2}
     \begin{aligned}
-        \frac{V_U}{R_{sh} // R_{s}} \cdot D &= V_C \left( \frac{1}{R_{sh} //
-        R_{s}} - \frac{D' \cdot \alpha'}{R_s} \right) \\
-        V_U \cdot D &= V_C \left( 1 - \frac{R_{sh} // R_{s}}{R_s} \cdot D' \cdot
-        \alpha'\right) \\
+        \frac{V_U}{R_{sh} // R_{s}} \times D &= V_C \left( \frac{1}{R_{sh} //
+        R_{s}} - \frac{D' \times \alpha'}{R_s} \right) \\
+        V_U \times D &= V_C \left( 1 - \frac{R_{sh} // R_{s}}{R_s} \times D'
+        \times
+        \alpha'\right). \\
     \end{aligned}
 \end{equation}
-
 Reconocemos a $\frac{R_{sh} // R_{s}}{R_s} = \frac{R_{sh}}{R_{sh}+R_s}$ como la
 expresión de un divisor resistivo entre $R_{sh}$ y $R_s$. Llamaremos a esta
 expresión $\gamma$, y notamos que cuando $R_{sh} >> R_s$ es $\gamma \to 1$, y
@@ -1072,11 +1119,11 @@ Entonces, llegamos a
 \begin{equation}
     \label{eq:vc_non_linear_load_with_shunt_final}
     \begin{aligned}
-        V_U \cdot D &= V_C \left( 1 - \gamma \cdot D' \cdot \alpha'\right) \\
-        V_C &= V_U \cdot \frac{D}{\left( 1 - \gamma \cdot D' \cdot \alpha'\right)} \\
+        V_U \times D &= V_C \left( 1 - \gamma \times D' \times \alpha'\right) \\
+        V_C &= V_U \times \frac{D}{\left( 1 - \gamma \times D' \times
+        \alpha'\right)}. \\
     \end{aligned}
 \end{equation}
-
 Notamos los siguientes casos extremos de $\gamma$:
 
 \begin{itemize}
@@ -1085,7 +1132,7 @@ Notamos los siguientes casos extremos de $\gamma$:
         \ref{eq:vc_non_linear_load_final}. Esto es esperado, ya que en este caso
         la corriente que consume $R_{sh}$ es despreciable, por lo que es un caso
         equivalente al que no hay $R_{sh}$
-    \item $gamma \to 0$: en este caso, $R_{sh} \to 0$, es decir, $R_{sh} <<
+    \item $\gamma \to 0$: en este caso, $R_{sh} \to 0$, es decir, $R_{sh} <<
         R_s$. En este caso, la expresión
         \ref{eq:vc_non_linear_load_with_shunt_final} se convierte en
         \ref{eq:vc_linear_load}. Esto es esperado, ya que en este caso, la
@@ -1096,7 +1143,7 @@ Notamos los siguientes casos extremos de $\gamma$:
 Notamos del último punto, que en presencia de una carga no lineal, agregar una
 carga lineal en paralelo $R_{sh}$, logra el efecto de \textit{linearizar} la
 forma de onda, en el sentido de volver sus extremos más similares a los de un
-caso de carga lineal.  En base a este principio, es que agregamos un resistor no
+caso de carga lineal.  En base a este principio es que agregamos un resistor
 lineal en paralelo al pulser para lograr su correcto funcionamiento.
 
 Realizamos una simulación de la mejora propuesta. En la figura
@@ -1108,7 +1155,8 @@ paralelo con el pulser.
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=\textwidth]{images/highpass_nonlinear_w_shunt_sch.png}
-    \caption{Circuito pasa altos con carga no lineal y lineal en paralelo simulado}
+    \caption{Circuito pasa altos con carga no lineal y lineal en paralelo
+    simulado.}
     \label{fig:sch_highpass_non_linear_w_shunt_simulation}
 \end{figure}
 
@@ -1138,23 +1186,21 @@ tenemos en este caso
     \begin{aligned}
         D &= 0.5 \\
         \gamma &= \frac{R_{sh}}{R_{sh}+R_{s}} =0.5 \\
-        \alpha &= \frac{0.4}{0.5} = 0.9 \\
+        \alpha &= \frac{0.4}{0.5} = 0.9. \\
     \end{aligned}
 \end{equation}
-
 Donde tomamos $\alpha$ leyendo el eje $x$ de
 \ref{fig:highpass_non_linear_w_shunt_simulation_result}. Para estos valores,
 \ref{eq:vc_non_linear_load_with_shunt_final} predice un valor de
 
 \begin{equation}
     \begin{aligned}
-        V_C &= V_U \cdot \frac{D}{\left( 1 - \gamma \cdot D' \cdot \alpha'\right)} \\
-        V_C &= \qty{5}{\volt} \cdot \frac{0.5}{\left( 1 - 0.5 \cdot (1-0.5)
-        \cdot (1-0.9) \right)} \\
-        V_C &= \qty{2.56}{\volt} \\
+        V_C &= V_U \times \frac{D}{\left( 1 - \gamma \times D' \times \alpha'\right)} \\
+        V_C &= \qty{5}{\volt} \times \frac{0.5}{\left( 1 - 0.5 \times (1-0.5)
+        \times (1-0.9) \right)} \\
+        V_C &= \qty{2.56}{\volt}. \\
     \end{aligned}
 \end{equation}
-
 La ecuación es consistente con el resultado de la simulación. En este caso, los
 valores de la señal bipolar son \qty{\pm2.5}{\volt}, habiendo logrado bajar los
 niveles con respecto al resultado de la figura
@@ -1188,13 +1234,12 @@ En cuanto a la tensión en el capacitor, aplicando la ecuación
 
 \begin{equation}
     \begin{aligned}
-        V_C &= V_U \cdot \frac{D}{\left( 1 - \gamma \cdot D' \cdot \alpha'\right)} \\
-        V_C &= \qty{5}{\volt} \cdot \frac{0.8}{\left( 1 - 0.5 \cdot (1-0.8)
-        \cdot (1-0.9) \right)} \\
-        V_C &= \qty{4}{\volt} \\
+        V_C &= V_U \times \frac{D}{\left( 1 - \gamma \times D' \times \alpha'\right)} \\
+        V_C &= \qty{5}{\volt} \times \frac{0.8}{\left( 1 - 0.5 \times (1-0.8)
+        \times (1-0.9) \right)} \\
+        V_C &= \qty{4}{\volt}. \\
     \end{aligned}
 \end{equation}
-
 La ecuación se encuentra consistente con el resultado obtenido en la simulación.
 
 \subsection{Implementación de la llave}
@@ -1284,7 +1329,7 @@ cortocircuitadas.
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=0.4\textwidth]{images/lm5114_block_diagram.png}
-    \caption{Diagrama en bloques del LM5114. Tomado de \cite{LM5114_datasheet}}
+    \caption{Diagrama en bloques del LM5114. Tomado de \cite{LM5114_datasheet}.}
     \label{fig:lm5114_block_diagram}
 \end{figure}
 
@@ -1305,7 +1350,7 @@ juntura $T_{jM}$ y resistencia térmica $\theta_{jA}$. Estas están especificada
 \begin{equation}
     \begin{aligned}
         T_{jM} & = \qty{125}{\celsius} \\
-        \theta_{jA} &= \qty[per-mode=fraction]{51.2}{\celsius\per\watt}
+        \theta_{jA} &= \qty[per-mode=fraction]{51.2}{\celsius\per\watt}. \\
     \end{aligned}
 \end{equation}
 
@@ -1314,29 +1359,27 @@ $T_j$, temperatura ambiente $T_A$ y resistencia térmica $\theta_{jA}$ es
 
 \begin{equation}
     \begin{aligned}
-        T_{j} = T_{A} + P \cdot \theta_{jA}
+        T_{j} = T_{A} + P \times \theta_{jA}.
     \end{aligned}
 \end{equation}
-
 Dada la máxima temperatura de juntura $T_{jM}$, la máxima potencia $P_M$ es
 
 \begin{equation}
     \begin{aligned}
-        P_{M} = \frac{T_{jM}-T_A}{\theta_{jA}}
+        P_{M} = \frac{T_{jM}-T_A}{\theta_{jA}}.
     \end{aligned}
 \end{equation}
-
 Aproximando el consumo de potencia en el integrado con la corriente de salida
 multiplicada por la impedancia de salida, es decir, despreciando todas las otras
 fuentes de disipación, tenemos
 
 \begin{equation}
     \begin{aligned}
-        P_{M} = I_{RMS_{max}}^2 \cdot R_o &= \frac{T_{jM}-T_A}{\theta_{jA}} \\
-        I_{RMS_{max}} &= \sqrt{\frac{T_{jM}-T_A}{\theta_{jA}}} \cdot \frac{1}{R_o} \\
+        P_{M} = I_{RMS_{max}}^2 \times R_o &= \frac{T_{jM}-T_A}{\theta_{jA}} \\
+        I_{RMS_{max}} &= \sqrt{\frac{T_{jM}-T_A}{\theta_{jA}}} \times
+        \frac{1}{R_o}. \\
     \end{aligned}
 \end{equation}
-
 La hoja de datos especifica distintos rangos de $R_o$ para la salida $N$ y la
 $P$. Utilizaremos la peor que es \qty{4.78}{\ohm}. Para $\theta_{jA}$, dado que
 el valor depende no solo del integrado sino también del PCB, tomaremos un peor
@@ -1347,8 +1390,8 @@ Entonces tenemos
     \begin{aligned}
         I_{RMS_{max}} &= \sqrt{\frac{ \qty{125}{\celsius}-
         \qty{25}{\celsius}}{\qty[per-mode=fraction]{51.2}{\celsius\per\watt}
-        \cdot 1.5 }} \cdot \frac{1}{ \qty{4.78}{\ohm} } \\
-        I_{RMS_{max}} &= \qty{240}{\milli\ampere}
+        \times 1.5 }} \times \frac{1}{ \qty{4.78}{\ohm} } \\
+        I_{RMS_{max}} &= \qty{240}{\milli\ampere}.
     \end{aligned}
 \end{equation}
 
@@ -1375,17 +1418,17 @@ frecuencias de trabajo de la señal cuadrada, presenta una impedancia
 
 \begin{equation}
     \begin{aligned}
-        | Z_C | &< \frac{1}{2\pi \cdot PRF \cdot C} \\
-        | Z_C | &< \frac{1}{j2\pi \cdot \qty{10}{\mega\hertz} \cdot
+        | Z_C | &< \frac{1}{2\pi \times PRF \times C} \\
+        | Z_C | &< \frac{1}{j2\pi \times \qty{10}{\mega\hertz} \times
         \qty{100}{\nano\farad}} \\
-        | Z_C | &< \qty{15}{\milli\ohm}
+        | Z_C | &< \qty{15}{\milli\ohm}. \\
     \end{aligned}
 \end{equation}
 
 La impedancia del capacitor es menor en todo el rango ya que el contenido
 espectral de la señal cuadrada se encuentra por arriba de la frecuencia
 fundamental $PRF$. Entonces, la impedancia de carga del gate driver es $Z_L
-\approx \qty{50}{\ohm} + j \cdot \qty{15}{\milli\ohm} \approx \qty{50}{\ohm}$,
+\approx \qty{50}{\ohm} + j \times \qty{15}{\milli\ohm} \approx \qty{50}{\ohm}$,
 es decir una carga resistiva pura, debido a lo despreciable de la impedancia del
 capacitor serie con la resistencia de limitación de corriente $R_s$. En este
 análisis no se tuvieron en cuenta las capacidades a tierra parásitas tanto de
@@ -1415,7 +1458,7 @@ transición $0\to1$, y para la transición $1\to0$ será $t_{D-off}+t_{f}$.
     \centering
     \includegraphics[width=0.4\textwidth]{images/lm5114_timing_definitions.png}
     \caption{Definición de tiempos de transición y propagación, tomado de
-    \cite{LM5114_datasheet}}
+    \cite{LM5114_datasheet}.}
     \label{fig:lm5114_timing_definitions}
 \end{figure}
 
@@ -1448,10 +1491,9 @@ Asumiendo para un peor caso, tiempos de transición de entrada de
         T_{min} &= \qty{10}{\nano\second} + \qty{27}{\nano\second} +
         \qty{12}{\nano\second} + \qty{10}{\nano\second} + \qty{27}{\nano\second}
         + \qty{3}{\nano\second} \\
-        T_{min} &= \qty{89}{\nano\second} \\
+        T_{min} &= \qty{89}{\nano\second}. \\
     \end{aligned}
 \end{equation}
-
 El período mínimo se encuentra por debajo del período de \qty{100}{\nano\second}
 correspondiente a los \qty{10}{\mega\hertz} especificados en
 la tabla \ref{tab:llave_requirements}, por lo que se cumple el requerimiento de $f_{in}$.
@@ -1553,10 +1595,10 @@ despreciable.
     \end{tabular}
     \begin{tablenotes}
         \item [a] Conductor/Dieléctrico.
-        \item [a] Permisividad relativa.
+        \item [a] permitividad relativa.
     \end{tablenotes}
 \end{threeparttable}
-\caption{Apilamiento de capas del proceso de fabricación de OSH Park}
+\caption{Apilamiento de capas del proceso de fabricación de OSH Park.}
 \label{tab:oshpark_4_layer_stackup}
 \end{table}
 
@@ -1565,7 +1607,7 @@ despreciable.
 Los componentes pasivos que se encuentran en el camino de la señal tienen que
 ser seleccionados cuidadosamente para evitar distorsiones indeseadas. Estos
 incluyen todos los que se encuentran entre la salida del LM5114 y el nodo de
-salida. Refiriendonos a la figura \ref{fig:lm5114_sim_sch}, estos serían $R_1$,
+salida. Refiriéndonos a la figura \ref{fig:lm5114_sim_sch}, estos serían $R_1$,
 $R_s$, $C_1$ y $C_2$.
 
 Dado el ancho de banda del sistema, los componentes pasivos a utilizar deben
@@ -1592,7 +1634,7 @@ ampliamente disponibles y a un bajo precio.
 Para el pulser, se utilizó la capa superior de cobre como plano de señal y la
 capa de cobre inferior a esta como tierra. De esta manera, se forma un linea de
 transmisión microtira \cite{pozar2011}, siendo el material dieléctrico el
-\textit{prepeg} de permisividad relativa estable en frecuencia y una altura de
+\textit{prepeg} de permitividad relativa estable en frecuencia y una altura de
 $H = \qty{7.96}{\mil} = \qty{0.0202}{\milli\meter}$.
 
 Dado el $H$ de la línea de transmisión, se calculó el $w$ necesario para obtener
@@ -1613,22 +1655,21 @@ parámetros configurados. Esto resultó en un ancho de pista de
 
 Con la línea de transmisión a utilizar en el pulser determinada como una
 microtira de los parámetros dados por el proceso de fabricación de la tabla
-\ref{tab:oshpark_4_layer_stackup}, se obtuvo su $\kappa_{eff}$ con el programa
-\textit{LineCalc}. En la figura \ref{fig:tline_width_calculation} se observa que
-este es de \num{2.753}.
+\ref{tab:oshpark_4_layer_stackup}, se obtuvo su $\kappa_{\text{eff}}$ con el
+programa \textit{LineCalc}. En la figura \ref{fig:tline_width_calculation} se
+observa que este es de \num{2.753}.
 
 Reemplazando estos datos en la ecuación \ref{eq:stub_length_vs_delay} podemos
 obtener el largo necesario para obtener un retardo de \qty{60}{\pico\second}.
 
 \begin{equation}
     \begin{aligned}
-        L &= \frac{T_p}{2} \cdot \frac{c_0}{\sqrt{\kappa_{eff}}} \\
-        L &= \frac{\qty{120}{\pico\second}}{2} \cdot \frac{
+        L &= \frac{T_p}{2} \times \frac{c_0}{\sqrt{\kappa_{\text{eff}}}} \\
+        L &= \frac{\qty{120}{\pico\second}}{2} \times \frac{
             \qty{3e8}{\meter\per\second}}{\sqrt{2.753}} \\
-        L &= \qty{10.85}{\milli\meter}
+        L &= \qty{10.85}{\milli\meter}. \\
     \end{aligned}
 \end{equation}
-
 Con los parámetros de la línea obtenidos, se realiza una simulación del
 generador, reemplazando la línea ideal por una real. En la figura
 \ref{fig:real_stub_simulation_sch} se observa el esquemático simulado. En la
@@ -1639,14 +1680,14 @@ pulso obtenido tiene una amplitud de \qty{352}{\milli\volt} y una duración de
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=\textwidth]{images/real_stub_simulation_sch.png}
-    \caption{Esquemático de simulación con \textit{stub} real}
+    \caption{Esquemático de simulación con \textit{stub} real.}
     \label{fig:real_stub_simulation_sch}
 \end{figure}
 
 \begin{figure}[tbp]
     \centering
     \includegraphics[width=\textwidth]{images/real_stub_simulation_result.png}
-    \caption{Resultado de simulación con \textit{stub} real}
+    \caption{Resultado de simulación con \textit{stub} real.}
     \label{fig:real_stub_simulation_result}
 \end{figure}
 
@@ -1742,6 +1783,8 @@ banda de interés.
     \label{fig:sma_simulations_results}
 \end{figure}
 
+\subsubsection{Co-simulación de layout}
+
 Para validar el diseño, se exportó a formato gerber, y luego fue importado
 dentro de ADS. El programa permite realizar extracciones de parásitos de la
 estructura en base a una simulación electromagnética. Utilizando esta función,
@@ -1754,17 +1797,17 @@ simulación realizada. El pulso obtenido en este caso tiene una amplitud de
 dos efectos no deseados que con las simulaciones anteriores no ocurrieron: un
 sobrepico negativo previo al pulso principal, y oscilaciones posteriores.
 
-\begin{figure}[tbp]
+\begin{figure}[t!]
     \centering
-    \includegraphics[width=\textwidth]{images/layout_simulation_sch.png}
-    \caption{Esquemático de simulación de layout}
+    \includegraphics[width=0.8\textwidth]{images/layout_simulation_sch.png}
+    \caption{Esquemático de simulación de layout.}
     \label{fig:layout_simulation_sch}
 \end{figure}
 
-\begin{figure}[tbp]
+\begin{figure}[t!]
     \centering
-    \includegraphics[width=\textwidth]{images/layout_simulation_result.png}
-    \caption{Resultado de simulación layout}
+    \includegraphics[width=0.8\textwidth]{images/layout_simulation_result.png}
+    \caption{Resultado de simulación layout.}
     \label{fig:layout_simulation_result}
 \end{figure}
 
@@ -1774,9 +1817,8 @@ En la figura \ref{fig:driver_pcb} se observa el PCB del driver. Este incluye al
 driver LM114 y al filtro pasa altos, y a circuiteria de soporte para
 alimentación y comunicación con la FPGA.
 
-\begin{figure}
+\begin{figure}[t!]
     \centering
-
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{images/driver_pcb.png}
         \caption{Captura del PCB diseñado en \textit{KiCad}.}

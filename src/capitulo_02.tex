@@ -73,7 +73,7 @@ materiales y de la geometría de los mismos, dado que el mismo es el necesario
 para compensar la corriente de difusión. En la figura
 \ref{fig:pn_junction_equilibruim} se observa un esquema de la situación. En
 ambos materiales se desarrollan zonas desiertas, de anchos $W_{Dp}$ y $W_{Dn}$
-con carga total de $W_{Dp} \cdot N_A$ y $W_{Dn} \cdot N_D$.
+con carga total de $W_{Dp} \times N_A$ y $W_{Dn} \times N_D$.
 
 Es una caso de interés el de una juntura muy asimétrica, en la que $N_A >> N_D$
 o $N_A << N_D$. Por la neutralidad de carga, las cargas almacenadas en cada zona
@@ -124,7 +124,6 @@ Cuantitativamente esta relación puede expresarse de la siguiente manera
 \begin{equation}
     I = I_S \left( e^{\frac{V_D}{V_T}}-1\right).
 \end{equation}
-
 El parámetro $I_S$ depende del diseño del diodo, y la tensión $V_T$ es una
 tensión fuertemente dependiente de la temperatura. Para diodos de silicio, esta
 expresión suele ser aproximada a orden 0 como una corriente $I=0$ para $V<
@@ -382,29 +381,26 @@ Para encontrar el tiempo de almacenamiento $t_s$ en un diodo SRD, puede
 plantearse la ecuación de continuidad de carga \cite{moll1962} \cite{moll1969}
 
 \begin{equation}
-    \frac{dQ}{dt} = I-\frac{Q}{\tau_m}
+    \frac{dQ}{dt} = I-\frac{Q}{\tau_m}.
 \end{equation}
-
 Esta ecuación contempla la inyección/remoción de carga mediante la corriente
 externa $I$, y los efectos de recombinación de carga a través del tiempo de vida
 de los portadores minoritarios $\tau_m$. En el caso de la corriente directa
 $I_f$, puede plantearse la ecuación bajo $I=I_f$ y la condición inicial $Q(0)=0$para llegar a la carga almacenada $Q(t)$
 
 \begin{equation}
-    Q(t) = I_f \cdot \tau_m \cdot \left( 1-e^{-t/\tau_m}\right)
+    Q(t) = I_f \times \tau_m \times \left( 1-e^{-t/\tau_m}\right).
 \end{equation}
-
 Si se aplica la corriente $I_f$ durante un tiempo $T_f$, llegaremos a una carga
 almacenada de
 
 \begin{equation}
-    Q_0 = Q(T_f) = I_f \cdot \tau_m \cdot \left( 1-e^{-T_f/\tau_m}\right)
+    Q_0 = Q(T_f) = I_f \times \tau_m \times \left( 1-e^{-T_f/\tau_m}\right).
 \end{equation}
-
 Para tiempos $T_f >> \tau_m$, será
 
 \begin{equation}
-    Q_0 \approx I_f \cdot \tau_m
+    Q_0 \approx I_f \times \tau_m.
 \end{equation}
 
 Para encontrar el tiempo de almacenamiento $t_s$, planteamos una corriente
@@ -412,15 +408,13 @@ constante $I=I_r$ y una condición inicial de $Q(0)=Q_0$. Queremos encontrar
 $t_s$ tal que $Q(t_s) = 0$. Llegamos a
 
 \begin{equation}
-    t_s = \tau_m \cdot \ln \left( 1+\frac{Q_0}{I_r \cdot \tau_m}\right)
+    t_s = \tau_m \times \ln \left( 1+\frac{Q_0}{I_r \times \tau_m}\right).
 \end{equation}
-
 Para el caso de $I_f$ constante, llegamos a
 
 \begin{equation}
-    t_s = \tau_m \cdot \ln \left( 1+\frac{I_f}{I_r}\right)
+    t_s = \tau_m \times \ln \left( 1+\frac{I_f}{I_r}\right).
 \end{equation}
-
 Esta ecuación es valida para cualquier tipo de diodo de juntura, no solamente
 PIN o SRD. En el caso del diodo SRD, el tiempo $\tau_m$ es considerable, por lo
 que el tiempo de descarga $t_s$ es largo, típicamente decenas de nanosegundos, y comparable con el período de la señal de entrada.
@@ -500,9 +494,9 @@ tramos, con valores que vuelven continua la curva y sus derivadas.
 Q(V) =
     \left\{
     \begin{aligned}
-        & C_r \cdot V  & V \leq 0 \\
-        & c \cdot \left(V+a \right)^2 -b  & 0 < V < \phi \\
-        & C_f \cdot \left( V - \phi \right) + Q_{rmp} & V \geq \phi \\
+        & C_r \times V  & V \leq 0 \\
+        & c \times \left(V+a \right)^2 -b  & 0 < V < \phi \\
+        & C_f \times \left( V - \phi \right) + Q_{rmp} & V \geq \phi \\
     \end{aligned}
     \right.
 \end{equation}
@@ -532,10 +526,10 @@ Aplicando las condiciones de contorno, se llega a la siguiente relación
 Q(V) =
     \left\{
     \begin{aligned}
-        & C_r \cdot V  & V \leq 0 \\
-        & \frac{C_f-C_r}{2\phi} \cdot \left(V+\frac{C_r\phi}{C_f-C_r} \right)^2
-        -\frac{C_r^2}{2\left(C_f-C_r \right)}\cdot \phi  & 0 < V < \phi \\
-        & C_f \cdot V - \frac{C_f-C_r}{2} \phi & V \geq \phi \\
+        & C_r \times V  & V \leq 0 \\
+        & \frac{C_f-C_r}{2\phi} \times \left(V+\frac{C_r\phi}{C_f-C_r} \right)^2
+        -\frac{C_r^2}{2\left(C_f-C_r \right)}\times \phi  & 0 < V < \phi \\
+        & C_f \times V - \frac{C_f-C_r}{2} \phi & V \geq \phi \\
     \end{aligned}
     \right.
 \end{equation}
@@ -550,7 +544,7 @@ parámetros:
         fabricante
     \item $C_f$: es la capacidad en directa del diodo. Se relaciona con el
         tiempo de vida de los portadores minoritarios $\tau_m$ y una resistencia
-        dinámica $R_f$ a través de $\tau_m = C_f \cdot R_f$.
+        dinámica $R_f$ a través de $\tau_m = C_f \times R_f$.
         \cite{Kotzebue1965}
 \end{itemize}
 
@@ -765,9 +759,8 @@ Si $R$ y $C$ son la resistencia y capacidad entre los terminales del SRD, el
 tiempo de crecimiento $t_r$ será \cite{an918}
 
 \begin{equation}
-    t_r = \sqrt{t_t^2+t_{RC}^2}
+    t_r = \sqrt{t_t^2+t_{RC}^2}.
 \end{equation}
-
 La capacidad $C$ estará compuesta por la capacidad de juntura del diodo y todas
 las capacidades parásitas (de encapsulado y de PCB) que se encuentren. En la
 simulación realizada, $t_t$ es nulo, por lo que el tiempo de crecimiento $t_r$
