@@ -597,7 +597,7 @@ reportados en un gráfico de dispersión.
                 \cite{protiva2009} & \num{-7.5} & 110 & No & Ext & SRD+3TBJ+SD & 12 & TTL & 5 \\
                 \cite{kamal2014} & \num{0.8} & 170 & No & Int & SRD & 4 & 4 & 10 \\
                 \cite{han2002} & \num{0.2} & 300 & No & Ext & SRD+2SD & ? & ? & 10 \\
-                \cite{han2005} & \num{-6}, \num{-4} & 150 & No & Int & SRD+L & ? & 5 & 12 \\
+                \cite{han2005} & \num{-6}, \num{-4} & 150 & No & Int & SRD+L & >20 & 5 & 12 \\
                 \cite{oloumi2018} & \num{1.27} \tnote{c} & 286 & No & Int & 2SRD+L & 10 & 10 \tnote{d} & ? \\
                 \textbf{Prop.} & \num{1.12} & 165 & No & Int & SRD+SD & 7 & CMOS  &
                 \num{10} \\
@@ -707,7 +707,13 @@ dos generadores, uno con línea de transmisión, y otro con un inductor, que
 utiliza al SRD en paralelo. El diseño con inductor es más complejo, ya que este
 se encuentra en el camino del pulso por lo que debe ser seleccionado con
 cuidado. En ambos casos se utiliza una red RC paralelo, mientras que en nuestro
-trabajo no.
+trabajo no. En cuanto a la amplitud de entrada, esta es TTL \qty{5}{\volt}. Sin
+embargo, se reporta una etapa driver entre la entrada y el pulser, compuesta por
+un amplificador opearcional en configuración no inversor, y dos buffers de
+corriente. En \cite{NguyenHan2014} se explica el circuito en más detalle y se
+reporta una amplitud pico a pico a la entrada del pulser de \qty{20}{\volt}.
+Entonces, este trabajo logra mayores amplitudes pero con una etapa driver mucho
+más compleja.
 
 El resultado de \cite{oloumi2018} consiste en un pulso de mayor amplitud y mayor
 ancho al de nuestro trabajo. La complejidad del diseño es mayor, ya que utiliza

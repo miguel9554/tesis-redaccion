@@ -4,3 +4,487 @@ Para los requerimientos, hablar en algún lado de la plataforma base? Por ahora
 citamos \cite{altieri2017}
 
 Poner en algún lado una tabla con todos los requisitos: ancho de banda, amplitud, PRF, entrada de comando, fuente de alimentación, etc
+
+\section{Introducción a UWB}
+
+La tecnología UWB (del inglés \textit{Ultra Wide Banda}, ultra ancho de banda) es una
+tecnología de radio caracterizada por señales y sistemas cuyos anchos de banda son muy
+grandes. En el dominio del tiempo, estos grandes anchos de banda se traducen en
+señales ultra cortas. Esto es contraposición a los sistemas de RF usuales, que
+suelen ser de banda angosta o sintonizados. Las señales temporales ultracortas o
+el ancho de banda grande supone un desafío para el diseño de los sistemas.
+
+La Comisión Federal de Comunicaciones de los Estados Unidos, conocida como la
+FCC, es la agencia gubernamental encargada de regular las comunicaciones en el
+país. Su misión principal es supervisar y establecer normativas para una amplia
+gama de servicios de comunicación, que incluyen radio, televisión, telefonía,
+Internet y otros medios de comunicación. La FCC juega un papel crucial en la
+asignación de espectro de radiofrecuencia, la promoción de la competencia en el
+mercado de las comunicaciones y la protección de los consumidores. La influencia
+global de la FCC se debe al gran mercado que representan los Estados Unidos en
+el ámbito de las comunicaciones y tecnologías de la información. Dado que muchas
+empresas y productos de tecnología de la comunicación se desarrollan en los
+Estados Unidos y tienen un alcance global, los estándares y regulaciones
+establecidos por la FCC a menudo se convierten en referencia para otros países y
+regiones, lo que asegura una cierta uniformidad y compatibilidad en el mercado
+global, facilitando la interconexión de dispositivos y servicios en todo el
+mundo.
+
+Según la FCC (\textit{Federal Communications Commission}), un sistema UWB se
+define como uno en el que el ancho de banda utilizado es mayor a
+\qty{500}{\mega\hertz} o \qty{20}{\percent} de la frecuencia portadora
+\cite{FCC_UWB}. Para la definición de ancho de banda, la comisión utiliza la
+definición de ancho de banda a \qty{10}{\dB}, en lugar de los \qty{3}{\dB}
+usuales en otros campos. De esta manera el ancho de banda queda definido como la
+franja de frecuencia en la que la potencia cae \qty{10}{\dB} con respecto al
+punto de máxima potencia.
+
+En las tecnologías de radio de banda angosta, que componen la mayoría de las
+asignadas por la FCC, se asigna un canal angosto a cada aplicación. Debido al
+gran ancho de banda de los sistemas UWB, es inevitable que el rango de
+frecuencias se superponga con alguno asignado a otra tecnología. Para evitar
+interferencia excesiva, sobre todo con sistemas críticos como el GPS, la FCC
+asigna una máscara espectral sobre la potencia máxima permitida para los
+sistemas UWB. En la figura \ref{fig:fcc_uwb_psd_mask} puede observarse la misma.
+La máscara se establece sobre la PIRE, Potencia Isotrópica Radiada Equivalente
+(o EIRP del inglés \textit{Equivalent Isotropic Radiated Power}). Esta cantidad
+es la potencia que debería emitir un radiador isotrópico para realizar la misma
+intensidad de radicación en la dirección de máxima potencia de la antena. Es una
+medida de direccionalidad de la antena que permite comparar entre radiadores con
+distintos patrones de radiación.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/fcc_uwb_psd_mask.png}
+    \caption{Máscara de PSD para señales UWB establecida por la FCC. Tomada de \cite{Heydari2005}.}
+    \label{fig:fcc_uwb_psd_mask}
+\end{figure}
+
+La tecnología UWB encuentra aplicaciones en diversas areas
+
+\begin{itemize}
+  \item \textbf{Radar:} El gran ancho de banda de las señales UWB se presta
+        para aplicaciones de radar que requieran de gran resolución espacial. Su
+        capacidad de penetración profunda permite aplicaciones de radar en las
+        que se pueden resolver objetos bloqueados por paredes. Su gran
+        penetración también permite aplicaciones en GPR (del inglés
+        \textit{Ground Penetrating Radar}, radar de penetración de suelo), en
+        las que la señal de radar se utiliza para identificar materiales
+        enterrados en el suelo o dentro de muros. Algunos ejemplos
+        pueden consultarse en \cite{morales2018}, \cite{savelyev2010},
+        \cite{senapati2021}.
+  \item \textbf{Comunicaciones:} Otra ventaja del gran ancho de banda de estos
+        sistemas es la capacidad de transmisión de datos que puede obtenerse.  En
+        sistemas de transmisión de datos de corto alcance, pueden explotarse las
+        propiedades de las señales UWB para obtener altas tasas de transmisión.
+        Algunos ejemplos son \cite{jaesang2004}, \cite{zhiquan2005},
+        \cite{Heydari2005}
+  \item \textbf{Imágenes médicas:} Existen aplicaciones en las que radares de
+        impulsos Doppler UWB son utilizados para medición de signos vitales
+        críticos como pulso cardíaco y respiración. Este tipo de radares frente
+        a otros de onda continua presentan ventajas como menor consumo y mayor
+        resolución. Algunos ejemplos son \cite{jalivand2011}, \cite{oloumi2020},
+        \cite{jalivand2011_2}.
+  \item \textbf{Caracterización de materiales:} ciertos materiales pueden ser
+      caracterizados mediante su iluminación con una señal UWB y un análisis
+        sobre las reflexiones de la señal. El gran ancho de banda de esta
+        respuesta permite realizar caracterizaciones del material que con
+        señales de banda angosta no serían posibles. Algunos ejemplos de estas
+        aplicaciones pueden consultarse en \cite{altieri2017},
+        \cite{Salman2008}, \cite{Bouza2023}, \cite{Muqaibel2003},
+        \cite{salman2010performance}, \cite{Altieri2021}
+\end{itemize}
+
+En cuanto a su adopción, en 2019 varios telefonos inteligentes empezaron a
+ofrecer tecnologías UWB. En campos de radar fue expicada su aplicación.
+
+Habiendo sido presentadas las ventajas de los sistemas UWB y como estas permiten
+su aplicación en distintos campos, estos tienen desventajas en cuanto a
+complejidad de implementación. El gran ancho de banda de las señales permite
+explotar diversas aplicaciones pero al mismo tiempo presenta complicaciones en
+el diseño, ya que los caminos de señal deben tener un gran ancho de banda. Esto
+vuelve desafiante el diseño en varios aspectos.
+
+El objetivo de este trabajo es desarrollar un generador de pulsos UWB de bajo
+costo, que evite estas problemáticas.
+
+\section{Generadores de pulsos ultracortos}
+
+\textcolor{red}{Agregar referencias acá}
+
+Un componente fundamental de los sistemas UWB son los generadores de pulsos
+ultracortos. Estos tienen múltiples aplicaciones, tanto en la generación de las
+señales a ser transmitidas, como en muestro y conversión a banda
+base/pasante. Es fundamental en este tipo de generadores lograr anchos de pulso
+menores a \qty{1}{\nano\second} y tener amplitudes variables.
+
+Existen diversas topologías para la implementación de estos circuitos. En la
+literatura se encuentran resultados reportados con implementaciones tanto
+integradas como discretas. En los generadores implementados en circuitos
+integrados, son usuales las arquitecturas basadas en la suma de una señal de
+entrada con distintos niveles de retardo, generado pulsos con forma de gaussiana
+derivada \cite{Nguyen2012} \cite{Salehi2010} \cite{An2018}.Como en este trabajo
+el objetivo es una plataforma de bajo costo y reconfigurable, se optará por una
+con una implementación discreta.
+
+En la familia de generadores implementados con componentes discretos, destacan
+los implementados con diodos SRD. A continuación se resaltarán las principales
+características de los mismos, las distintas topologías existentes y sus
+ventajas y desventajas.
+
+\subsection{Generadores basados en diodo SRD}
+
+Un tipo de generadores de pulsos ultracortos son los basados en diodo SRD. Este
+tipo de dispositivos pertenecen a la familia de diodos de almacenamiento de
+carga. Se diferencian por su característica de recuperación reversa. Esta
+presenta un largo tiempo de almacenamiento seguido de un tiempo de transición
+muy corto, lo que permite su aplicación en generación de pulsos ultracortos.
+
+Este tipo de generadores de pulsos se caracterizan por su bajo costo,
+versatilidad en cuanto a amplitud y ancho de pulso, y baja complejidad de
+implementación. Es por estos motivos que son ampliamente utilizados en la
+generación de pulsos para sistemas UWB.
+
+Existen distintas arquitecturas de generación de pulsos basados en este diodo.
+En todas se explota su característica de recuperación reversa, las variaciones
+se presentan en el tipo de componentes utilizados, el tipo de señal de entrada y
+su acople y la forma de utilización del diodo. En la mayor parte de los
+generadores reportados en la literatura, se puede diferenciar entre SRD serie o
+paralelo con la señal, y la utilización de inductores o líneas de transmisión en
+paralelo, o \textit{stub}, para la generación del pulso.
+
+Separarémos a los generadores en dos grupos: serie y paralelo, explicando las
+ventajas y desventajas de cada uno.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/srd_series_generator.png}
+        \caption{Generador SRD serie. Tomado de \cite{han2005}.}
+        \label{fig:srd_series_generator}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/srd_shunt_generator.png}
+        \caption{Generador SRD paralelo. Tomado de \cite{han2005}.}
+        \label{fig:srd_shunt_generator}
+    \end{subfigure}
+    \caption{Generadores de pulsos basados en SRD con topología serie y
+    paralelo.}
+    \label{fig:srd_pulse_generator_topologies}
+\end{figure}
+
+\subsubsection{Serie}
+
+En los generadores que denominaremos serie, el diodo SRD se encuentra en serie
+con la señal. En la figura \ref{fig:srd_series_generator} se observa un ejemplo.
+En este caso, el diodo SRD genera un flanco muy rápido en base a uno
+(posiblemente) lento, Con este flanco rápido, se utiliza un stub cortocircuitado
+a tierra para reflejarlo y así lograr un pulso ultra corto. La duración temporal
+de este pulso estará dado por el retardo de propagación en la línea de
+transmisión, mientras que la amplitud estará determinada por el retardo en la
+línea, la amplitud de la señal de entrada y la velocidad de crecimiento del
+flanco generado por el SRD. La señal de entrada puede estar acoplada de manera
+directa al diodo, o acoplada en alterna. El primer tipo de acople tiene asociado
+una mayor disipación de potencia, mientras que la segunda presenta menor
+disipación pero más complejidad de implementación, ya que la correcta
+polarización del diodo y su transición al estado de alta impedancia se vuelven
+más desafiantes.
+
+Estos generadores se caracterizan por su simplicidad de implementación. El hecho
+de utilizar una línea de transmisión para la generación del pulso simplifica el
+diseño, ya que no requiere la adquisición de componentes adicionales, siendo que
+la selección de los mismos es desafiante en el contexto de UWB dónde se debe
+trabajar en grandes anchos de banda. La utilización de la línea de transmisión
+permite más control sobre el diseño.
+
+\subsubsection{Paralelo}
+
+En los generadores paralelo, el diodo SRD se encuentra en paralelo con la
+salida. El SRD presenta una baja impedancia mientras se encuentra polarizado en
+directa. Una vez aplicada una corriente inversa para conmutar al dispositivo a
+su estado de alta impedancia, el mismo permanece en el estado de baja impedancia
+durante un tiempo denominado tiempo de almacenamiento. Extinguido este período,
+el diodo transiciona al estado de alta impedancia en un tiempo dado por su
+tiempo de transición, que para diodos SRD es del orden de picosegundos. Teniendo
+al diodo en paralelo con la salida, es posible generar un pulso ultra corto en
+base a esta transición. Para lograr esto, se acopla capacitivamente el SRD a la
+salida, con un valor de capacidad que filtre toda la forma de onda excepto la
+transición rápida. De esta manera se conforma el generador de pulsos.
+
+Es usual en estos generadores la presencia de un inductor serie con la señal de
+entrada, como puede observarse en la figura \ref{fig:srd_shunt_generator}.
+
+también durante una porción de tiempo denominada tiempo de almacenamiento
+De esta manera, la señal de salida es la tensión sobre el diodo SRD.
+Para formar el pulso, se acopla la salida capacitivamente, de manera que la
+salida es la tensión sobre el SRD acoplada en alterna. 
+Estos generadores suelen disponer de un inductor en serie con la señal
+para lograr la generación del pulso. En la figura \ref{fig:srd_shunt_generator}
+se observa el esquemático.
+
+\section{Aplicación de generadores de pulsos ultracortos}
+
+A continuación se detallará la aplicación de generadores de pulsos ultracortos
+en el contexto de un sistema UWB. Se utilizará de referencia el trabjo reportado
+en \cite{Altieri2021}, donde se desarrolló una plataforma para la estimación del
+contenido de humedad en poliamidas en base a UWB, es decir, una aplicación de
+caracterización de materiales. En esta plataforma se irradia sobre el objeto a
+caracterizar una señal UWB, cuya reflexión es capturada por la misma plataforma
+y analizada para estimar el contenido de humedad. La plataforma contiene
+entonces dos caminos, el de transmisión y el de recepción, el diagrama en
+bloques de ambos puede observarse en la figura
+\ref{fig:uwb_system_block_diagram}. A continuación se detallará como un
+generador de pulsos ultracortos permite simplificar la implementación de estos
+bloques.
+
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/uwb_system_tx_path.png}
+        \caption{Camino de transmisión en plataforma UWB. Tomado de
+        \cite{Altieri2021}.}
+        \label{fig:uwb_system_tx_path}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/uwb_system_rx_path.png}
+        \caption{Camino de recepción en plataforma UWB. Tomado de
+        \cite{Altieri2021}.}
+        \label{fig:uwb_system_rx_path}
+    \end{subfigure}
+        \caption{Cadenas de transmisión y recepción en sistema UWB reportado en
+        \cite{Altieri2021}.}
+    \label{fig:uwb_system_block_diagram}
+\end{figure}
+
+\subsection{Aplicaciones en transmisión}
+
+El diagrama en bloques del camino de transmisión puede observarse en la figura
+\ref{fig:uwb_system_tx_path}. La función de esta cadena es generar un pulso en
+banda pasante a ser transmitido por la antena, que irradiará sobre el objeto a
+caracterizar. En este caso, se toma una frecuencia central de transmisión de
+\qty{1.9}{\giga\hertz} y un ancho de banda de \qty{1}{\giga\hertz}. Para la
+transmisión de este pulso en banda pasante, se parte de un pulso generado por
+una FPGA. Este pulso tiene un ancho mínimo dado por el reloj mínimo del sistema,
+que en este caso se encontraba en \qty{1.5}{\nano\second}, con un ancho de banda
+de \qty{10}{\dB} de \qty{1.28}{\giga\hertz}. Este pulso se encuentra en banda
+base, para pasarlo a banda pasante se utiliza un multiplicador de frecuencia
+pasivo. Para la multiplicación es necesaria una señal de referencia de
+\qty{1.9}{\giga\hertz}, y dado que el multiplicador es pasivo, este requiere que
+la potencia de la referencia sea de \qty{13}{\dBm}.  Para lograr esto se
+requiere de un oscilador activo y un amplificador para lograr la potencia
+necesaria. Dado que el multiplicador es pasivo y tiene una pérdida especificada
+en \qty{10}{\dB}, es necesario un bloque de ganancia para compensar. En este
+caso, se utilizaron dos bloques de ganancia intercalados por un atenuador
+configurable, de manera de darle a todo el sistema una ganancia configurable de
+entre \qty{-13.4}{\dB} y \qty{18.1}{\dB}.
+
+A continuación se explicará cómo esta cadena puede ser fuertemente simplificada
+con un generador de pulsos ultracortos. En la figura
+\ref{fig:proposed_uwb_tx_path} se observa la cadena de señal propuesta. Para
+generar el pulso en banda pasante, en lugar de utilizar una arquitectura basada
+en una generación de pulso en banda base y luego una modulación a banda pasante,
+se utilizará una basada en un generador de pulsos y un filtro pasabanda. El
+pulso en banda pasante de la arquitectura original se encontraba en una
+frecuencia central de \qty{1.9}{\giga\hertz} con un ancho de banda de
+\qty{1}{\giga\hertz}. Para generar este pulso, se propone una arquitectura en la
+que se dispone de un filtro pasabanda con las características del pulso deseado,
+es decir, una frecuencia central de \qty{1,9}{\giga\hertz} y
+\qty{1}{\giga\hertz} de ancho de banda, y se lo excita con un pulso ultra corto.
+Este pulso aproxima a un impulso ideal, siendo que excitar un sistema LTI con un
+impulso ideal resulta en una señal con un espectro igual a la función
+transferencia del sistema, en este caso la salida tendrá el espectro del filtro
+pasabanda. Por ser el ancho del pulso finito y distinto de 0, la salida no será
+exactamente igual a la transferencia del filtro, pero con un pulso lo
+suficientemente corto es suficiente. En terminos de frecuencia, es suficiente
+con que el ancho de banda a \qty{10}{\dB} sea mayor a la máxima frecuencia útil,
+en este caso $ \qty{1,9}{\giga\hertz}+ \qty{1}{\giga\hertz}/2 =
+\qty{2,4}{\giga\hertz}$. Para mantener la funcionalidad de ganancia variable,
+entre el pulser y el filtro pasabanda se incluyen un amplificador y un atenuador
+variable.
+
+De esta manera, se implementa una cadena que requería de 6 componentes por una
+que solo requiere de 2. En el caso de la arquitectura propuesta, la potencia de
+salida puede ser ajustada con la amplitud del generador de pulsos, ya que la
+misma define la amplitud del pulso en banda pasante. Regulando la amplitud de
+este generador se regula la potencia. En cuanto a la forma espectral del pulso
+de salida, es totalmente controlable por el filtro pasabanda, por lo que la
+cadena propuesta presenta una gran versatilidad, además de baja complejidad.
+Cabe resaltar la importancia del generador en esta cadena, que debe generar
+pulsos ultracortos (tales que su ancho de banda sea mayor al de los pulsos en
+banda pasante) y amplitud regulable. En caso de ser necesario, pueden agregarse
+un amplificador y atenuador variable como se indica en la figura
+\ref{fig:proposed_uwb_tx_path} para darle más versatilidad al ajuste de
+amplitud.
+
+Además de la menor cantidad de componentes en la arquitectura propuesta, estos
+son más simples. En la arquitectura original se necesita, además de los
+amplificadores y el atenuador variable, un oscilador y un multiplicador, ambos
+componentes con significativas complejidades de implementación y limitaciones
+asociadas.
+
+\begin{itemize}
+    \item El oscilador requiere un diseño de una placa especial, y el diseño de
+        la misma es de complejidad ya que el camino del  oscilador es crítico en
+        el desempeño del sistema. También requiere de un control digital, ya sea
+        en un microcontrolador, con el costo asociado al desarrollo del
+        programa. Además, la salida es de baja potencia, lo que requiere un
+        amplificador adicional.
+    \item En cuanto al multiplicador, dado el gran ancho de banda de las señales
+        de trabajo, es necesario utilizar uno pasivo. Estos son dispositivos no
+        lineales, en general de menor desempeño que los activos adaptados a
+        señales de banda angosta.  Estos multiplicadores requieren portadoras de
+        potencia (\qty{10}{\dBm}-\qty{15}{\dBm}) considerable que el oscilador
+        por defecto no alcanza, por lo que es necesario un amplificador. Ademas
+        tienen restricciones del ancho de banda en banda base, y restricciones
+        del ancho de banda en banda pasante; además no deben superponerse las
+        bandas. Por ejemplo, en el HMC213 utilizado en la plataforma de
+        referencia \cite{Altieri2021}, la banda de entrada es hasta
+        \qty{1.5}{\giga\hertz}, y la banda pasante es de
+        \qty{1.5}{\giga\hertz}-\qty{4.5}{\giga\hertz}. Entonces si se quiere
+        pasar una señal de \qty{1}{\giga\hertz} en banda base, al modularla
+        queda con \qty{2}{\giga\hertz} en banda pasante, la portadora mínima
+        debe ser \qty{2.5}{\giga\hertz} para evitar que se superponga la banda
+        de entrada con la banda pasante).
+\end{itemize}
+
+En la arquitectura propuesta, no es necesario el multiplicador y, por lo tanto,
+tampoco el oscilador. Removiendo estos componentes se elimina gran parte del
+costo monetario y de ingeniería de la plataforma, ya que como fuese descripto
+anteriormente, estos dos componentes involucran múltiples restricciones y
+complejidades en la implementación. En la cadena de transmisión propuesta, la
+mayor complejidad está en la implementación del pulser. Una vez diseñado este
+componente, la etapa de transmisión solamente necesita el diseño del filtro
+pasabanda, que puede ser realizado directamente con una línea de transmisión en
+la placa, y opcionalmente la inclusión de un amplificador comercial.
+
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/proposed_uwb_tx_path.drawio.png}
+        \caption{Propuesta de camino de transmisión en plataforma UWB basado en
+        generador de pulsos ultra cortos.}
+        \label{fig:proposed_uwb_tx_path}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/proposed_uwb_rx_path.drawio.png}
+        \caption{Propuesta de camino de recepción en plataforma UWB basado en
+        generador de pulsos ultra cortos.}
+        \label{fig:proposed_uwb_rx_path}
+    \end{subfigure}
+    \caption{Propuestas de cadenas de transmisión y recepción en sistema UWB
+    basado en generador de pulsos ultracortos.}
+    \label{fig:uwb_system_block_diagram}
+\end{figure}
+
+\subsection{Aplicaciones en recepción}
+
+En cuanto al receptor, en la figura \ref{fig:uwb_system_rx_path} se observa la
+cadena de señal implementada en la plataforma de referencia. La misma está
+compuesta por un amplificador de bajo ruido como primer etapa, seguido de un
+filtro pasabanda antialiasing. Luego del filtrado se realiza una conversión a
+banda base con un demodulador I/Q, seguido de una amplificación. Finalmente se
+realiza una conversión A/D con un conversor de tiempo real con tasa de muestreo
+de \qty[per-mode=symbol]{1.8}{\giga\siemens\per\second}. Este conversor de tiempo
+real vuelve muy costoso al sistema, ya que un conversor de tan alta tasa de
+muestreo tiene un ancho de banda analógico muy grande, lo que vuelve el costo
+tanto monetario como de desarrollo de ingeniería muy alto.
+
+Explotando la periodicidad de la señal recibida, es posible simplificar esta
+cadena reemplazándola por una basada en un generador de pulsos ultracortos,
+realizando en lugar de muestreo en tiempo real un muestreo en tiempo
+equivalente, técnica posibilitada por la periodicidad de la señal de entrada. En
+este esquema, se muestrea a una tasa mucho menor a la de Nyquist, muestreando la
+señal en distintos puntos de su período. Luego, estos puntos pueden ser
+alineados correctamente para reconstruir la señal original. En la figura
+\ref{fig:Illustration_of_equivalent_time_sampling} puede observarse el esquema.
+Se observa como se toman muestras a una tasa mucho menor a la de Nqyuist, con el
+cuidado de en cada muestra tomar un punto distinto dentro de la forma de onda a
+muestrear. De esta manera, el conversor en tiempo real de gran tasa de muestreo
+puede ser reemplazado por un conversor de baja tasa y bajo costo, reduciendo de
+manera importante el costo del sistema.
+
+Con el muestreo en tiempo equivalente es posible muestrear una señal a una tasa
+mucho menor a la de Nyquist. Sin embargo, un conversor A/D de la baja tasa de
+muestreo deseada tiene un ancho de banda analógico bajo, por lo que no sería
+posible muestrear directamente el pulso en banda pasante. Para hacer de interfaz
+entre esta señal y el conversor de baja tasa, es posible implementar un circuito
+de \textit{Sample \& Hold} que muestrea la señal, proveyendo al conversor una
+señal discretidad de bajo ancho de banda. En la figura
+\ref{fig:sampling_circuit} se observa un circuito de muestreo basado en pulsos
+ultra cortos reportado en \cite{han2004}. El mismo se basa en diodos para
+muestrear la señal, que son accionados por pulsos ultracortos. La duración
+temporal de estos pulsos define el ancho de banda máximo de entrada. La amplitud
+determina el rango dinámico.
+
+Con este esquema basado en muestreo en tiempo equivalente e implementado con un
+circuito de muestreo basado en diodos de muestreo accionados por pulsos ultra
+cortos, es posible reemplazar al costoso conversos de tiempo real de la figura
+\ref{fig:uwb_system_rx_path} por el circuito propuesto. De esta manera, se llega
+a una cadena de recepción como la de la figura \ref{fig:proposed_uwb_rx_path}.
+En este sistema, se mantienen como primeras etapas el amplificador de bajo ruido
+y el filtro pasabanda. Estos componentes son de bajo costo y de baja complejidad
+de implementación. Luego, en lugar del demodulador I/Q, los amplificadores
+diferenciales y el conversor de Nyquist, se encuentra el circuito de muestreo
+excitado por el pulser. Los pulsos de control del circuito de muestreo
+trabajarían a una frecuencia de repetición PRF (del inglés \textit{Pulse
+Repetition Frequency}) de \qty{10}{\mega\hertz}. A la salida del muestreador se
+realizaría una forma de onda compuesta por las muestras del pulso en banda
+pasante. Esta señal es amplificada por un amplificador operacional de bajo ancho
+de banda y muestreada por un ADC de baja tasa, siendo la necesaria de
+\qty[per-mode=symbol]{10}{\mega\siemens\per\second}, más de 2 ordenes de
+magnitud por debajo de la tasa del conversor de la figura
+\ref{fig:uwb_system_rx_path}.
+
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/Illustration-of-equivalent-time-sampling.png}
+        \caption{Ilustración de la técnica de muestreo en tiempo equivalente.}
+        \label{fig:Illustration_of_equivalent_time_sampling}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/sampling_circuit.png}
+        \caption{Circuito de muestreo basado en pulsos ultra cortos. Tomado de
+        \cite{han2004}.}
+        \label{fig:sampling_circuit}
+    \end{subfigure}
+    \caption{Esquema de muestreo en tiempo equivalente y circuito de muestreo
+    reportado en \cite{han2004}.}
+    \label{fig:equivalent_time_sampling_figures}
+\end{figure}
+
+\section{Requerimientos del generador de pulsos}
+
+En base a las posibles aplicaciones en los caminos de transmisión y recepción de
+pulsos de una plataforma UWB, se determina el siguiente conjunto de
+especificaciones para el generador de pulsos.
+
+\begin{table}
+\centering
+\begin{tabular}{c|c}
+\hline
+    Variable & Requerimiento \\
+\hline
+    $V_{in}$                &   CMOS @ $V_{DD}=\qty{3.3}{\volt}$ ($V_{OH}$
+    \qty{2.4}{\volt})     \\
+    PRF                &        \qty{10}{\mega\hertz} \\
+    $V_{dd}$                &   \qty{5}{\volt} - \qty{8}{\volt} \\
+    $A$                &        \qty{500}{\milli\volt}-\qty{1.5}{\volt} \\
+    FWHM                &       \qty{120}{\pico\second} \\
+\hline
+\end{tabular}
+\caption{Requerimientos del generador de pulsos.}
+\label{tab:pulser_requirements}
+\end{table}
