@@ -1,9 +1,14 @@
 \chapter{Introducción}
 
-Para los requerimientos, hablar en algún lado de la plataforma base? Por ahora
-citamos \cite{altieri2017}
-
-Poner en algún lado una tabla con todos los requisitos: ancho de banda, amplitud, PRF, entrada de comando, fuente de alimentación, etc
+En este capítulo se hará una introducción a los sistemas UWB, sus ventajas,
+desventajas y aplicaciones. Luego, se explicará un componente fundamental de
+estos sistemas, que es el generador de pulsos ultracortos. Se analizaran las
+diversas arquitecturas reportadas en la literatura. En particular, se resalta la
+basada en diodo SRD serie con linea de transmisión en paralelo por su bajo costo
+de implementación. Luego, se analizarán aplicaciones del generador de pulsos
+propuesto en los caminos de recepción y transmisión de una plataforma UWB de
+referencia \cite{Altieri2021}. Por último, se llegará a un conjunto de
+especificaciones para el generador de pulsos a desarrollar.
 
 \section{Introducción a UWB}
 
@@ -14,23 +19,17 @@ señales ultra cortas. Esto es contraposición a los sistemas de RF usuales, que
 suelen ser de banda angosta o sintonizados. Las señales temporales ultracortas o
 el ancho de banda grande supone un desafío para el diseño de los sistemas.
 
-La Comisión Federal de Comunicaciones de los Estados Unidos, conocida como la
-FCC, es la agencia gubernamental encargada de regular las comunicaciones en el
-país. Su misión principal es supervisar y establecer normativas para una amplia
-gama de servicios de comunicación, que incluyen radio, televisión, telefonía,
-Internet y otros medios de comunicación. La FCC juega un papel crucial en la
-asignación de espectro de radiofrecuencia, la promoción de la competencia en el
-mercado de las comunicaciones y la protección de los consumidores. La influencia
-global de la FCC se debe al gran mercado que representan los Estados Unidos en
-el ámbito de las comunicaciones y tecnologías de la información. Dado que muchas
-empresas y productos de tecnología de la comunicación se desarrollan en los
-Estados Unidos y tienen un alcance global, los estándares y regulaciones
-establecidos por la FCC a menudo se convierten en referencia para otros países y
-regiones, lo que asegura una cierta uniformidad y compatibilidad en el mercado
-global, facilitando la interconexión de dispositivos y servicios en todo el
-mundo.
+Para tomar una definición precisa sobre qué es un sistema UWB, tomaremos la dada
+por la Comisión Federal de Comunicaciones de los Estados Unidos, conocida como
+la FCC. Esta es una agencia gubernamental con incumbencia en los Estados Unidos,
+pero dado que en el ámbito de las comunicaciones y tecnologías de la información
+muchas empresas y productos se desarrollan en los Estados Unidos y tienen un
+alcance global, los estándares y regulaciones establecidos por la FCC a menudo
+se convierten en referencia para otros países y regiones, lo que asegura una
+cierta uniformidad y compatibilidad en el mercado global, facilitando la
+interconexión de dispositivos y servicios en todo el mundo.
 
-Según la FCC (\textit{Federal Communications Commission}), un sistema UWB se
+En la definición dada por esta agencia, un sistema UWB se
 define como uno en el que el ancho de banda utilizado es mayor a
 \qty{500}{\mega\hertz} o \qty{20}{\percent} de la frecuencia portadora
 \cite{FCC_UWB}. Para la definición de ancho de banda, la comisión utiliza la
@@ -109,8 +108,6 @@ El objetivo de este trabajo es desarrollar un generador de pulsos UWB de bajo
 costo, que evite estas problemáticas.
 
 \section{Generadores de pulsos ultracortos}
-
-\textcolor{red}{Agregar referencias acá}
 
 Un componente fundamental de los sistemas UWB son los generadores de pulsos
 ultracortos. Estos tienen múltiples aplicaciones, tanto en la generación de las
@@ -210,20 +207,21 @@ durante un tiempo denominado tiempo de almacenamiento. Extinguido este período,
 el diodo transiciona al estado de alta impedancia en un tiempo dado por su
 tiempo de transición, que para diodos SRD es del orden de picosegundos. Teniendo
 al diodo en paralelo con la salida, es posible generar un pulso ultra corto en
-base a esta transición. Para lograr esto, se acopla capacitivamente el SRD a la
-salida, con un valor de capacidad que filtre toda la forma de onda excepto la
-transición rápida. De esta manera se conforma el generador de pulsos.
+base a esta transición. Para lograr esto, se coloca en serie un inductor que
+genera una resonancia con la capacidad a tierra del diodo SRD \cite{Hall1966}.
+Esta frecuencia de resonancia se relaciona con el ancho de pulso y permite su
+control.
 
-Es usual en estos generadores la presencia de un inductor serie con la señal de
-entrada, como puede observarse en la figura \ref{fig:srd_shunt_generator}.
-
-también durante una porción de tiempo denominada tiempo de almacenamiento
-De esta manera, la señal de salida es la tensión sobre el diodo SRD.
-Para formar el pulso, se acopla la salida capacitivamente, de manera que la
-salida es la tensión sobre el SRD acoplada en alterna. 
-Estos generadores suelen disponer de un inductor en serie con la señal
-para lograr la generación del pulso. En la figura \ref{fig:srd_shunt_generator}
-se observa el esquemático.
+En la literatura se reportan mejores amplitudes de pulso para los generadores
+paralelo que para los serie \cite{han2005}. Sin embargo, esta mayor amplitud
+trae como contrapartida la mayor complejidad de implementación asociada con la
+presencia de un inductor en el camino de la señal. La selección de este
+componente debe ser cuidadosa, ya que por los anchos de banda de trabajo los
+componentes deben tener un gran ancho de banda. En el caso del generador serie,
+se utiliza una línea de transmisión sobre la que se tiene mayor control con
+respecto a sus parámetros. Es por esta razón que para este trabajo se adoptará
+una arquitectura basada en diodo SRD serie, siendo preponderante la simplicidad
+de implementación sobre la amplitud de pulso.
 
 \section{Aplicación de generadores de pulsos ultracortos}
 
@@ -468,8 +466,28 @@ magnitud por debajo de la tasa del conversor de la figura
 \section{Requerimientos del generador de pulsos}
 
 En base a las posibles aplicaciones en los caminos de transmisión y recepción de
-pulsos de una plataforma UWB, se determina el siguiente conjunto de
-especificaciones para el generador de pulsos.
+pulsos de una plataforma UWB, se determina el conjunto de
+especificaciones de la tabla \ref{tab:pulser_requirements} para el generador de
+pulsos.
+
+El requisito de $V_{in}$ se refiere a la entrada de control del pulser. Esta se
+corresponde con una salida digital de la FPGA, que trabaja en \qty{3.3}{\volt}.
+Esta salida digital es de baja capacidad de carga, por lo que la entrada tiene
+que tener un bajo consumo de corriente. Para $V_{dd}$ se admite un valor
+superior a los \qty{3.3}{\volt} de la FPGA, y se apunta a una alimentación
+regulable entre \qty{5}{\volt} y \qty{5}{\volt}.
+
+En cuanto a las características del pulso, se espera un FWHM (del inglés
+\textit{Full Width at Half Maximum}) de alrededor de \qty{120}{\pico\second}.
+Esta ancho temporal permite trabajar en los anchos de bandas de la plataforma
+de referencia \cite{Altieri2021}. En cuanto a la amplitud, una de entre
+\qty{500}{\milli\volt} y \qty{1.5}{\volt} es suficiente. Cuanto mayor sea la
+amplitud, menor la complejidad de implementación de las aplicaciones, ya que si
+esta es suficiente se pueden ahorrar amplificadores. De todas maneras, si la
+amplitud no es lo suficientemente grande, un amplificador no representa un gran
+costo para el sistema. La PRF de los pulsos se espera que sea de
+\qty{10}{\mega\hertz}. Esto permite en el camino de recepción propuesto
+muestrear la salida del muestreador con un ADC de baja tasa.
 
 \begin{table}
 \centering
