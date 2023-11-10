@@ -419,16 +419,17 @@ detalla cómo fue obtenido este valor.
 
 \begin{table}[t!]
 \centering
-\begin{tabular}{ccccccc}
+\begin{tabular}{cccccccc}
 \hline
-$V_{cc}$ [\unit{\volt}] & $D$ [\unit{\percent}] & $A$ [\unit{\volt}] &
-    FWHM [\unit{\pico\second}] & $\qty{3}{\dB} \ B$ [\unit{\giga\hertz}]& $t_r$
-    [\unit{\pico\second}]& $t_f$ [\unit{\pico\second}]\\
+    $V_{cc}$ [\unit{\volt}] & $D$ [\unit{\percent}] & $A$ [\unit{\volt}] & FWHM
+    [\unit{\pico\second}] & $\qty{3}{\dB} \ B$ [\unit{\giga\hertz}] &
+    $\qty{10}{\dB} \ B$ [\unit{\giga\hertz}] & $t_r$ [\unit{\pico\second}] &
+    $t_f$ [\unit{\pico\second}]\\
 \hline
-5 & 50 & 0.380 & 159 & 5.5 & 93 & 88 \\
-5 & 70 & 0.625 & 161 & 2.8 & 93 & 91 \\
-7 & 50 & 0.702 & 162 & 2.9 & 93 & 93 \\
-7 & 70 & 1.120 & 165 & 2.5 & 95 & 96 \\
+    5 & 50 & 0.380 & 159 & 5.5 & 8.6 & 93 & 88 \\
+    5 & 70 & 0.625 & 161 & 2.8 & 4.5 & 93 & 91 \\
+    7 & 50 & 0.702 & 162 & 2.9 & 4.5 & 93 & 93 \\
+    7 & 70 & 1.120 & 165 & 2.5 & 4.1 & 95 & 96 \\
 \hline
 \end{tabular}
 \caption{Resultados de mediciones de pulso.}
@@ -723,3 +724,233 @@ contexto en el que desarrollamos nuestro generador, es más costosa de conseguir
 ya que requiere algún DAC, frente a la excitación de nuestro generador que es
 una señal cuadrada, fácilmente obtenible como salida digital de una FPGA o
 microcontrolador.
+
+\section{Aplicaciones}
+
+Como fuese explicado en el capitulo 1, el generador de pulsos desarrollado tiene
+aplicaciones en caminos de transmisión y recepción de sistemas UWB. En cuanto a
+los caminos de transmisión, en el
+capitulo se desarrolló cómo la utilización de un generador de pulsos ultracortos
+cadenas permite su simplificación con respecto a las implementadas en
+base a generadores de pulsos en banda base y su conversión a banda pasante
+mediante un multiplicador \cite{Altieri2021}. La utilización del generador
+evita la necesidad de un oscilador local, un multiplicador y una etapa de
+amplificación, dado que los multiplicadores para los anchos de banda UWB suelen
+ser pasivos con pérdidas significativas. En los caminos de recepción, el
+generador de pulsos permite la implementación de una arquitectura de muestreo en
+tiempo equivalente, reemplazando así a un conversor de Nyquist que es sumamente
+costoso para los anchos de banda en cuestión. En esta sección se demostrará la
+aplicación del generador diseñado en un camino de transmisión.
+
+\subsection{Aplicaciones en transmisión}
+
+Para validar la aplicabilidad del transmisor en un cadena de transmisión, se
+simulará el circuito de la figura \ref{fig:proposed_uwb_tx_path}. En este
+sistema, para generar un pulso en banda pasante, se excita un filtro pasabandas
+con la respuesta en frecuencia deseada con el generador de pulsos ultracortos,
+que aproxima un tren de impulsos ideal.  En esta forma de onda ideal, los
+impulsos tienen un ancho temporal de 0 y una amplitud infinita, y en el dominio
+de la frecuencia, son perfectamente planos.  Esta es una aproximación, el
+geneardor real tendrá un ancho de banda finito y una duración temporal finita al
+igual que la amplitud. La aproximación de impulso ideal puede ser considerada
+válida si el pulso tiene un espectro plano dentro de la banda de frecuencias del
+filtro pasabanda. Fuera de esta banda, dada la atenuación del filtro, es
+indistinta la densidad espectral del pulso de entrada.
+
+El filtro pasabanda utilizado tendrá las mismas características que el reportado
+en \cite{Altieri2021}: Chebyshev de orden 5, con \qty{0.1}{\dB} de
+\textit{ripple}, frecuencia central de \qty{1.9}{\giga\hertz} y
+\qty{1}{\giga\hertz} de ancho de banda. Esto resulta en una banda de paso de
+entre \qty{1.4}{\giga\hertz} y \qty{2.4}{\giga\hertz}. En la figura
+\ref{fig:passband_chebyshev_schematic} puede observarse la vista esquemático del
+filtro. Como fuese explicado en la sección \ref{sec:pulse_bandwidth}, el pulso
+teórico tiene un ancho de banda a \qty{3}{\dB} de \qty{3.46}{\giga\hertz} y a
+\qty{10}{\dB} de \qty{6.32}{\giga\hertz}. En cuanto al ancho de banda obtenido
+en las mediciones, para el pulso generado con $V_{cc}$ de \qty{5}{\volt} y un
+ciclo de trabajo de \qty{70}{\percent}, se obtuvo un ancho de \qty{3}{\dB} de
+\qty{2.8}{\giga\hertz} y a \qty{10}{\dB} de \qty{4.5}{\giga\hertz}. Tanto para
+las mediciones como para el valor teórico, el ancho de banda del pulso se
+encuentra por arriba de la banda de paso del filtro, por lo que es esperado que
+el generador diseñado aproxime correctamente al impulso ideal frente al filtro
+pasabanda.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{images/passband_chebyshev_schematic.png}
+    \caption{Filtro Chebyshev utilizado para simulación de cadena de
+    transmisión.}
+    \label{fig:passband_chebyshev_schematic}
+\end{figure}
+
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/passband_pulser_sim_no_amp.png}
+        \caption{Simulación de filtro pasabanda con impulso ideal y pulser sin
+        buffer.}
+        \label{fig:passband_pulser_sim_no_amp}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/passband_pulser_sim_no_amp_results.png}
+        \caption{Resultado obtenido en simulación de pulser cargado con filtro
+        pasabanda.}
+        \label{fig:passband_pulser_sim_no_amp_results}
+    \end{subfigure}
+    \caption{Esquemático utilizado para filtro pasabanda y simulación realizada
+    con impulso ideal y generado por pulser.}
+    \label{fig:passband_cheby_and_with_pulser}
+\end{figure}
+
+\subsection{Simulación}
+
+Como primera simulación, se realizó una compuesta por dos circuitos: uno ideal,
+en el que se aplica al filtro pasabanda un pulso ideal de \qty{1}{\volt} de
+amplitud y \qty{1}{\pico\second} de duración, y otro en el que se conecta el
+filtro directamente a la salida del pulser. Simulamos ambos casos para poder
+comparar el desempeño del generador desarrollado contra el caso ideal. Cabe
+destacar que el caso ideal con respecto al del pulser lo es tanto por las
+características del pulso cómo por el efecto de carga. Es decir, al estar el
+geneardor ideal implementado con una fuente de tensión ideal, no presenta
+efectos de carga, mientras que el pulser se ve afectado por estar cargado con
+una impedancia reactiva.
+
+En la figura \ref{fig:passband_pulser_sim_no_amp} puede observarse el
+esquemático simulado y en la \ref{fig:passband_pulser_sim_no_amp_results} los
+resultados obtenidos. Se observa que el pulso resultante del pasabanda con el
+pulser tiene mayores oscilaciones que en el caso del impulso ideal. En el caso
+ideal, el pulso tiene una duración aproximada de \qty{10}{\nano\second},
+mientras que en el caso del pulser, la duración es mayor a
+\qty{20}{\nano\second}, con oscilaciones que continúan incluso luego de este
+tiempo. En cuanto a la forma del pulso, se ve que el pulso principal tiene la
+misma forma. La amplitud de los pulsos es distinta, pero esta no es una cantidad
+que sea comparable, ya que los pulsos de entrada tienen amplitudes distintas.
+Entonces, en este caso observamos que cargando al pulser directamente con el
+filtro pasbandas se logra reproducir la misma forma de onda que con un impulso
+ideal, pero luego del pulso principal se observan unas oscilaciones remanentes
+que en el caso del impulso ideal no están presentes.
+
+Para solucionar el problema de las oscilaciones se propone introducir un bloque
+de ganancia entre el pulser y el filtro pasabanda. Además de incrementar la
+amplitud  resultante, esta etapa remueve los efectos de carga sobre el pulser,
+que en este caso son los responsables de las oscilaciones. Para el amplificador
+se utiliza un TRF37B75 de Texas Instruments. Este se caracteriza por una
+ganancia de \qty{15}{\dB} en un rango de \qty{40}{\mega\hertz} a
+\qty{4000}{\mega\hertz} y muy bajo costo. En cuanto a su costo de
+implementación, se alimenta con \qty{5}{\volt} por lo que no requiere de fuentes
+adicionales, y como componentes adicionales únicamente requiere de dos
+capacitores para acoplar la entrada y la salida, y un \textit{choke} para la
+entrada de alimentación. Económicamente su costo también es extremadamente bajo,
+menor a 1 dolar al momento de la redacción de este trabajo. Por lo tanto, la
+inclusión de este componente en la cadena de transmisión propuesta sigue
+manteniendo la premisa de bajo costo y simplicidad de implementación. Cabe
+resaltar que trabajar con este amplificador resulta en un filtrado de las
+componentes menores a \qty{40}{\mega\hertz}, rango de frecuencia en el que la
+salida del pulser tiene energía. Sin embargo, como en esta aplicación se
+excitará un filtro pasabandas con una banda de paso por encima de estas
+frecuencias, esto no es un problema, ya que este componente filtra todas las
+frecuencias por debajo de \qty{1.4}{\giga\hertz}, lo que vuelve indistinto el
+contenido espectral de las frecuencias por debajo de este valor.
+
+Para simular el efecto del amplificador se utiliza un modelo de SPICE provisto
+por el fabricante. En la figura \ref{fig:passband_pulser_sim_with_amp} se
+observa el esquemático simulado. En el mismo se observa el pulser con su salida
+conectada al TRF37B75, acoplada a alterna mediante un capacitor serie. La salida
+del amplificador también se encuentra acoplada en alterna, y está conectada al
+filtro pasabanda cargado con una impedancia de \qty{50}{\ohm}. En la figura
+\ref{fig:passband_pulser_sim_with_amp_result} se observa el resultado de la
+simulación. El efecto de oscilaciones se ve totalmente removido, con una
+duración total de pulso de \qty{10}{\nano\second}, al igual que en el caso
+ideal. La forma del pulso también se observa sin cambios. Vemos entonces que
+agregando un amplificador como etapa buffer entre el pulser y el filtro
+pasabanda, se logra el mismo resultado que con un impulso ideal. En cuanto a la
+amplitud del pulso, por la acción del amplificador vemos que esta resulta en
+casi \qty{600}{\milli\volt}, mientras que en el resultado de
+\ref{fig:passband_pulser_sim_no_amp_results} era de \qty{150}{\milli\volt}. Cabe
+destacar que por la configuración del amplificador, su salida es negativa, por
+lo que se observa que el pulso de la figura
+\ref{fig:passband_pulser_sim_with_amp_result} se encuentra invertido con
+respecto al caso ideal de la figura
+\ref{fig:passband_pulser_sim_no_amp_results}. Esto no es un problema, ya que
+únicamente representa un cambio de fase con respecto a la señal original, se
+sigue manteniendo la magnitud de la respuesta en frecuencia que es la cantidad
+de interés en esta aplicación.
+
+De esta manera, queda demostrada en esta sección la validez de la cadena de transmisión
+propuesta en el capitulo 1 y su implementación con el generador desarrollado. Se
+demostró que acoplar directamente el filtro pasabandas al pulser resulta en
+oscilaciones indeseadas, pero este problema puede ser solucionado con la
+inclusión de un amplificador de bajo costo. Esto tiene además el beneficio de
+aumentar la amplitud del pulso final.
+
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/passband_pulser_sim_with_amp.png}
+        \caption{Simulación de filtro pasabanda con pulser y amplificador.}
+        \label{fig:passband_pulser_sim_with_amp}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/passband_pulser_sim_with_amp_result.png}
+        \caption{Resultado de simulación de filtro pasbanda con pulser y
+        amplificador.}
+        \label{fig:passband_pulser_sim_with_amp_result}
+    \end{subfigure}
+    \caption{Simulación de pulser cargado con filtro pasabanda y etapa buffer.}
+    \label{fig:passband_pulser_with_amp}
+\end{figure}
+
+\subsection{Validación con pulso medido}
+
+Para realizar la validación del sistema propuesto, se realiza una simulación
+utilizando como fuente al pulso medido en lugar de la vista esquemático del
+generador desarrollado. Para esto, se utilizó el software LTspice, que permite
+definir una fuente de tensión ideal utilizando un archivo CSV, siendo dicho
+archivo el generado por el osciloscopio en la medición del pulso. Fue necesario
+recurrir a este software en lugar del que fue utilizado en el resto del trabajo,
+ADS, dado que este únicamente permite para fuentes de este estilo utilizar como
+entrada un tipo de archivo propietario \textit{Keysight Dataset} que es generado
+por los instrumentos de dicha compañía. Dada la imposibilidad de traducir el
+archivo CSV, se utilizó LTspice.
+
+En cuanto al pulso medido, se utilizó el correspondiente a $V_{cc}$ de
+\qty{5}{\volt} y un ciclo de trabajo de \qty{70}{\percent}, dado que presentaba
+el mejor compromiso entre ancho de banda y amplitud. En la figura
+\ref{fig:passband_with_measurement} se observa el esquemático simulado, y en
+\ref{fig:passband_with_measurement_result} el resultado. La simulación consiste
+de una fuente ideal con la forma de onda del pulso medido, y la carga es el
+filtro Chebyshev de orden 5 cargado con una resistencia de \qty{50}{\ohm}. Como
+en este caso se utiliza una fuente ideal para la generación del pulso, no es
+necesaria la inclusión de una etapa de amplificación, ya que no hay efectos de
+carga. En cuanto a la ganancia que impondría esta etapa, puede contemplarse
+afectando linealmente el pulso obtenido. En cuanto al resultado, se observa la
+misma forma de onda que para la simulación de pulso ideal de la figura
+\ref{fig:passband_pulser_sim_no_amp}, y la misma duración de
+\qty{10}{\nano\second}. De esta manera, queda validada la utilidad del pulso
+medido en la aplicación de generación de pulsos en banda pasante de manera
+directa.
+
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/passband_with_measurement.png}
+        \caption{Simulación de filtro pasabanda excitado con pulso medido.}
+        \label{fig:passband_with_measurement}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/passband_with_measurement_result.png}
+        \caption{Resultado de simulación de filtro pasabanda excitado con pulso
+        medido.}
+        \label{fig:passband_with_measurement_result}
+    \end{subfigure}
+    \caption{Simulación de filtro pasabanda excitado por medición de pulso.}
+    \label{fig:passband_measurement}
+\end{figure}
