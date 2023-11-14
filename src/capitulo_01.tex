@@ -1,60 +1,60 @@
 \chapter{Introducción}
 
-En este capítulo se hará una introducción a los sistemas UWB, sus ventajas,
-desventajas y aplicaciones. Luego, se explicará un componente fundamental de
-estos sistemas, que es el generador de pulsos ultracortos. Se analizaran las
-diversas arquitecturas reportadas en la literatura. En particular, se resalta la
-basada en diodo SRD serie con linea de transmisión en paralelo por su bajo costo
-de implementación. Luego, se analizarán aplicaciones del generador de pulsos
-propuesto en los caminos de recepción y transmisión de una plataforma UWB de
-referencia \cite{Altieri2021}. Por último, se llegará a un conjunto de
+En este capítulo se presenta una introducción a los sistemas UWB, sus
+características y aplicaciones. Asimismo, se analizan posibles implementaciones
+prácticas de dichos sistemas basadas en arquitecturas clásicas de sistemas de
+radiofrecuencia de banda angosta, y las limitaciones que las mismas poseen
+cuando son aplicadas a sistemas UWB. A continuación se analizan arquitecturas
+alternativas concebidas específicamente para sistemas UWB y sus beneficios con
+respecto a los sistemas clásicos de banda angosta, para luego analizar de qué
+modo pueden simplificarse las arquitecturas y al mismo tiempo aumentar su
+desempeño si se utilizan circuitos específicos con la mirada puesta en un
+sistema UWB. Uno de los circuitos de mayor importancia en estas arquitecturas es
+el generador de pulsos ultracortos, Se analizaran los resultados reportados en
+la literatura con respecto a estos circuitos, dentro de los cuales resalta la
+topología basada en diodo SRD serie con linea de transmisión en paralelo por su
+bajo costo de implementación. Luego, se analizarán aplicaciones del generador de
+pulsos propuesto en los caminos de recepción y transmisión de una plataforma UWB
+de referencia \cite{Altieri2021}. Por último, se llegará a un conjunto de
 especificaciones para el generador de pulsos a desarrollar.
 
 \section{Introducción a UWB}
 
-La tecnología UWB (del inglés \textit{Ultra Wide Banda}, ultra ancho de banda) es una
-tecnología de radio caracterizada por señales y sistemas cuyos anchos de banda son muy
-grandes. En el dominio del tiempo, estos grandes anchos de banda se traducen en
-señales ultra cortas. Esto es contraposición a los sistemas de RF usuales, que
-suelen ser de banda angosta o sintonizados. Las señales temporales ultracortas o
-el ancho de banda grande supone un desafío para el diseño de los sistemas.
+La tecnología UWB (del inglés \textit{Ultra Wide Banda}, ultra ancho de banda)
+es una tecnología de radio caracterizada por la transmisión y recepción de
+señales de ancho de banda muy elevado. Como contrapartida, en el dominio del
+tiempo dichas señales son de muy corta duración. Esto es contraposición a los
+sistemas de RF usuales, que suelen ser de banda angosta o sintonizados. Las
+señales temporales ultracortas o el ancho de banda grande supone un desafío para
+el diseño de los sistemas.
 
-Para tomar una definición precisa sobre qué es un sistema UWB, tomaremos la dada
-por la Comisión Federal de Comunicaciones de los Estados Unidos, conocida como
-la FCC. Esta es una agencia gubernamental con incumbencia en los Estados Unidos,
-pero dado que en el ámbito de las comunicaciones y tecnologías de la información
-muchas empresas y productos se desarrollan en los Estados Unidos y tienen un
-alcance global, los estándares y regulaciones establecidos por la FCC a menudo
-se convierten en referencia para otros países y regiones, lo que asegura una
-cierta uniformidad y compatibilidad en el mercado global, facilitando la
-interconexión de dispositivos y servicios en todo el mundo.
-
-En la definición dada por esta agencia, un sistema UWB se
-define como uno en el que el ancho de banda utilizado es mayor a
-\qty{500}{\mega\hertz} o \qty{20}{\percent} de la frecuencia portadora
-\cite{FCC_UWB}. Para la definición de ancho de banda, la comisión utiliza la
-definición de ancho de banda a \qty{10}{\dB}, en lugar de los \qty{3}{\dB}
-usuales en otros campos. De esta manera el ancho de banda queda definido como la
-franja de frecuencia en la que la potencia cae \qty{10}{\dB} con respecto al
-punto de máxima potencia.
+Para dar una definición precisa de un sistema UWB consideramos la definida por
+la Comisión Federal de Comunicaciones de los Estados Unidos (FCC por sus siglas
+en inglés) que define un sistema UWB como uno en el que el ancho de banda
+utilizado es mayor a \qty{500}{\mega\hertz} o \qty{20}{\percent} de la
+frecuencia portadora \cite{FCC_UWB}. Para la definición de ancho de banda, la
+comisión utiliza la definición de ancho de banda a \qty{10}{\dB}, en lugar de
+los \qty{3}{\dB} usuales en otros campos. De esta manera el ancho de banda queda
+definido como la franja de frecuencia en la que la potencia cae \qty{10}{\dB}
+con respecto al punto de máxima potencia.
 
 En las tecnologías de radio de banda angosta, que componen la mayoría de las
-asignadas por la FCC, se asigna un canal angosto a cada aplicación. Debido al
-gran ancho de banda de los sistemas UWB, es inevitable que el rango de
-frecuencias se superponga con alguno asignado a otra tecnología. Para evitar
-interferencia excesiva, sobre todo con sistemas críticos como el GPS, la FCC
-asigna una máscara espectral sobre la potencia máxima permitida para los
-sistemas UWB. En la figura \ref{fig:fcc_uwb_psd_mask} puede observarse la misma.
-La máscara se establece sobre la PIRE, Potencia Isotrópica Radiada Equivalente
-(o EIRP del inglés \textit{Equivalent Isotropic Radiated Power}). Esta cantidad
-es la potencia que debería emitir un radiador isotrópico para realizar la misma
-intensidad de radicación en la dirección de máxima potencia de la antena. Es una
-medida de direccionalidad de la antena que permite comparar entre radiadores con
-distintos patrones de radiación.
+asignadas por la FCC, se asigna un ancho de banda pequeño relativo a la
+frecuencia de la portadora. Debido al gran ancho de banda de los sistemas UWB,
+es inevitable que el rango de frecuencias se superponga con alguno asignado a
+otra tecnología. Para evitar interferencia excesiva, sobre todo con sistemas
+críticos como el GPS, la FCC asigna una máscara espectral sobre la potencia
+máxima permitida para los sistemas UWB. En la figura \ref{fig:fcc_uwb_psd_mask}
+puede observarse la misma.  La máscara se establece sobre la PIRE, Potencia
+Isotrópica Radiada Equivalente (o EIRP del inglés \textit{Equivalent Isotropic
+Radiated Power}). Esta cantidad es la potencia que debería emitir un radiador
+isotrópico para realizar la misma intensidad de radicación en la dirección de
+máxima potencia de la antena. Es una medida de direccionalidad de la antena que
+permite comparar entre radiadores con distintos patrones de radiación.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/fcc_uwb_psd_mask.png}
+    \includegraphics[width=0.7\textwidth]{images/fcc_uwb_psd_mask.png}
     \caption{Máscara de PSD para señales UWB establecida por la FCC. Tomada de \cite{Heydari2005}.}
     \label{fig:fcc_uwb_psd_mask}
 \end{figure}
@@ -94,149 +94,67 @@ La tecnología UWB encuentra aplicaciones en diversas areas
         \cite{salman2010performance}, \cite{Altieri2021}
 \end{itemize}
 
-En cuanto a su adopción, en 2019 varios telefonos inteligentes empezaron a
-ofrecer tecnologías UWB. En campos de radar fue expicada su aplicación.
+Como se ha mostrado, los sistemas UWB tienen numerosas aplicaciones en la
+práctica. En este contexto, debemos diferenciar aquellas aplicaciones de consumo
+masivo, donde se espera producir un gran número de unidades de un sistema, y
+aquellas aplicaciones más específicas o experimentales, que no se desarrollan a
+gran escala. Para las primeras, de escala industrial, puede ser razonable el
+desarrollo de un circuito integrado específico que permita amortizar los costos
+de desarrollo con el volumen. Para la segundas, específicamente para las
+aplicaciones experimentales, es más conveniente contar con un sistema de menor
+costo no integrado, que permita realizar pruebas y sea adaptable a diversas
+aplicaciones. Este es el contexto en el que se desarrollará la presente tesis.
 
-Habiendo sido presentadas las ventajas de los sistemas UWB y como estas permiten
-su aplicación en distintos campos, estos tienen desventajas en cuanto a
-complejidad de implementación. El gran ancho de banda de las señales permite
-explotar diversas aplicaciones pero al mismo tiempo presenta complicaciones en
-el diseño, ya que los caminos de señal deben tener un gran ancho de banda. Esto
-vuelve desafiante el diseño en varios aspectos.
+\section{Sistemas UWB basados en generadores de pulsos ultracortos}
 
-El objetivo de este trabajo es desarrollar un generador de pulsos UWB de bajo
-costo, que evite estas problemáticas.
+A continuación, se describirá una propuesta de sistema UWB basado en un
+generador de pulsos ultracortos. Se partirá de un sistema reportado en la
+literatura \cite{Altieri2021} basado en generación de pulsos en banda base y
+conversión a banda pasante mediante un multiplicador de frecuencias. Se
+describirá la plataforma reportada, y se detallará cómo un generador de pulsos
+ultracortos permite una fuerte simplificación del sistema implementado, y cómo
+las diversas métricas de desempeño del sistema están fuertemente asociadas a los
+parámetros del pulso.
 
-\section{Generadores de pulsos ultracortos}
+En el trabajo de referencia \cite{Altieri2021} se desarrolló una plataforma para
+la estimación del contenido de humedad en poliamidas en base a señales UWB, es
+decir, una aplicación de caracterización de materiales. En esta aplicación, un
+objeto a caracterizar es irradiado por una cadena de pulsos periódica y se
+reciben múltiples copias de la respuesta del blanco. Luego, a partir de estas
+copias es posible realizar caracterizaciones sobre el material mediante técnicas
+de detección y estimación.  Para que esta estimación sea exitosa, es fundamental
+que el contenido espectral de los pulsos sea lo más amplio posible.
 
-Un componente fundamental de los sistemas UWB son los generadores de pulsos
-ultracortos. Estos tienen múltiples aplicaciones, tanto en la generación de las
-señales a ser transmitidas, como en muestro y conversión a banda
-base/pasante. Es fundamental en este tipo de generadores lograr anchos de pulso
-menores a \qty{1}{\nano\second} y tener amplitudes variables.
-
-Existen diversas topologías para la implementación de estos circuitos. En la
-literatura se encuentran resultados reportados con implementaciones tanto
-integradas como discretas. En los generadores implementados en circuitos
-integrados, son usuales las arquitecturas basadas en la suma de una señal de
-entrada con distintos niveles de retardo, generado pulsos con forma de gaussiana
-derivada \cite{Nguyen2012} \cite{Salehi2010} \cite{An2018}.Como en este trabajo
-el objetivo es una plataforma de bajo costo y reconfigurable, se optará por una
-con una implementación discreta.
-
-En la familia de generadores implementados con componentes discretos, destacan
-los implementados con diodos SRD. A continuación se resaltarán las principales
-características de los mismos, las distintas topologías existentes y sus
-ventajas y desventajas.
-
-\subsection{Generadores basados en diodo SRD}
-
-Un tipo de generadores de pulsos ultracortos son los basados en diodo SRD. Este
-tipo de dispositivos pertenecen a la familia de diodos de almacenamiento de
-carga. Se diferencian por su característica de recuperación reversa. Esta
-presenta un largo tiempo de almacenamiento seguido de un tiempo de transición
-muy corto, lo que permite su aplicación en generación de pulsos ultracortos.
-
-Este tipo de generadores de pulsos se caracterizan por su bajo costo,
-versatilidad en cuanto a amplitud y ancho de pulso, y baja complejidad de
-implementación. Es por estos motivos que son ampliamente utilizados en la
-generación de pulsos para sistemas UWB.
-
-Existen distintas arquitecturas de generación de pulsos basados en este diodo.
-En todas se explota su característica de recuperación reversa, las variaciones
-se presentan en el tipo de componentes utilizados, el tipo de señal de entrada y
-su acople y la forma de utilización del diodo. En la mayor parte de los
-generadores reportados en la literatura, se puede diferenciar entre SRD serie o
-paralelo con la señal, y la utilización de inductores o líneas de transmisión en
-paralelo, o \textit{stub}, para la generación del pulso.
-
-Separarémos a los generadores en dos grupos: serie y paralelo, explicando las
-ventajas y desventajas de cada uno.
-
-\begin{figure}
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/srd_series_generator.png}
-        \caption{Generador SRD serie. Tomado de \cite{han2005}.}
-        \label{fig:srd_series_generator}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/srd_shunt_generator.png}
-        \caption{Generador SRD paralelo. Tomado de \cite{han2005}.}
-        \label{fig:srd_shunt_generator}
-    \end{subfigure}
-    \caption{Generadores de pulsos basados en SRD con topología serie y
-    paralelo.}
-    \label{fig:srd_pulse_generator_topologies}
-\end{figure}
-
-\subsubsection{Serie}
-
-En los generadores que denominaremos serie, el diodo SRD se encuentra en serie
-con la señal. En la figura \ref{fig:srd_series_generator} se observa un ejemplo.
-En este caso, el diodo SRD genera un flanco muy rápido en base a uno
-(posiblemente) lento, Con este flanco rápido, se utiliza un stub cortocircuitado
-a tierra para reflejarlo y así lograr un pulso ultra corto. La duración temporal
-de este pulso estará dado por el retardo de propagación en la línea de
-transmisión, mientras que la amplitud estará determinada por el retardo en la
-línea, la amplitud de la señal de entrada y la velocidad de crecimiento del
-flanco generado por el SRD. La señal de entrada puede estar acoplada de manera
-directa al diodo, o acoplada en alterna. El primer tipo de acople tiene asociado
-una mayor disipación de potencia, mientras que la segunda presenta menor
-disipación pero más complejidad de implementación, ya que la correcta
-polarización del diodo y su transición al estado de alta impedancia se vuelven
-más desafiantes.
-
-Estos generadores se caracterizan por su simplicidad de implementación. El hecho
-de utilizar una línea de transmisión para la generación del pulso simplifica el
-diseño, ya que no requiere la adquisición de componentes adicionales, siendo que
-la selección de los mismos es desafiante en el contexto de UWB dónde se debe
-trabajar en grandes anchos de banda. La utilización de la línea de transmisión
-permite más control sobre el diseño.
-
-\subsubsection{Paralelo}
-
-En los generadores paralelo, el diodo SRD se encuentra en paralelo con la
-salida. El SRD presenta una baja impedancia mientras se encuentra polarizado en
-directa. Una vez aplicada una corriente inversa para conmutar al dispositivo a
-su estado de alta impedancia, el mismo permanece en el estado de baja impedancia
-durante un tiempo denominado tiempo de almacenamiento. Extinguido este período,
-el diodo transiciona al estado de alta impedancia en un tiempo dado por su
-tiempo de transición, que para diodos SRD es del orden de picosegundos. Teniendo
-al diodo en paralelo con la salida, es posible generar un pulso ultra corto en
-base a esta transición. Para lograr esto, se coloca en serie un inductor que
-genera una resonancia con la capacidad a tierra del diodo SRD \cite{Hall1966}.
-Esta frecuencia de resonancia se relaciona con el ancho de pulso y permite su
-control.
-
-En la literatura se reportan mejores amplitudes de pulso para los generadores
-paralelo que para los serie \cite{han2005}. Sin embargo, esta mayor amplitud
-trae como contrapartida la mayor complejidad de implementación asociada con la
-presencia de un inductor en el camino de la señal. La selección de este
-componente debe ser cuidadosa, ya que por los anchos de banda de trabajo los
-componentes deben tener un gran ancho de banda. En el caso del generador serie,
-se utiliza una línea de transmisión sobre la que se tiene mayor control con
-respecto a sus parámetros. Es por esta razón que para este trabajo se adoptará
-una arquitectura basada en diodo SRD serie, siendo preponderante la simplicidad
-de implementación sobre la amplitud de pulso.
-
-\section{Aplicación de generadores de pulsos ultracortos}
-
-A continuación se detallará la aplicación de generadores de pulsos ultracortos
-en el contexto de un sistema UWB. Se utilizará de referencia el trabjo reportado
-en \cite{Altieri2021}, donde se desarrolló una plataforma para la estimación del
-contenido de humedad en poliamidas en base a UWB, es decir, una aplicación de
-caracterización de materiales. En esta plataforma se irradia sobre el objeto a
-caracterizar una señal UWB, cuya reflexión es capturada por la misma plataforma
-y analizada para estimar el contenido de humedad. La plataforma contiene
-entonces dos caminos, el de transmisión y el de recepción, el diagrama en
+En cuanto a la arquitectura de la plataforma reportada, la misma contiene
+entonces dos caminos, el de transmisión y el de recepción. El diagrama en
 bloques de ambos puede observarse en la figura
-\ref{fig:uwb_system_block_diagram}. A continuación se detallará como un
-generador de pulsos ultracortos permite simplificar la implementación de estos
-bloques.
+\ref{fig:uwb_system_block_diagram}.  La arquitectura de dicha plataforma es
+análoga a la de un sistema tradicional de transmisión y recepción de banda
+angosta. La señal a transmitir es generada primero en banda base, y luego
+modulada a banda pasante mediante una portadora.  En el sistema receptor la
+señal es convertida a banda base nuevamente y muestreada en tiempo real con un
+conversor analógico-digital que cumpla con el criterio de Nyquist. No obstante
+existen algunas diferencias con la arquitectura de un sistema de banda angosta.
+Por un lado, la conversión a banda base se realiza en un solo salto, a
+diferencia de los sistemas tradicionales de comunicaciones que en general
+utilizan varias frecuencias intermedias. En un sistema de banda angosta es
+conveniente realizar varios saltos, dado que en cada etapa se incrementa el ancho
+de banda relativo de la señal (que es muy pequeño), permitiendo diseñar etapas
+de filtrado menos selectivas. En un sistema UWB esto es contraproducente porque,
+a diferencia de un sistema de banda angosta, el ancho de banda relativo es muy
+elevado, y una conversión a frecuencia intermedia lo incrementaría, haciendo más
+complejo el sistema. Por otra parte, los sistemas de banda angosta no trasladan
+a la señal de banda pasante a frecuencia cero para su muestreo como el sistema
+UWB, sino que trabajan con una frecuencia intermedia no nula y las señales son
+muestreadas en dicha banda, realizando el lazo de sincronización por medio de
+procesamiento digital. Esto es impracticable en el caso del sistema UWB de modo
+la señal se demodula directamente a frecuencia cero, con los inconvenientes
+prácticos que ello puede generar.
+
+A continuación se detallará como un generador de pulsos ultracortos permite
+simplificar la implementación de las cadenas de transmisión y recepción del
+sistema UWB de referencia. En ambos caminos, se detallará cómo se reducen los
+costos tanto económicos de los componentes cómo de desarrollo de los sistemas.
 
 \begin{figure}[t]
     \centering
@@ -311,14 +229,13 @@ que solo requiere de 2. En el caso de la arquitectura propuesta, la potencia de
 salida puede ser ajustada con la amplitud del generador de pulsos, ya que la
 misma define la amplitud del pulso en banda pasante. Regulando la amplitud de
 este generador se regula la potencia. En cuanto a la forma espectral del pulso
-de salida, es totalmente controlable por el filtro pasabanda, por lo que la
-cadena propuesta presenta una gran versatilidad, además de baja complejidad.
-Cabe resaltar la importancia del generador en esta cadena, que debe generar
-pulsos ultracortos (tales que su ancho de banda sea mayor al de los pulsos en
-banda pasante) y amplitud regulable. En caso de ser necesario, pueden agregarse
-un amplificador y atenuador variable como se indica en la figura
-\ref{fig:proposed_uwb_tx_path} para darle más versatilidad al ajuste de
-amplitud.
+de salida, es controlable por el filtro pasabanda, lo que presenta una gran
+versatilidad además de baja complejidad.  Cabe resaltar la importancia del
+generador en esta cadena, que debe generar pulsos ultracortos (tales que su
+ancho de banda sea mayor al de los pulsos en banda pasante) y amplitud
+regulable. En caso de ser necesario, pueden agregarse un amplificador y
+atenuador variable como se indica en la figura \ref{fig:proposed_uwb_tx_path}
+para darle más versatilidad al ajuste de amplitud.
 
 Además de la menor cantidad de componentes en la arquitectura propuesta, estos
 son más simples. En la arquitectura original se necesita, además de los
@@ -391,10 +308,14 @@ compuesta por un amplificador de bajo ruido como primer etapa, seguido de un
 filtro pasabanda antialiasing. Luego del filtrado se realiza una conversión a
 banda base con un demodulador I/Q, seguido de una amplificación. Finalmente se
 realiza una conversión A/D con un conversor de tiempo real con tasa de muestreo
-de \qty[per-mode=symbol]{1.8}{\giga\siemens\per\second}. Este conversor de tiempo
-real vuelve muy costoso al sistema, ya que un conversor de tan alta tasa de
-muestreo tiene un ancho de banda analógico muy grande, lo que vuelve el costo
-tanto monetario como de desarrollo de ingeniería muy alto.
+de \qty[per-mode=symbol]{1.8}{\giga\siemens\per\second}. Este conversor de
+tiempo real vuelve muy costoso al sistema, ya que un conversor de tan alta tasa
+de muestreo tiene un ancho de banda analógico muy grande, lo que vuelve el costo
+tanto monetario como de desarrollo de ingeniería muy alto.  Como referencia, el
+circuito integrado de dicho conversor AD, el ADC12D1800 de Texas Instruments
+\footnote{\url{https://www.ti.com/product/ADC12D1800}},
+tiene un costo unitario superior a 1800 dolares, a lo que deben sumarse costos
+de desarrollo adicionales.
 
 Explotando la periodicidad de la señal recibida, es posible simplificar esta
 cadena reemplazándola por una basada en un generador de pulsos ultracortos,
@@ -416,7 +337,7 @@ muestreo deseada tiene un ancho de banda analógico bajo, por lo que no sería
 posible muestrear directamente el pulso en banda pasante. Para hacer de interfaz
 entre esta señal y el conversor de baja tasa, es posible implementar un circuito
 de \textit{Sample \& Hold} que muestrea la señal, proveyendo al conversor una
-señal discretidad de bajo ancho de banda. En la figura
+señal discretizada de bajo ancho de banda. En la figura
 \ref{fig:sampling_circuit} se observa un circuito de muestreo basado en pulsos
 ultra cortos reportado en \cite{han2004}. El mismo se basa en diodos para
 muestrear la señal, que son accionados por pulsos ultracortos. La duración
@@ -463,31 +384,38 @@ magnitud por debajo de la tasa del conversor de la figura
     \label{fig:equivalent_time_sampling_figures}
 \end{figure}
 
-\section{Requerimientos del generador de pulsos}
+\subsection{Requerimientos del generador de pulsos}
 
 En base a las posibles aplicaciones en los caminos de transmisión y recepción de
 pulsos de una plataforma UWB, se determina el conjunto de
 especificaciones de la tabla \ref{tab:pulser_requirements} para el generador de
-pulsos.
+pulsos. Este conjunto fue determinado con el objetivo de lograr un generador lo
+más económico y simple posible, teniendo como restricción su aplicabilidad a la
+plataforma de referencia \cite{Altieri2021}. Esto impone los requerimientos de
+amplitud y duración temporal de pulso y de interfaz con el sistema. El
+requerimiento de simplicidad no impacta directamente en la tabla de requisitos
+sino en la arquitectura que se seleccionará para el generador.
 
-El requisito de $V_{in}$ se refiere a la entrada de control del pulser. Esta se
-corresponde con una salida digital de la FPGA, que trabaja en \qty{3.3}{\volt}.
-Esta salida digital es de baja capacidad de carga, por lo que la entrada tiene
-que tener un bajo consumo de corriente. Para $V_{dd}$ se admite un valor
-superior a los \qty{3.3}{\volt} de la FPGA, y se apunta a una alimentación
-regulable entre \qty{5}{\volt} y \qty{5}{\volt}.
+El requisito de $V_{in}$ en la tabla \ref{tab:pulser_requirements} se refiere a
+la entrada de control del pulser. Esta se corresponde con una salida digital de
+la FPGA, que trabaja en \qty{3.3}{\volt}.  Esta salida digital es de baja
+capacidad de carga, por lo que la entrada tiene que tener un bajo consumo de
+corriente. Para $V_{dd}$ se admite un valor superior a los \qty{3.3}{\volt} de
+la FPGA, y se apunta a una alimentación regulable entre \qty{5}{\volt} y
+\qty{5}{\volt}.
 
 En cuanto a las características del pulso, se espera un FWHM (del inglés
 \textit{Full Width at Half Maximum}) de alrededor de \qty{120}{\pico\second}.
-Esta ancho temporal permite trabajar en los anchos de bandas de la plataforma
-de referencia \cite{Altieri2021}. En cuanto a la amplitud, una de entre
-\qty{500}{\milli\volt} y \qty{1.5}{\volt} es suficiente. Cuanto mayor sea la
-amplitud, menor la complejidad de implementación de las aplicaciones, ya que si
-esta es suficiente se pueden ahorrar amplificadores. De todas maneras, si la
-amplitud no es lo suficientemente grande, un amplificador no representa un gran
-costo para el sistema. La PRF de los pulsos se espera que sea de
-\qty{10}{\mega\hertz}. Esto permite en el camino de recepción propuesto
-muestrear la salida del muestreador con un ADC de baja tasa.
+Esta ancho temporal permite trabajar en los anchos de bandas de la plataforma de
+referencia \cite{Altieri2021}, tanto como para el camino de transmisión como el
+de recepción. En cuanto a la amplitud, una de entre \qty{500}{\milli\volt} y
+\qty{1.5}{\volt} es suficiente. Cuanto mayor sea la amplitud, menor la
+complejidad de implementación de las aplicaciones, ya que si esta es suficiente
+se pueden ahorrar amplificadores. De todas maneras, si la amplitud no es lo
+suficientemente grande, un amplificador no representa un gran costo para el
+sistema. La PRF de los pulsos se espera que sea de \qty{10}{\mega\hertz}. Esto
+permite en el camino de recepción propuesto muestrear la salida del muestreador
+con un ADC de baja tasa.
 
 \begin{table}
 \centering
@@ -506,3 +434,201 @@ muestrear la salida del muestreador con un ADC de baja tasa.
 \caption{Requerimientos del generador de pulsos.}
 \label{tab:pulser_requirements}
 \end{table}
+
+\section{Generadores de pulsos ultracortos}
+
+Como fuese explicado anteriormente, un componente fundamental de los sistemas
+UWB es el generador de pulsos ultracortos. Un generador de pulsos de buenas
+características de FWHM y amplitud permite simplificar fuertemente sistemas UWB
+basados en implementaciones tradicionales. Para esto, es fundamental en este tipo
+de generadores lograr anchos de pulso menores a \qty{1}{\nano\second} y tener
+amplitudes variables. En esta sección se explorarán las distintas arquitecturas
+reportadas en la literatura para generadores de pulsos, y se seleccionará una en
+base a los requisitos expuestos anteriormente.
+
+Existen diversas topologías para la implementación de estos circuitos. En la
+literatura se encuentran resultados reportados con implementaciones tanto
+integradas como discretas. En los generadores implementados en circuitos
+integrados, son usuales las arquitecturas basadas en la suma de una señal de
+entrada con distintos niveles de retardo, generado pulsos con forma de gaussiana
+derivada \cite{Nguyen2012} \cite{Salehi2010} \cite{An2018}. Como se mencionó
+anteriormente, el objetivo es contar con un sistema UWB modular para
+aplicaciones experimentales por lo que serán de interés para nosotros analizar
+las arquitecturas con componentes discretos, que no requieran el diseño de un
+circuito integrado.
+
+En la familia de generadores implementados con componentes discretos,
+prácticamente la totalidad de los resultados reportados en la literatura se
+encuentran implementados en base a diodos SRD \cite{rulikowski2004}
+\cite{protiva2009} \cite{kamal2014} \cite{oloumi2020} \cite{han2005}. Estos
+generadores presentan buen desempeño en cuanto a amplitud de pulso y duración
+temporal, además de extremadamente baja complejidad de implementación. Dado que
+este tipo de generador cumple con los requerimientos de complejidad y dado los
+resultados reportados demuestra ser capaz de lograr los requisitos detallados en
+la tabla \ref{tab:pulser_requirements}, este será el tipo de generador a
+implementar en este trabajo. A continuación se detallarán las principales
+características de los mismos, las distintas topologías existentes y sus
+ventajas y desventajas.
+
+\subsection{Generadores basados en diodo SRD}
+
+Como fuese explicado anteriormente, prácticamente la totalidad de los
+generadores de pulsos ultracortos implementados con componentes discretos
+reportados en la literatura están basados en diodos SRD. Este tipo de
+dispositivos pertenecen a la familia de diodos de almacenamiento de carga. Se
+diferencian por su característica de recuperación reversa, presentando esta un
+largo tiempo de almacenamiento seguido de un tiempo de transición muy corto, lo
+que permite su aplicación en generación de pulsos ultracortos.
+Constructivamente, estos diodos son diodos PIN, es decir, diodos compuestos por
+un material semiconductor intrínseco entre dos semiconductores P y N. A
+diferencia de los diodos PIN utilizados en circuitos de radiofrecuencia y
+microondas como llaves activas, los diodos SRD tienen una capa I muy fina,
+propiedad que los dota de su anteriormente mencionada característica de
+recuperación reversa.
+
+Los generadores basados en diodo SRD se caracterizan por su bajo costo,
+versatilidad en cuanto a amplitud y ancho de pulso y baja complejidad de
+implementación. Este tipo de generadores contienen al diodo SRD, en algunos
+casos ningún otro componente semiconductor o activo \cite{Zhang2006}
+\cite{rulikowski2004} \cite{han2005} y en la mayoría de los casos otro
+componente semiconductor pasivo con el objetivo de rectificar o adaptar la forma
+de onda \cite{protiva2009} \cite{kamal2014} \cite{han2002}. Aunque el generador
+de pulsos no necesita componentes activos, suelen ser necesarios en etapas
+\textit{driver} previas a la generación de pulso o en etapas de amplificación
+posteriores a la generación. De todas formas, el generador es extremadamente
+simple, basándose solamente el diodo SRD, una red de polarización y
+opcionalmente otro semiconductor pasivo para mejorar la forma del pulso. Las
+etapas anteriores y posteriores al generador dependerán de la integración con el
+resto del sistema.  Es por estos motivos que son ampliamente utilizados en la
+generación de pulsos para sistemas UWB.
+
+Existen distintas arquitecturas de generación de pulsos basados en este diodo.
+En todas el finamiento se basa en la característica de recuperación reversa,
+estando presente las variaciones en el tipo de componentes utilizados, el tipo
+de señal de entrada y su acople y la forma de utilización del diodo. En la mayor
+parte de los generadores reportados en la literatura, se puede diferenciar entre
+SRD serie o paralelo con la señal, y la utilización de inductores o líneas de
+transmisión en paralelo, o \textit{stub}, para la generación del pulso.
+
+Clasificaremos entonces a los generadores en dos grupos según su topología:
+serie y paralelo. A continuación serán explicadas las ventajas y desventajas de
+cada grupo.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/srd_series_generator.png}
+        \caption{Generador SRD serie. Tomado de \cite{han2005}.}
+        \label{fig:srd_series_generator}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/srd_shunt_generator.png}
+        \caption{Generador SRD paralelo. Tomado de \cite{han2005}.}
+        \label{fig:srd_shunt_generator}
+    \end{subfigure}
+    \caption{Generadores de pulsos basados en SRD con topología serie y
+    paralelo.}
+    \label{fig:srd_pulse_generator_topologies}
+\end{figure}
+
+\subsubsection{Serie}
+
+En los generadores que denominaremos serie, el diodo SRD se encuentra en serie
+con la señal. En la figura \ref{fig:srd_series_generator} se observa un ejemplo.
+En este caso, el diodo SRD genera un flanco muy rápido en base a uno
+(posiblemente) lento, Con este flanco rápido, se utiliza un stub cortocircuitado
+a tierra para reflejarlo y así lograr un pulso ultra corto. La duración temporal
+de este pulso estará dado por el retardo de propagación en la línea de
+transmisión, mientras que la amplitud estará determinada por el retardo en la
+línea, la amplitud de la señal de entrada y la velocidad de crecimiento del
+flanco generado por el SRD. La señal de entrada puede estar acoplada de manera
+directa al diodo, o acoplada en alterna. El primer tipo de acople tiene asociado
+una mayor disipación de potencia, mientras que la segunda presenta menor
+disipación pero más complejidad de implementación, ya que la correcta
+polarización del diodo y su transición al estado de alta impedancia se vuelven
+más desafiantes.
+
+Estos generadores se caracterizan por su simplicidad de implementación. El hecho
+de utilizar una línea de transmisión para la generación del pulso simplifica el
+diseño, ya que no requiere la adquisición de componentes adicionales, siendo que
+la selección de los mismos es desafiante en el contexto de UWB dónde se debe
+trabajar en grandes anchos de banda. La utilización de la línea de transmisión
+permite controlar el ancho de pulso con los parámetros de la línea, que son
+función de los materiales utilizados y de la geometría de la misma, lo que
+elimina la dependencia del ancho de pulso en componentes externos.
+
+Se encuentran reportados trabajos sobre generadores serie que permiten
+configurar la duración de pulso \cite{Zhang2006}. Esto se logra intercalando en
+la línea de transmisión múltiples diodos PIN puestos a tierra, conectados por
+tensiones de control. De esta manera, el largo efectivo de la línea puede
+reducirse polarizando los diodos PIN. Esta estrategia no se tomará en este
+trabajo ya que es preferible un generador simple a uno reconfigurable, pero es
+un aspecto interesante a tener en cuenta en futuras iteraciones.
+
+\subsubsection{Paralelo}
+
+En los generadores paralelo, el diodo SRD se encuentra en paralelo con la
+salida. El SRD presenta una baja impedancia mientras se encuentra polarizado en
+directa. Una vez aplicada una corriente inversa para conmutar al dispositivo a
+su estado de alta impedancia, el mismo permanece en el estado de baja impedancia
+durante un tiempo denominado tiempo de almacenamiento. Extinguido este período,
+el diodo transiciona al estado de alta impedancia en un tiempo dado por su
+tiempo de transición, que para diodos SRD es del orden de picosegundos. Teniendo
+al diodo en paralelo con la salida, es posible generar un pulso ultra corto en
+base a esta transición. Para lograr esto, se coloca en serie un inductor que
+genera una resonancia con la capacidad a tierra del diodo SRD \cite{Hall1966}.
+Esta frecuencia de resonancia se relaciona con el ancho de pulso y permite su
+control.
+
+En la literatura se reportan mejores amplitudes de pulso para los generadores
+paralelo que para los serie \cite{han2005}. Sin embargo, esta mayor amplitud
+trae como contrapartida la mayor complejidad de implementación asociada con la
+presencia de un inductor en el camino de la señal. La selección de este
+componente debe ser cuidadosa, ya que por los anchos de banda de trabajo los
+componentes deben tener un gran ancho de banda. En el caso del generador serie,
+se utiliza una línea de transmisión sobre la que se tiene mayor control con
+respecto a sus parámetros. Es por esta razón que para este trabajo se adoptará
+una arquitectura basada en diodo SRD serie, siendo preponderante la simplicidad
+de implementación sobre la amplitud de pulso.
+
+
+\section{Organización del trabajo}
+
+En el presente trabajo se diseñará un generador de pulsos ultracortos con
+las aplicaciones desarrolladas anteriormente en caminos de transmisión y
+recepción de sistemas UWB. El objetivo de este generador es simplificar estas
+cadenas de señal. Para lograr este objetivo, se determinó un conjunto de
+especificaciones resumidas en la tabla \ref{tab:pulser_requirements}. Para
+lograr un generador simple y de bajo costo, se optó por una arquitectura basada
+en diodo SRD utilizando la topología serie.
+
+Habiendo determinado el alcance y los objetivos del trabajo, se detallará cómo
+se organizará el trabajo. En el capitulo 2 se explicará en detalle el
+funcionamiento del diodo SRD, los fenómenos físicos que determinan su
+funcionamiento, sus parámetros principales y se estudiarán los modelos de
+simulación disponibles. En el capitulo 3 se estudiará la aplicación de diodos
+SRD en circuitos aceleradores de flanco, y como estos en combinación con una
+línea de transmisión cortocircuitada conforman un circuito generador de pulsos.
+Se analizará para este circuito la dependencia de los parametros del pulso con
+los componentes del circuito. Una vez diseñado el circuito generador, se
+describirá el desarrollo de una etapa driver. Finalmente, se reporta  la
+implementación física de estos circuitos en PCB. En el capitulo 4 se presentarán
+las mediciones realizadas sobre el circuito y se reportarán resultados de
+simulaciones sobre aplicaciones del generador en las cadenas de transmisión y
+recepción propuestas para el sistema UWB. Finalmente, en el capitulo 5 se
+presentarán las conclusiones obtenidas y posibles trabajos a futuro.
+
+La metodología de trabajo para el diseño de circuitos se basará en la obtención
+de expresiones simbólicas para las cantidades de interés, acompañadas de
+simulaciones validando las expresiones obtenidas. A lo largo de este trabajo,
+para las simulaciones será utilizado el software \textit{Advanced Design System}
+o ADS por sus siglas en inglés, de la compañía Keysight
+\footnote{\url{https://www.keysight.com/us/en/products/software/pathwave-design-software/pathwave-advanced-design-system.html}}.
+Se utiliza este programa por sus buenas prestaciones en lo que respecta a
+circuitos de radiofrecuencia y microondas. Eventualmente se utilizará también el
+software LTspice
+\footnote{\url{https://www.analog.com/en/design-center/design-tools-and-calculators/ltspice-simulator.html}}
+en ciertas ocasiones en las que ADS no sea suficiente.
