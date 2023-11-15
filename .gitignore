@@ -1,2 +1,3 @@
 aux/*
 *.ipynb_checkpoints*
+*.~lock.*
