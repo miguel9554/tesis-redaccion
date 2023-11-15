@@ -2,6 +2,81 @@
 
 \section{Conclusiones}
 
-Acá van todas las conclusiones.
+En el presente trabajo se desarrolló exitosamente un generador de pulsos
+ultracortos. El mismo logró amplitudes de pulso de entre \qty{400}{\milli\volt}
+y \qty{1.1}{\volt} y FHWM de entre \qty{159}{\pico\second} y
+\qty{165}{\pico\second}, que es equivalente a un ancho de banda a \qty{3}{\dB}
+de \qty{2.8}{\giga\hertz} y a \qty{10}{\dB} de \qty{4.5}{\giga\hertz}.  Estos
+pulsos fueron generados usando una alimentación $V_{cc}$ de entre \qty{5}{\volt}
+y \qty{7}{\volt}, comandando la generación de pulsos con la salida digital de
+una FPGA, de \qty{3.3}{\volt} y baja capacidad de carga. Se estudió la
+aplicabilidad de los pulsos generados en una cadena de transmisión simplificada
+para un sistema UWB obteniendo resultados satisfactorios.
 
-\section{Trabajo a futuro}
+En cuanto al generador diseñado, el mismo resultó extremadamente simple,
+compuesto únicamente por un diodo SRD, un diodo Schottky con la función de
+rectificación y una línea de transmisión cortocircuitada a tierra proveyendo el
+control del ancho del pulso. Para lograr el comando del generador mediante una
+interfaz digital de baja capacidad de carga y la generación de pulsos en base a
+una única fuente unipolar, se incorporó una etapa \textit{driver}, también de
+extremado bajo costo. Esta etapa se construyó en base a un integrado
+\textit{gate driver} seguido de un capacitor serie de filtrado pasalto para
+generar tensión negativa, siendo el \textit{gate driver} el único dispositivo
+activo utilizado.
+
+Para el circuito diseñado se presentaron múltiples expresiones relacionando los
+valores de los componentes con los parámetros del circuito, expresiones que
+fueron validadas mediante simulaciones y mediciones. Estas expresiones incluyen
+la amplitud de pulso, la duración temporal y el consumo de corriente del
+circuito. Todo el circuito fue validado previo a la fabricación y medición
+mediante simulaciones, utilizando uno de los modelos reportados en la literatura
+sobre diodos SRD.
+
+Respecto al diseño físico, se fabricaron dos PCB, uno para la etapa driver y
+otro para la etapa pulser. Esto le proporciona versatilidad al trabajo
+desarrollado, permitiendo intercambiar estas placas con otros posibles
+desarrollos futuros. El diseño de las mismas estuvo acompañado de simulaciones
+electromagnéticas previas que permitieron optimizar la impedancia de las líneas
+de transmisión en toda la banda de frecuencias de interés. Esto resultó en una
+mínima degradación en las mediciones obtenidas con respecto a las predicciones
+realizadas por los modelos de simulación circuital.
+
+Comparando los resultados obtenidos con los reportados en la literatura, se
+obtuvieron parámetros de pulso comparables con el estado del arte en generadores
+UWB discretos. En particular, el presente trabajo resalta por el funcionamiento
+en base a una única fuente de alimentación unipolar, por el extremado bajo costo
+evidenciado por la baja cantidad de dispositivos utilizados y por la posibilidad
+de ser controlado directamente por la salida digital de una FPGA o
+microcontrolador.
+
+\section{Trabajos a futuro}
+
+Como trabajo a futuro, es posible desarrollar las aplicaciones en caminos de
+recepción y transmisión de sistemas UWB para el generador desarrollado. En el
+caso de la transmisión, en este trabajo se presentó una simulación de nivel
+esquemático demostrando la aplicabilidad del trabajo desarrollado en la tarea.
+En el caso del receptor, sería necesario primero llegar a una simulación
+esquemático del circuito cómo se hizo en este trabajo con el camino de
+transmisión. En ambos casos el diseño físico es desafiante, en especial para el
+receptor, dado que necesita un generador de pulsos con salida diferencial, por
+lo que sería necesario desarrollar un balun UWB.
+
+En el caso del desarrollo de las aplicaciones del generador de pulsos, se
+refinarían los requerimientos sobre los pulsos. La plataforma de transmisión
+tendría requisitos más exigentes en cuanto a \textit{ringing} para mejorar la
+calidad de la señal transmitida, mientras que la de recepción
+mayores requisitos de amplitud de pulso para mejorar el rango dinámico de
+conversión. Dada la modularidad y simplicidad del generador desarrollado, es
+posible iterar sobre su diseño para mejorar las prestaciones que eventualmente
+requieran estas aplicaciones.
+
+En cuanto al modelado, en las mediciones se observaron efectos que no fueron
+predichos por los modelos de simulación disponibles. En particular, se
+observaron oscilaciones y un segundo pulso de menor magnitud. Es de interés
+explorar el origen de estas discrepancias, que puede ser tanto por un modelado
+incorrecto de los componentes parásitos del circuito cómo por limitaciones del
+modelo utilizado para el SRD. Una vez identificada la causa de estas
+observaciones, es posible incorporarlas a los modelos de simulación utilizados,
+y una vez reproducidas estas no-idealidades en una simulación, es posible la
+exploración de modificaciones al generador con el objetivo de mitigar estos
+efectos.
