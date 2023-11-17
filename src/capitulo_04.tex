@@ -426,10 +426,10 @@ detalla cómo fue obtenido este valor.
     $\qty{10}{\dB} \ B$ [\unit{\giga\hertz}] & $t_r$ [\unit{\pico\second}] &
     $t_f$ [\unit{\pico\second}]\\
 \hline
-    5 & 50 & 0.380 & 159 & 5.5 & 8.6 & 93 & 88 \\
+    5 & 50 & 0.380 & 159 & 3.0 & 4.3 & 93 & 88 \\
     5 & 70 & 0.625 & 161 & 2.8 & 4.5 & 93 & 91 \\
     7 & 50 & 0.702 & 162 & 2.9 & 4.5 & 93 & 93 \\
-    7 & 70 & 1.120 & 165 & 2.5 & 4.1 & 95 & 96 \\
+    7 & 70 & 1.120 & 165 & 2.9 & 4.1 & 95 & 96 \\
 \hline
 \end{tabular}
 \caption{Resultados de mediciones de pulso.}
@@ -468,22 +468,23 @@ En cuanto a la obtención de la PSD de cada pulso, en el código
 \ref{get_spectrum_python} se muestra la función utilizada para obtenerla. La
 misma reciba una secuencia de datos discretos \textit{x} y el tiempo de muestreo
 entre cada muestra $sample\_time$. Obtiene la PSD aplicando una ventana de
-\textit{Hanning} y normaliza por la norma $L^2$ de la
+Kaiser con parámetro $\beta$ de 38 y normaliza por la norma $L^2$ de la
 ventana \cite{oppenheim1999dsp}.
 
 \begin{lstlisting}[language=Python, style=PythonStyle, caption=Función para obtener PSD,
 label=get_spectrum_python, float]
 import numpy as np
+from scipy.signal.windows import kaiser
 
 def get_spectrum(x, sample_time):
-    w = np.hanning(len(x.shape))
+    w = kaiser(len(x), 38)
     s_win = np.linalg.norm(w, 2) ** 2
-    x_w = np.multiply(x, w)
+    x_w = np.multiply(x,w)
     X_W = np.fft.rfft(x_w)
-    P_xx = np.abs(X_W)**2 / s_win
-    P_xx_dB = 10 * np.log10(P_xx)
-    freq = np.fft.rfftfreq(x_w.shape[-1]) / sample_time
-    return pd.DataFrame({'frequency': freq, 'magnitude': P_xx_dB})
+    P_xx = np.abs(X_W)**2/s_win
+    P_xx_dB = 10*np.log10(P_xx)
+    freq = np.fft.rfftfreq(x_w.shape[-1])/sample_time
+    return pd.DataFrame({'frequency': freq, 'magnitude': P_xx_dB})P
 \end{lstlisting}
 
 En el dominio del tiempo, se observa una buena coincidencia entre la amplitud de
@@ -953,4 +954,49 @@ directa.
     \end{subfigure}
     \caption{Simulación de filtro pasabanda excitado por medición de pulso.}
     \label{fig:passband_measurement}
+\end{figure}
+
+\subsection{Respuesta en frecuencia}
+
+Para completar la comparativa, se obtuvo el espectro de los pulsos y se los
+comparó contra el parámetro S21 del filtro Chebyshev. Para obtener la PSD, se
+utilizó la misma función que en el código \ref{get_spectrum_python}, con la
+salvedad de que en este caso se implementó una normalización de los espectros,
+de manera que los máximos estén en \qty{0}{\dB}, para facilitar la comparación.
+
+En la figura \ref{fig:passband_spectrums} puede observarse el resultado. Como
+era esperado, todos los espectros coinciden en la máxima potencia normalizada de
+\qty{0}{\dB} en la banda de paso del filtro, de \qty{1.4}{\giga\hertz} a
+\qty{2.4}{\giga\hertz}. Para la respuesta del filtro excitado con el pulso
+ideal, se observa como los espectros son casi coincidentes, con una potencia un
+poco menor para el pulso ideal con respecto al S21 en las frecuencias
+superiores. Para los pulsos generados con las simulaciones del pulser, se
+observan menores valores de potencia para las frecuencias superiores, con una
+mayor atenuación en el caso de conexión directa en comparación al caso con
+amplificador. En cuanto a la medición, vemos que a partir de
+\qty{4}{\giga\hertz} se observa una mayor atenuación con respecto a las demás
+respuestas. Esto es esperado ya que la medición fue obtenida con un instrumento
+de \qty{4}{\giga\hertz} de ancho de banda, por lo que a partir de esta
+frecuencia empieza a dominar la respuesta del instrumento. En la zona de bajas
+frecuencias, se observan que todas las respuestas se encuentran alrededor de
+\qty{-80}{\dB}, a comparación de la respuesta ideal S21 que se encuentra por
+debajo de los \qty{-120}{\dB}. Esto se debe a un valor de continua remanente en
+las formas de onda.
+
+En resumen, el análisis en el dominio de la frecuencia para los pulsos confirmó
+las observaciones realizadas en el dominio del tiempo. Los espectros aproximan
+muy bien a la función transferencia S21 del filtro, mientras que en el dominio
+del tiempo se observó buena coincidencia en la respuesta impulsiva. La
+simulación incluyendo una etapa buffer entre el pulser y el filtro mostró una
+mejora con respecto al acople directo tanto en el dominio del tiempo como de la
+frecuencia. En cuanto a la simulación con el pulso medido, también mostró buen
+funcionamiento. Para este caso, en el dominio de la frecuencia se observó el
+efecto del instrumento a partir de los \qty{4}{\giga\hertz}.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/passband_pulses_spectrums.png}
+    \caption{PSDs de pulsos pasabanda simulados y medidos junto a S21 del filtro
+    Chebyshev.}
+    \label{fig:passband_spectrums}
 \end{figure}
