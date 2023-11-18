@@ -42,12 +42,12 @@ mínima degradación en las mediciones obtenidas con respecto a las predicciones
 realizadas por los modelos de simulación circuital.
 
 Comparando los resultados obtenidos con los reportados en la literatura, se
-obtuvieron parámetros de pulso comparables con el estado del arte en generadores
-UWB discretos. En particular, el presente trabajo resalta por el funcionamiento
-en base a una única fuente de alimentación unipolar, por el extremado bajo costo
-evidenciado por la baja cantidad de dispositivos utilizados y por la posibilidad
-de ser controlado directamente por la salida digital de una FPGA o
-microcontrolador.
+obtuvieron parámetros de pulso comparables o superiores con el estado del arte
+en generadores UWB discretos. En particular, el presente trabajo resalta por el
+funcionamiento en base a una única fuente de alimentación unipolar, por el
+extremado bajo costo evidenciado por la baja cantidad de dispositivos utilizados
+y por la posibilidad de ser controlado directamente por la salida digital de una
+FPGA o microcontrolador.
 
 \section{Trabajos a futuro}
 
@@ -69,6 +69,17 @@ mayores requisitos de amplitud de pulso para mejorar el rango dinámico de
 conversión. Dada la modularidad y simplicidad del generador desarrollado, es
 posible iterar sobre su diseño para mejorar las prestaciones que eventualmente
 requieran estas aplicaciones.
+
+En cuanto a mejoras a realizar sobre el circuito desarrollado, dado que el
+prototipo fue validado, es posible unificar el diseño de la etapa driver
+junto al pulser en una sola placa. Esto mejoraría el desempeño del sistema en su
+conjunto al eliminar la conexión entre las dos placas, punto que agrega
+impedancias parásitas. Otra mejora disponible es sobre el driver, ya que
+teóricamente el mismo podía trabajar con ciclos de trabajo tan altos como
+\qty{90}{\percent}, sin embargo en las mediciones se observaron amplitudes de
+salida decrecientes para ciclos de trabajo mayores a \qty{70}{\percent}. Mejorar
+este aspecto del driver permitiría obtener incluso mayores amplitudes de pulso
+para un mismo $V_{cc}$.
 
 En cuanto al modelado, en las mediciones se observaron efectos que no fueron
 predichos por los modelos de simulación disponibles. En particular, se

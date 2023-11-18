@@ -10,7 +10,7 @@ respecto a los sistemas clásicos de banda angosta, para luego analizar de qué
 modo pueden simplificarse las arquitecturas y al mismo tiempo aumentar su
 desempeño si se utilizan circuitos específicos con la mirada puesta en un
 sistema UWB. Uno de los circuitos de mayor importancia en estas arquitecturas es
-el generador de pulsos ultracortos, Se analizaran los resultados reportados en
+el generador de pulsos ultracortos. Se analizarán los resultados reportados en
 la literatura con respecto a estos circuitos, dentro de los cuales resalta la
 topología basada en diodo SRD serie con linea de transmisión en paralelo por su
 bajo costo de implementación. Luego, se analizarán aplicaciones del generador de
@@ -22,11 +22,13 @@ especificaciones para el generador de pulsos a desarrollar.
 
 La tecnología UWB (del inglés \textit{Ultra Wide Banda}, ultra ancho de banda)
 es una tecnología de radio caracterizada por la transmisión y recepción de
-señales de ancho de banda muy elevado. Como contrapartida, en el dominio del
-tiempo dichas señales son de muy corta duración. Esto es contraposición a los
-sistemas de RF usuales, que suelen ser de banda angosta o sintonizados. Las
-señales temporales ultracortas o el ancho de banda grande supone un desafío para
-el diseño de los sistemas.
+señales de ancho de banda muy elevado. Existen diversas tecnologías UWB, entre
+ellas, las tecnologías impulsivas, que alcanzan su gran ancho de banda mediante
+la transmisión y recepción de pulsos ultracortos. En el dominio del tiempo,
+dichas señales son de muy corta duración. Esto es contraposición a los sistemas
+de RF usuales, que suelen ser de banda angosta o sintonizados. Las señales
+temporales ultracortas o el ancho de banda grande suponen un desafío para el
+diseño de los sistemas.
 
 Para dar una definición precisa de un sistema UWB consideramos la definida por
 la Comisión Federal de Comunicaciones de los Estados Unidos (FCC por sus siglas
@@ -54,7 +56,7 @@ permite comparar entre radiadores con distintos patrones de radiación.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.7\textwidth]{images/fcc_uwb_psd_mask.png}
+    \includegraphics[width=0.7\linewidth]{images/fcc_uwb_psd_mask.pdf}
     \caption{Máscara de PSD para señales UWB establecida por la FCC. Tomada de \cite{Heydari2005}.}
     \label{fig:fcc_uwb_psd_mask}
 \end{figure}
@@ -91,7 +93,7 @@ La tecnología UWB encuentra aplicaciones en diversas areas
         señales de banda angosta no serían posibles. Algunos ejemplos de estas
         aplicaciones pueden consultarse en \cite{altieri2017},
         \cite{Salman2008}, \cite{Bouza2023}, \cite{Muqaibel2003},
-        \cite{salman2010performance}, \cite{Altieri2021}
+        \cite{salman2010performance}, \cite{Altieri2021}.
 \end{itemize}
 
 Como se ha mostrado, los sistemas UWB tienen numerosas aplicaciones en la
@@ -107,10 +109,12 @@ aplicaciones. Este es el contexto en el que se desarrollará la presente tesis.
 
 \section{Sistemas UWB basados en generadores de pulsos ultracortos}
 
-A continuación, se describirá una propuesta de sistema UWB basado en un
-generador de pulsos ultracortos. Se partirá de un sistema reportado en la
-literatura \cite{Altieri2021} basado en generación de pulsos en banda base y
-conversión a banda pasante mediante un multiplicador de frecuencias. Se
+El objetivo de esta sección es ilustrar, con una aplicación concreta, de qué
+manera puede utilizarse un generador de pulsos ultracortos en un sistema UWB y
+las ventajas que reporta. Para esto, se describirá una propuesta de sistema UWB
+basado en un generador de pulsos ultracortos. Se partirá de un sistema reportado
+en la literatura \cite{Altieri2021} basado en generación de pulsos en banda base
+y conversión a banda pasante mediante un multiplicador de frecuencias. Se
 describirá la plataforma reportada, y se detallará cómo un generador de pulsos
 ultracortos permite una fuerte simplificación del sistema implementado, y cómo
 las diversas métricas de desempeño del sistema están fuertemente asociadas a los
@@ -241,7 +245,7 @@ Además de la menor cantidad de componentes en la arquitectura propuesta, estos
 son más simples. En la arquitectura original se necesita, además de los
 amplificadores y el atenuador variable, un oscilador y un multiplicador, ambos
 componentes con significativas complejidades de implementación y limitaciones
-asociadas.
+asociadas, a saber:
 
 \begin{itemize}
     \item El oscilador requiere un diseño de una placa especial, y el diseño de
@@ -312,24 +316,23 @@ de \qty[per-mode=symbol]{1.8}{\giga\siemens\per\second}. Este conversor de
 tiempo real vuelve muy costoso al sistema, ya que un conversor de tan alta tasa
 de muestreo tiene un ancho de banda analógico muy grande, lo que vuelve el costo
 tanto monetario como de desarrollo de ingeniería muy alto.  Como referencia, el
-circuito integrado de dicho conversor AD, el ADC12D1800 de Texas Instruments
-\footnote{\url{https://www.ti.com/product/ADC12D1800}},
-tiene un costo unitario superior a 1800 dolares, a lo que deben sumarse costos
-de desarrollo adicionales.
+circuito integrado de dicho conversor AD, el ADC12D1800 de Texas
+Instruments\footnote{\url{https://www.ti.com/product/ADC12D1800}}, tiene un
+costo unitario superior a 1800 dolares, a lo que deben sumarse costos de
+desarrollo adicionales.
 
 Explotando la periodicidad de la señal recibida, es posible simplificar esta
 cadena reemplazándola por una basada en un generador de pulsos ultracortos,
 realizando en lugar de muestreo en tiempo real un muestreo en tiempo
-equivalente, técnica posibilitada por la periodicidad de la señal de entrada. En
-este esquema, se muestrea a una tasa mucho menor a la de Nyquist, muestreando la
-señal en distintos puntos de su período. Luego, estos puntos pueden ser
-alineados correctamente para reconstruir la señal original. En la figura
-\ref{fig:Illustration_of_equivalent_time_sampling} puede observarse el esquema.
-Se observa como se toman muestras a una tasa mucho menor a la de Nqyuist, con el
-cuidado de en cada muestra tomar un punto distinto dentro de la forma de onda a
-muestrear. De esta manera, el conversor en tiempo real de gran tasa de muestreo
-puede ser reemplazado por un conversor de baja tasa y bajo costo, reduciendo de
-manera importante el costo del sistema.
+equivalente. En este esquema, se muestrea a una tasa mucho menor a la de
+Nyquist, muestreando la señal en distintos puntos de su período. Luego, estos
+puntos pueden ser alineados correctamente para reconstruir la señal original. En
+la figura \ref{fig:Illustration_of_equivalent_time_sampling} puede observarse el
+esquema.  Se observa como se toman muestras a una tasa mucho menor a la de
+Nqyuist, con el cuidado de en cada muestra tomar un punto distinto dentro de la
+forma de onda a muestrear. De esta manera, el conversor en tiempo real de gran
+tasa de muestreo puede ser reemplazado por un conversor de baja tasa y bajo
+costo, reduciendo de manera importante el costo del sistema.
 
 Con el muestreo en tiempo equivalente es posible muestrear una señal a una tasa
 mucho menor a la de Nyquist. Sin embargo, un conversor A/D de la baja tasa de
@@ -387,11 +390,14 @@ magnitud por debajo de la tasa del conversor de la figura
 \subsection{Requerimientos del generador de pulsos}
 
 En base a las posibles aplicaciones en los caminos de transmisión y recepción de
-pulsos de una plataforma UWB, se determina el conjunto de
-especificaciones de la tabla \ref{tab:pulser_requirements} para el generador de
-pulsos. Este conjunto fue determinado con el objetivo de lograr un generador lo
-más económico y simple posible, teniendo como restricción su aplicabilidad a la
-plataforma de referencia \cite{Altieri2021}. Esto impone los requerimientos de
+pulsos de una plataforma UWB, se determina el conjunto de especificaciones de la
+tabla \ref{tab:pulser_requirements} para el generador de pulsos. Este conjunto
+fue determinado con el objetivo de lograr un generador lo más económico y simple
+posible, teniendo como restricción su aplicabilidad a la plataforma de
+referencia \cite{Altieri2021}. Es importante mencionar que dichas
+especificaciones servirían también en el contexto de otras aplicaciones de
+interés que típicamente funcionan a menor frecuencia como radares de penetración
+de suelos o de monitoreo de estructuras. Esto impone los requerimientos de
 amplitud y duración temporal de pulso y de interfaz con el sistema. El
 requerimiento de simplicidad no impacta directamente en la tabla de requisitos
 sino en la arquitectura que se seleccionará para el generador.
@@ -402,7 +408,7 @@ la FPGA, que trabaja en \qty{3.3}{\volt}.  Esta salida digital es de baja
 capacidad de carga, por lo que la entrada tiene que tener un bajo consumo de
 corriente. Para $V_{dd}$ se admite un valor superior a los \qty{3.3}{\volt} de
 la FPGA, y se apunta a una alimentación regulable entre \qty{5}{\volt} y
-\qty{5}{\volt}.
+\qty{8}{\volt}.
 
 En cuanto a las características del pulso, se espera un FWHM (del inglés
 \textit{Full Width at Half Maximum}) de alrededor de \qty{120}{\pico\second}.
@@ -503,12 +509,13 @@ resto del sistema.  Es por estos motivos que son ampliamente utilizados en la
 generación de pulsos para sistemas UWB.
 
 Existen distintas arquitecturas de generación de pulsos basados en este diodo.
-En todas el finamiento se basa en la característica de recuperación reversa,
-estando presente las variaciones en el tipo de componentes utilizados, el tipo
-de señal de entrada y su acople y la forma de utilización del diodo. En la mayor
-parte de los generadores reportados en la literatura, se puede diferenciar entre
-SRD serie o paralelo con la señal, y la utilización de inductores o líneas de
-transmisión en paralelo, o \textit{stub}, para la generación del pulso.
+En todas el aceleramiento del flanco se basa en la característica de
+recuperación reversa, estando presente las variaciones en el tipo de componentes
+utilizados, el tipo de señal de entrada y su acople y la forma de utilización
+del diodo. En la mayor parte de los generadores reportados en la literatura, se
+puede diferenciar entre SRD serie o paralelo con la señal, y la utilización de
+inductores o líneas de transmisión en paralelo, o \textit{stub}, para la
+generación del pulso.
 
 Clasificaremos entonces a los generadores en dos grupos según su topología:
 serie y paralelo. A continuación serán explicadas las ventajas y desventajas de
@@ -539,7 +546,7 @@ cada grupo.
 En los generadores que denominaremos serie, el diodo SRD se encuentra en serie
 con la señal. En la figura \ref{fig:srd_series_generator} se observa un ejemplo.
 En este caso, el diodo SRD genera un flanco muy rápido en base a uno
-(posiblemente) lento, Con este flanco rápido, se utiliza un stub cortocircuitado
+(posiblemente) lento. Con este flanco rápido, se utiliza un stub cortocircuitado
 a tierra para reflejarlo y así lograr un pulso ultra corto. La duración temporal
 de este pulso estará dado por el retardo de propagación en la línea de
 transmisión, mientras que la amplitud estará determinada por el retardo en la
@@ -601,34 +608,34 @@ En el presente trabajo se diseñará un generador de pulsos ultracortos con
 las aplicaciones desarrolladas anteriormente en caminos de transmisión y
 recepción de sistemas UWB. El objetivo de este generador es simplificar estas
 cadenas de señal. Para lograr este objetivo, se determinó un conjunto de
-especificaciones resumidas en la tabla \ref{tab:pulser_requirements}. Para
+especificaciones resumidas en la Tabla \ref{tab:pulser_requirements}. Para
 lograr un generador simple y de bajo costo, se optó por una arquitectura basada
 en diodo SRD utilizando la topología serie.
 
 Habiendo determinado el alcance y los objetivos del trabajo, se detallará cómo
-se organizará el trabajo. En el capitulo 2 se explicará en detalle el
+se organizará el trabajo. En el capítulo 2 se explicará en detalle el
 funcionamiento del diodo SRD, los fenómenos físicos que determinan su
 funcionamiento, sus parámetros principales y se estudiarán los modelos de
-simulación disponibles. En el capitulo 3 se estudiará la aplicación de diodos
-SRD en circuitos aceleradores de flanco, y como estos en combinación con una
+simulación disponibles. En el capítulo 3 se estudiará la aplicación de diodos
+SRD en circuitos aceleradores de flanco, y cómo estos en combinación con una
 línea de transmisión cortocircuitada conforman un circuito generador de pulsos.
 Se analizará para este circuito la dependencia de los parametros del pulso con
 los componentes del circuito. Una vez diseñado el circuito generador, se
 describirá el desarrollo de una etapa driver. Finalmente, se reporta  la
-implementación física de estos circuitos en PCB. En el capitulo 4 se presentarán
+implementación física de estos circuitos en PCB. En el capítulo 4 se presentarán
 las mediciones realizadas sobre el circuito y se reportarán resultados de
 simulaciones sobre aplicaciones del generador en las cadenas de transmisión y
-recepción propuestas para el sistema UWB. Finalmente, en el capitulo 5 se
+recepción propuestas para el sistema UWB. Finalmente, en el capítulo 5 se
 presentarán las conclusiones obtenidas y posibles trabajos a futuro.
 
 La metodología de trabajo para el diseño de circuitos se basará en la obtención
-de expresiones simbólicas para las cantidades de interés, acompañadas de
+de expresiones simbólicas para las magnitudes de interés, acompañadas de
 simulaciones validando las expresiones obtenidas. A lo largo de este trabajo,
 para las simulaciones será utilizado el software \textit{Advanced Design System}
-o ADS por sus siglas en inglés, de la compañía Keysight
-\footnote{\url{https://www.keysight.com/us/en/products/software/pathwave-design-software/pathwave-advanced-design-system.html}}.
+o ADS por sus siglas en inglés, de la compañía
+Keysight\footnote{\url{https://www.keysight.com/us/en/products/software/pathwave-design-software/pathwave-advanced-design-system.html}}.
 Se utiliza este programa por sus buenas prestaciones en lo que respecta a
 circuitos de radiofrecuencia y microondas. Eventualmente se utilizará también el
-software LTspice
-\footnote{\url{https://www.analog.com/en/design-center/design-tools-and-calculators/ltspice-simulator.html}}
+software
+LTspice\footnote{\url{https://www.analog.com/en/design-center/design-tools-and-calculators/ltspice-simulator.html}}
 en ciertas ocasiones en las que ADS no sea suficiente.

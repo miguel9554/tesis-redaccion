@@ -2,7 +2,7 @@
 
 \section{Introducción}
 
-En este capitulo se explicará el funcionamiento del diodo SRD.  Estos pertenecen
+En este capítulo se explicará el funcionamiento del diodo SRD.  Estos pertenecen
 a una familia de dispositivos de juntura denominada junturas de almacenamiento
 de carga \cite{moll1962}. Estos dispositivos se caracterizan por su
 característica de recuperación inversa.
@@ -221,8 +221,8 @@ se reduce, resultando en un menor campo eléctrico, y una corriente neta de
 difusión. Este mecanismo resulta en densidades de portadores minoritarios en los
 extremos de la zona de vaciamiento proporcionales a $exp(V/V_t)$, resultando en
 una inyección de portadores minoritarios en ambas partes de la juntura. Entonces
-el diodo en directa tiene un exceso de portadores minoritarios.
-\cite{neamen2012semiconductor}
+el diodo en directa tiene un exceso de portadores minoritarios
+\cite{neamen2012semiconductor}.
 
 El tiempo de almacenamiento $t_s$ está asociado al tiempo que demora la
 corriente reversa $I_r$ en remover el exceso de portadores minoritarios de la
@@ -242,7 +242,7 @@ temporal de las densidades. Se observa que en $t=0^-$ las densidades en los
 extremos de la zona de vaciamiento están en sus valores máximos, y en $t_4=t_s$
 caen a sus valores de equilibrio térmico. Sin embargo, en este instante las
 densidades en el cuerpo de la juntura no están en sus valores de estado
-estacionario $t=\inf$.
+estacionario.
 
 \section{Diodos de almacenamiento de carga}
 \label{sec:charge_storage_diodes}
@@ -256,7 +256,7 @@ transición tienen un orden de magnitud similar al tiempo de vida de los
 portadores minoritarios $\tau_m$, o MCL del inglés \textit{Minority Carrier
 Lifetime}. La característica distintiva de los diodos de almacenamiento de
 carga, es que el tiempo de almacenamiento mantiene su orden de magnitud de
-$\tau_m$, pero el tiempo de transición $t_t$ es mucho menor. \cite{moll1962}
+$\tau_m$, pero el tiempo de transición $t_t$ es mucho menor \cite{moll1962}.
 
 En aplicaciones de conmutación de señal, es deseado que el tiempo de
 recuperación $t_{rr}$ sea lo menor posible. Esto minimiza las pérdidas de
@@ -313,7 +313,7 @@ juntura $A$. La capacidad $C_j$ varía directamente con el área mientras que la
 carga inversamente. Es decir, mayor área, mayor capacidad y menor carga por
 unidad de área. Entonces, existe un compromiso en el diseño del diodo con
 respecto al área: mayores áreas resultan en menor densidad de carga pero mayor
-capacidad y viceversa. \cite{moll1962}
+capacidad y viceversa \cite{moll1962}.
 
 \section{Diodo SRD}
 \label{sec:srd_diode}
@@ -415,7 +415,7 @@ Para el caso de $I_f$ constante, llegamos a
 \begin{equation}
     t_s = \tau_m \times \ln \left( 1+\frac{I_f}{I_r}\right).
 \end{equation}
-Esta ecuación es valida para cualquier tipo de diodo de juntura, no solamente
+Esta ecuación es válida para cualquier tipo de diodo de juntura, no solamente
 PIN o SRD. En el caso del diodo SRD, el tiempo $\tau_m$ es considerable, por lo
 que el tiempo de descarga $t_s$ es largo, típicamente decenas de nanosegundos, y comparable con el período de la señal de entrada.
 
@@ -444,7 +444,7 @@ través del área de la juntura $A$.
 \section{Modelos circuitales y de simulación}
 \label{sec:srd_simulation_models}
 
-A orden 0, el diodo SRD puede ser modelado como un capacitor de dos estados: con
+A orden cero, el diodo SRD puede ser modelado como un capacitor de dos estados: con
 una capacidad infinita cuando el diodo se encuentra en directa, y una capacidad
 muy baja en reversa, con un tiempo de conmutación 0 entre estados. La capacidad
 de directa se corresponde con la capacidad de difusión del diodo, y la de
@@ -541,11 +541,10 @@ parámetros:
     \item $C_r$: esta es la capacidad de juntura del diodo, y es parte de las
         especificaciones del fabricante.
     \item $\phi$: es el potencial de juntura del diodo, especificado por el
-        fabricante
+        fabricante.
     \item $C_f$: es la capacidad en directa del diodo. Se relaciona con el
         tiempo de vida de los portadores minoritarios $\tau_m$ y una resistencia
-        dinámica $R_f$ a través de $\tau_m = C_f \times R_f$.
-        \cite{Kotzebue1965}
+        dinámica $R_f$ a través de $\tau_m = C_f \times R_f$ \cite{Kotzebue1965}.
 \end{itemize}
 
 La capacidad no lineal descripta en \ref{eq:srd_non_linear_cap} puede ser

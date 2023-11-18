@@ -5,7 +5,7 @@
 En este capítulo se detallarán las mediciones realizadas sobre el prototipo. Se
 explicará el banco de mediciones conformado, con todos sus componentes. Se
 discutirá el desempeño medido del sistema en el contexto de los resultados
-reportados en la literatura. Al final del capitulo, se presentan una tabla y un
+reportados en la literatura. Al final del capítulo, se presentan una tabla y un
 gráfico comparando el desempeño obtenido con el reportado en otros trabajos.
 
 \section{Banco de medición}
@@ -25,7 +25,7 @@ medición. Consiste de los siguientes bloques:
 	FPGA, presentando una alta impedancia a la salida de la misma.
       Convierte el pulso unipolar de \qty{3.3}{\volt} en uno bipolar, con
       amplitud pico a pico igual a $V_{dd}$ (\qty{5}{\volt} o \qty{7}{\volt}).
-    \item \textit{Pulser}: el DUT, genera pulsos ultra cortos en base 
+    \item \textit{Pulser}: el DUT, genera pulsos ultra cortos en base
       a la salida del driver.
     \item Osciloscopio: instrumento de medición del experimento. Actúa como
       carga con su impedancia de entrada de \qty{50}{\ohm}.
@@ -129,8 +129,8 @@ instrumento cuente con los requerimientos de ancho de banda del pulso. Como
 fuese explicado en \ref{sec:pulse_bandwidth}, el ancho de banda esperado para el
 pulso era de \qty{3.5}{\giga\hertz}.
 
-El osciloscopio utilizado fue un \textit{Tektronix MSO 70404C}, en la figura 
-\ref{fig:osciloscopio} puede observarse el mismo. El instrumento posee 
+El osciloscopio utilizado fue un \textit{Tektronix MSO 70404C}, en la figura
+\ref{fig:osciloscopio} puede observarse el mismo. El instrumento posee
 \qty{4}{\giga\hertz} de ancho de banda analógico, y una tasa de muestreo
 de \qty[per-mode=symbol]{25}{\giga\siemens\per\second}, con la posibilidad de
 realizar muestreo en tiempo equivalente \cite{oscilloscope_datasheet}. Estas
@@ -191,12 +191,12 @@ una variación temporal mucho mayor al largo del mismo, actúa como una puesta a
 tierra.
 
 Entonces, la componente de continua a la salida del generador de pulsos tiene un
-valor esperado de \qty{0}{\volt}, tanto para condiciones normales de 
+valor esperado de \qty{0}{\volt}, tanto para condiciones normales de
 funcionamiento como en presencia de fallas.
 
 En cuanto a la componente alterna de la salida, su valor esperado es
 extremadamente bajo, ya que únicamente señales de gran ancho de banda pueden ser
-filtradas y permanecer con una amplitud considerable a la salida del 
+filtradas y permanecer con una amplitud considerable a la salida del
 \textit{stub}.
 
 \section{Mediciones realizadas}
@@ -294,7 +294,7 @@ presenta una amplitud pico a pico de casi \qty{9}{\volt} debido a sobrepicos.
 
 En la tabla \ref{tab:mediciones_driver_resultados} se resumen los resultados
 obtenidos. Se observa una buena coincidencia entre los valores medidos y los
-predecidos. Es de interés destacar que para la porción negativa del pulso, se
+predichos. Es de interés destacar que para la porción negativa del pulso, se
 observa un sobrepico negativo, y que para mayores ciclos de trabajo, este
 sobrepico representa casi la totalidad del período negativo.
 
@@ -352,7 +352,7 @@ trabajo de la señal cuadrada de entrada: \qty{50}{\percent} y
 
 En las mediciones se observa una captura del osciloscopio. En todas las
 mediciones la entrada del osciloscopio fue configurada en \qty{50}{\ohm}, como
-fuese explicado anteriormente. En las capturas se observa la forma de onda del
+se explicó anteriormente. En las capturas se observa la forma de onda del
 pulso medido, y en la parte inferior una tabla con diversos parámetros
 medidos por el instrumento. Las de interés en este caso con la amplitud, el
 ancho y los tiempos de crecimiento y caída.
@@ -369,15 +369,26 @@ decrecimiento, que se mantuvieron constantes en \qty{90}{\pico\second}. Este
 resultado es el esperado para un \textit{pulser} basado en un \textit{stub}, ya
 que el ancho de pulso está determinado por el largo del \textit{stub}.
 
-En cuanto a la forma del pulso, se observa una prácticamente gaussiana. Se
+En cuanto a la forma del pulso, se observa que la misma es gaussiana. Se
 observan no idealidades no contempladas en los modelos de simulación utilizados.
 Se observan oscilaciones tanto antes como después del pulso, y también un
 segundo de menor amplitud.
 
-En la tabla \ref{tab:mediciones_pulso_resultados} pueden observarse los resultados
-obtenidos. Para el ancho de banda, se utiliza el obtenido a partir de la
-\textit{PSD} del pulso medido. En la sección \ref{sec:comp_simulacion} se
-detalla cómo fue obtenido este valor.
+En la tabla \ref{tab:mediciones_pulso_resultados} pueden observarse los
+resultados obtenidos. Para el ancho de banda, se utiliza el obtenido a partir de
+la PSD del pulso medido. En siguiente sección se detalla cómo
+fue obtenido este valor. En cuanto a los valores obtenidos, los anchos de banda a
+\qty{3}{\dB} se encuentran entre \qty{2.8}{\giga\hertz} y \qty{3}{\giga\hertz},
+y a \qty{10}{\dB} entre \qty{4.1}{\giga\hertz} y \qty{4.5}{\giga\hertz}. Se
+observa una mínima variación entre los distintos pulsos, coincidentes con la
+pequeña variación observada en el ancho de pulso. La estimación teórica de la
+sección \ref{sec:pulse_bandwidth} había sido de \qty{3.46}{\giga\hertz} a
+\qty{3}{\dB} y \qty{6.32}{\giga\hertz} a \qty{10}{\dB}. La estimación a
+\qty{3}{\dB} tiene una buena coincidencia con los resultados obtenidos, mientras
+que la de \qty{10}{\dB} presenta mayor error. Esto es esperado, siendo que el
+instrumento posee un ancho de banda analógico de \qty{4}{\giga\hertz}, a partir
+de esta frecuencia empieza a dominar la característica del instrumento por sobre
+la de la señal.
 
 \begin{figure}[t!]
     \centering
@@ -499,9 +510,9 @@ modelado, ya que los parásitos de esta estructura fueron extraídos por una
 simulación electromagnética, y sus efectos contemplados en las simulaciones del
 \textit{layout}.
 
-Estas  discrepancias sugieren una limitación en el modelado de alguno de los 
+Estas  discrepancias sugieren una limitación en el modelado de alguno de los
 dispositivos, tanto el SRD como el Schottky. Las simulaciones predijeron correctamente
-la amplitud y el ancho de los pulsos resultantes, pero fallaron en predecir 
+la amplitud y el ancho de los pulsos resultantes, pero fallaron en predecir
 el ringing y el pulso secundario.
 
 \begin{figure}[t!]
@@ -599,7 +610,7 @@ reportados en un gráfico de dispersión.
                 \cite{protiva2009} & \num{-7.5} & 110 & No & Ext & SRD+3TBJ+SD & 12 & TTL & 5 \\
                 \cite{kamal2014} & \num{0.8} & 170 & No & Int & SRD & 4 & 4 & 10 \\
                 \cite{han2002} & \num{0.2} & 300 & No & Ext & SRD+2SD & ? & ? & 10 \\
-                \cite{han2005} & \num{-6}, \num{-4} & 150 & No & Int & SRD+L & >20 & 5 & 12 \\
+                \cite{han2005} & \num{-6}, \num{-4} & 150 & No & Int & SRD+L & 20 & 5 & 12 \\
                 \cite{oloumi2018} & \num{1.27} \tnote{c} & 286 & No & Int & 2SRD+L & 10 & 10 \tnote{d} & ? \\
                 \textbf{Prop.} & \num{1.12} & 165 & No & Int & SRD+SD & 7 & CMOS  &
                 \num{10} \\
@@ -728,10 +739,10 @@ microcontrolador.
 
 \section{Aplicaciones}
 
-Como fuese explicado en el capitulo 1, el generador de pulsos desarrollado tiene
+Como fuese explicado en el capítulo 1, el generador de pulsos desarrollado tiene
 aplicaciones en caminos de transmisión y recepción de sistemas UWB. En cuanto a
 los caminos de transmisión, en el
-capitulo se desarrolló cómo la utilización de un generador de pulsos ultracortos
+capítulo se desarrolló cómo la utilización de un generador de pulsos ultracortos
 cadenas permite su simplificación con respecto a las implementadas en
 base a generadores de pulsos en banda base y su conversión a banda pasante
 mediante un multiplicador \cite{Altieri2021}. La utilización del generador
@@ -752,7 +763,7 @@ con la respuesta en frecuencia deseada con el generador de pulsos ultracortos,
 que aproxima un tren de impulsos ideal.  En esta forma de onda ideal, los
 impulsos tienen un ancho temporal de 0 y una amplitud infinita, y en el dominio
 de la frecuencia, son perfectamente planos.  Esta es una aproximación, el
-geneardor real tendrá un ancho de banda finito y una duración temporal finita al
+generador real tendrá un ancho de banda finito y una duración temporal finita al
 igual que la amplitud. La aproximación de impulso ideal puede ser considerada
 válida si el pulso tiene un espectro plano dentro de la banda de frecuencias del
 filtro pasabanda. Fuera de esta banda, dada la atenuación del filtro, es
@@ -796,8 +807,8 @@ pasabanda.
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/passband_pulser_sim_no_amp_results.png}
-        \caption{Resultado obtenido en simulación de pulser cargado con filtro
-        pasabanda.}
+        \caption{Arriba, respuesta del filtro pasabanda a un impulso ideal.
+        Abajo, respuesta del filtro al pulser sin etapa buffer.}
         \label{fig:passband_pulser_sim_no_amp_results}
     \end{subfigure}
     \caption{Esquemático utilizado para filtro pasabanda y simulación realizada
@@ -829,7 +840,7 @@ tiempo. En cuanto a la forma del pulso, se ve que el pulso principal tiene la
 misma forma. La amplitud de los pulsos es distinta, pero esta no es una cantidad
 que sea comparable, ya que los pulsos de entrada tienen amplitudes distintas.
 Entonces, en este caso observamos que cargando al pulser directamente con el
-filtro pasbandas se logra reproducir la misma forma de onda que con un impulso
+filtro pasabanda se logra reproducir la misma forma de onda que con un impulso
 ideal, pero luego del pulso principal se observan unas oscilaciones remanentes
 que en el caso del impulso ideal no están presentes.
 
@@ -856,7 +867,10 @@ frecuencias por debajo de \qty{1.4}{\giga\hertz}, lo que vuelve indistinto el
 contenido espectral de las frecuencias por debajo de este valor.
 
 Para simular el efecto del amplificador se utiliza un modelo de SPICE provisto
-por el fabricante. En la figura \ref{fig:passband_pulser_sim_with_amp} se
+por el fabricante. En el laboratorio se encuentran disponibles placas con este
+amplificador y mediciones realizadas de sus parámetros S, pero las simulaciones
+de ADS no permiten combinar adecuadamente las simulaciones en el dominio del
+tiempo y de parámetros S. En la figura \ref{fig:passband_pulser_sim_with_amp} se
 observa el esquemático simulado. En el mismo se observa el pulser con su salida
 conectada al TRF37B75, acoplada a alterna mediante un capacitor serie. La salida
 del amplificador también se encuentra acoplada en alterna, y está conectada al
@@ -880,7 +894,7 @@ sigue manteniendo la magnitud de la respuesta en frecuencia que es la cantidad
 de interés en esta aplicación.
 
 De esta manera, queda demostrada en esta sección la validez de la cadena de transmisión
-propuesta en el capitulo 1 y su implementación con el generador desarrollado. Se
+propuesta en el capítulo 1 y su implementación con el generador desarrollado. Se
 demostró que acoplar directamente el filtro pasabandas al pulser resulta en
 oscilaciones indeseadas, pero este problema puede ser solucionado con la
 inclusión de un amplificador de bajo costo. Esto tiene además el beneficio de
@@ -898,7 +912,7 @@ aumentar la amplitud del pulso final.
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{images/passband_pulser_sim_with_amp_result.png}
-        \caption{Resultado de simulación de filtro pasbanda con pulser y
+        \caption{Resultado de simulación de filtro pasabanda con pulser y
         amplificador.}
         \label{fig:passband_pulser_sim_with_amp_result}
     \end{subfigure}
@@ -964,28 +978,34 @@ utilizó la misma función que en el código \ref{get_spectrum_python}, con la
 salvedad de que en este caso se implementó una normalización de los espectros,
 de manera que los máximos estén en \qty{0}{\dB}, para facilitar la comparación.
 
-En la figura \ref{fig:passband_spectrums} puede observarse el resultado. Como
-era esperado, todos los espectros coinciden en la máxima potencia normalizada de
-\qty{0}{\dB} en la banda de paso del filtro, de \qty{1.4}{\giga\hertz} a
-\qty{2.4}{\giga\hertz}. Para la respuesta del filtro excitado con el pulso
-ideal, se observa como los espectros son casi coincidentes, con una potencia un
-poco menor para el pulso ideal con respecto al S21 en las frecuencias
-superiores. Para los pulsos generados con las simulaciones del pulser, se
-observan menores valores de potencia para las frecuencias superiores, con una
-mayor atenuación en el caso de conexión directa en comparación al caso con
-amplificador. En cuanto a la medición, vemos que a partir de
-\qty{4}{\giga\hertz} se observa una mayor atenuación con respecto a las demás
-respuestas. Esto es esperado ya que la medición fue obtenida con un instrumento
-de \qty{4}{\giga\hertz} de ancho de banda, por lo que a partir de esta
-frecuencia empieza a dominar la respuesta del instrumento. En la zona de bajas
-frecuencias, se observan que todas las respuestas se encuentran alrededor de
-\qty{-80}{\dB}, a comparación de la respuesta ideal S21 que se encuentra por
+En la figura \ref{fig:passband_spectrums} puede observarse el resultado. En la
+\ref{fig:passband_spectrums_simulation} se encuentran los espectros obtenidos en
+base a simulaciones del esquemático del pulser, mientras que la
+\ref{fig:passband_spectrums_measurement} contiene el resultado de simular el
+filtro medido pasado por el filtro pasabanda. Como era esperado, todos los
+espectros coinciden en la máxima potencia normalizada de \qty{0}{\dB} en la
+banda de paso del filtro, de \qty{1.4}{\giga\hertz} a \qty{2.4}{\giga\hertz}.
+
+Comparando contra el parámetro S21 del filtro, para la respuesta del filtro
+excitado con el pulso ideal, se observa como los espectros son casi
+coincidentes, con una potencia un poco menor para el pulso ideal con respecto al
+S21 en las frecuencias superiores. Para los pulsos generados con las
+simulaciones del pulser, se observan menores valores de potencia para las
+frecuencias superiores, con una mayor atenuación en el caso de conexión directa
+en comparación al caso con amplificador. En cuanto a la simulación con el pulso
+medido, figura \ref{fig:passband_spectrums_measurement}, vemos que a
+partir de \qty{4}{\giga\hertz} se observa una mayor atenuación con respecto a
+las demás respuestas. Esto es esperado ya que la medición fue obtenida con un
+instrumento de \qty{4}{\giga\hertz} de ancho de banda, por lo que a partir de
+esta frecuencia empieza a dominar la respuesta del instrumento. En la zona de
+bajas frecuencias, se observan que todas las respuestas se encuentran alrededor
+de \qty{-80}{\dB}, a comparación de la respuesta ideal S21 que se encuentra por
 debajo de los \qty{-120}{\dB}. Esto se debe a un valor de continua remanente en
 las formas de onda.
 
 En resumen, el análisis en el dominio de la frecuencia para los pulsos confirmó
 las observaciones realizadas en el dominio del tiempo. Los espectros aproximan
-muy bien a la función transferencia S21 del filtro, mientras que en el dominio
+muy bien a la función transferencia del filtro mientras que en el dominio
 del tiempo se observó buena coincidencia en la respuesta impulsiva. La
 simulación incluyendo una etapa buffer entre el pulser y el filtro mostró una
 mejora con respecto al acople directo tanto en el dominio del tiempo como de la
@@ -994,9 +1014,25 @@ funcionamiento. Para este caso, en el dominio de la frecuencia se observó el
 efecto del instrumento a partir de los \qty{4}{\giga\hertz}.
 
 \begin{figure}[t]
+\end{figure}
+
+\begin{figure}[t]
     \centering
-    \includegraphics[width=0.6\linewidth]{images/passband_pulses_spectrums.png}
-    \caption{PSDs de pulsos pasabanda simulados y medidos junto a S21 del filtro
-    Chebyshev.}
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/passband_pulses_simulations_spectrums.png}
+        \caption{PSDs de pulsos pasabanda simulados junto a S21 del filtro
+        Chebyshev.}
+        \label{fig:passband_spectrums_simulation}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{images/passband_pulses_measurement_spectrums.png}
+        \caption{PSDs de simulación de pulso medido filtrado por filtro
+        pasabanda junto a S21 del filtro Chebyshev.}
+        \label{fig:passband_spectrums_measurement}
+    \end{subfigure}
+    \caption{Espectros de pulsos pasabanda y transferencia de filtro Chebyshev.}
     \label{fig:passband_spectrums}
 \end{figure}

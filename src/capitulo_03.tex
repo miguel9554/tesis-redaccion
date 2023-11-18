@@ -1,9 +1,9 @@
-\chapter{Diseño}
+\chapter{Diseño del generador}
 
 \section{SRD como acelerador de flanco}
 \label{sec:srd_sharpener}
 
-Como fuese explicado en el capitulo 2, el diodo SRD puede utilizarse para
+Como se explicó en el capítulo 2, el diodo SRD puede utilizarse para
 acelerar flancos. Esta funcionalidad combinada con un stub permite generar
 pulsos de gran velocidad de crecimiento y ancho controlable. Para explicar el
 funcionamiento del generador, empezaremos explicando el funcionamiento del
@@ -54,7 +54,7 @@ forma de onda de la corriente se observa la misma caída abrupta en los
 \qty{85}{\nano\second}, y una inversión en el signo de la corriente con la
 inversión en el signo de la cuadrada de entrada. Este colapso a $0$ de la
 corriente y tensión se debe al efecto de recuperación reversa descripto en el
-capitulo 2.
+capítulo 2.
 
 Llamaremos corriente de inyección de carga $I_F$ a la corriente que circula por
 el SRD con sentido positivo. Esta corriente determina la carga
@@ -138,7 +138,7 @@ el divisor resistivo entre la impedancia de carga y la impedancia de fuente.
 
 \subsection{Principios del \textit{stub}}
 
-Agregando una linea de transmisión terminada en tierra en paralelo con el
+Agregando una línea de transmisión terminada en tierra en paralelo con el
 acelerador de flancos descripto anteriormente, es posible formar pulsos con un
 tiempo de crecimiento igual al tiempo de crecimiento del escalón generado por la
 apertura del SRD, y un ancho proporcional al largo de la línea de transmisión.
@@ -241,7 +241,7 @@ $\kappa_{\text{eff}}$ es independiente del largo $L$ de la línea
 Para el caso de una línea no TEM, no es posible definir un $\kappa_{\text{eff}}$
 independiente de la longitud. Sin embargo, para ciertas líneas no TEM, es
 posible hacer una aproximación cuasi-TEM en determinado rango de frecuencia.
-Bajo esto apromixación, es posible definir una constante $\kappa_{\text{eff}}$.
+Bajo esta aproximación, es posible definir una constante $\kappa_{\text{eff}}$.
 Este caso es de interés ya que la línea microtira utilizada en este trabajo es
 no TEM, pero aproximable como cuasi-TEM en todo el ancho de banda de operación.
 
@@ -354,7 +354,7 @@ por $\frac{V_p}{R_s}$ y no $\frac{V_p}{R_s+R_L}$ como en la sección
 cortocircuito sobre $R_L$, anulando su impedancia. Es importante notar que,
 entonces, $R_S$ tiene la función de limitación de corriente durante la etapa
 de conducción del SRD. De ser $0$ esta impedancia, la corriente sería infinita
-(en rigor, se vería limitada únicamente por la resistencia serie del SRD)
+(en rigor, se vería limitada únicamente por la resistencia serie del SRD).
 
 En la figura \ref{fig:stub_generator_sim_result} también se observa un zoom sobre el
 pulso obtenido. Tiene una amplitud de \qty{847}{\milli\volt} y una duración de
@@ -376,7 +376,7 @@ serie con la resistencia de carga $R_L$. Siendo la tensión de encendido del
 diodo mayor a la amplitud de los pulsos generados por las transiciones de la
 onda de entrada, estos no serán transmitidos a la carga $R_L$ debido a la acción
 de rectificación. En cuanto al sobrepico, también será filtrado debido al
-bloqueo de de corriente en sentido negativo.
+bloqueo de corriente en sentido negativo.
 
 Para un correcto funcionamiento del generador de pulsos, es fundamental que el
 rectificador sea lo suficientemente rápido como para transmitir el pulso
@@ -427,7 +427,7 @@ utilizado, y una anulación del sobrepico negativo.
 El pulser final, que puede observarse en la captura del esquemático simulado en
 la figura \ref{fig:pulser_w_schottky_sch}, está compuesto por 3 componentes: la
 resistencia serie $R_s$, el diodo SRD y el diodo Schottky. Calcularemos el
-consumo de potencia de los 3.
+consumo de potencia de los tres.
 
 Para un período de la señal cuadrada de entrada, podemos identificar 3 secciones
 
@@ -561,24 +561,26 @@ Para medir el ancho de banda podemos calcular la respuesta normalizada en dB:
 Vemos entonces que el valor de $b$ no influye sobre el ancho de banda como era
 de esperarse. Ahora relacionamos el valor de $a$ con el valor FWHM (del inglés
 \textit{Full Width at Half Maximum}) medido del pulso. Este valor se define como
-la diferencia temporal entre los puntos en los que el puslo alcanza la mitad de
+la diferencia temporal entre los puntos en los que el pulso alcanza la mitad de
 su valor máximo. Definimos $t_M$, el tiempo que tarda el pulso en caer a 1/2 de
 su amplitud desde el maximo:
 \begin{align}
     e^{-a t_M^2} &= \frac{1}{2}\\
     a t_M^2 &= \log 2 \\
-    a = &= \frac{\log 2}{t_M^2}
+    a = &= \frac{\log 2}{t_M^2}.
     \label{eq:gaussian_a_expression}
 \end{align}
 Tenemos entonces:
 \begin{align}
-    H_{\text{norm}}(f) = -20 \pi^2 \log_{10}(e) \frac{(f t_M)^2}{\log 2} \ \ \ [\text{dB}]
+    H_{\text{norm}}(f) = -20 \pi^2 \log_{10}(e) \frac{(f t_M)^2}{\log 2} \ \ \
+    [\text{dB}].
 \end{align}
 
 De la figura \ref{fig:pulser_w_schottky_sim_result} vemos que el FWHM está dado
 por la diferencia de tiempo entre los marcadores \textit{m2} y \textit{m3},
-siendo $FWHM= \qty{0.09}{\nano\second}$. Teniendo en cuenta que FWHM y $t_M$ se
-relacionan a través de $t_M=FWHM/2$, tenemos $t_M=\qty{0.045}{\nano\second}$.
+siendo $\text{FWHM} = \qty{0.09}{\nano\second}$. Teniendo en cuenta que FWHM y
+$t_M$ se relacionan a través de $t_M=\text{FWHM}/2$, tenemos
+$t_M=\qty{0.045}{\nano\second}$.
 
 Llegamos entonces a una relación entre la respuesta en frecuencia normalizada en
 dB $H_{\text{norm}}(f)$ y la frecuencia $f$. En la figura
@@ -917,7 +919,7 @@ Reemplazando en \ref{eq:current_balance_capacitor_linear_load},
     \end{aligned}
 \end{equation}
 Es el mismo resultado que en la sección anterior. De esta manera, vemos que la
-aplicación \cite{eq:capacitor_ampere_second_balance} para un sistema lineal es
+aplicación de \ref{eq:capacitor_ampere_second_balance} para un sistema lineal es
 consistente con el análisis de función transferencia como es esperado.
 
 \subsubsection{Carga no lineal}
@@ -1131,7 +1133,7 @@ Notamos los siguientes casos extremos de $\gamma$:
         decir, $R_{sh} >> R_s$. En este caso, la expresión es idéntica a
         \ref{eq:vc_non_linear_load_final}. Esto es esperado, ya que en este caso
         la corriente que consume $R_{sh}$ es despreciable, por lo que es un caso
-        equivalente al que no hay $R_{sh}$
+        equivalente al que no hay $R_{sh}$.
     \item $\gamma \to 0$: en este caso, $R_{sh} \to 0$, es decir, $R_{sh} <<
         R_s$. En este caso, la expresión
         \ref{eq:vc_non_linear_load_with_shunt_final} se convierte en
@@ -1632,7 +1634,7 @@ ampliamente disponibles y a un bajo precio.
 \subsubsection{Diseño del \textit{stub}}
 
 Para el pulser, se utilizó la capa superior de cobre como plano de señal y la
-capa de cobre inferior a esta como tierra. De esta manera, se forma un linea de
+capa de cobre inferior a esta como tierra. De esta manera, se forma un línea de
 transmisión microtira \cite{pozar2011}, siendo el material dieléctrico el
 \textit{prepeg} de permitividad relativa estable en frecuencia y una altura de
 $H = \qty{7.96}{\mil} = \qty{0.0202}{\milli\meter}$.
@@ -1733,9 +1735,10 @@ versatilidad.
 
 El buen ancho de banda de los conectores SMA puede degradarse severamente si su
 interfaz con la línea microtira no es la adecuada. Para comprobar esta interfaz,
-se realizó una simulación en el software de elementos finitos \textit{HFSS}. Se
-realizó un modelo del sustrato de OSH Park, y se simuló el desempeño del conector
-soldado directamente a la placa.
+se realizó una simulación en el software de elementos finitos \textit{CST Studio
+Suite}\footnote{\url{https://www.3ds.com/products-services/simulia/products/cst-studio-suite/}}.
+Se realizó un modelo del sustrato de OSH Park, y se simuló el desempeño del
+conector soldado directamente a la placa.
 
 En la figura \ref{fig:sma_improvement_setup} puede observarse la mejora
 propuesta. Esta consiste en un agujero en el plano de tierra, por debajo del
@@ -1750,7 +1753,7 @@ banda de interés.
 
     \begin{subfigure}[b]{0.45\textwidth}
         \includegraphics[width=\textwidth]{images/sma_simulation_setup.png}
-        \caption{Estructura simulada en HFSS.}
+        \caption{Estructura simulada en CST.}
         \label{fig:sma_simulation_setup}
     \end{subfigure}
     \hfill
@@ -1760,7 +1763,7 @@ banda de interés.
         \label{fig:sma_improvement_setup}
     \end{subfigure}
 
-    \caption{Estructuras simuladas en HFSS.}
+    \caption{Estructuras simuladas en CST.}
         \label{fig:sma_simulations_setup}
 \end{figure}
 
@@ -1779,7 +1782,7 @@ banda de interés.
         \label{fig:sma_improvement_result}
     \end{subfigure}
 
-    \caption{Resultados de simulaciones en HFSS.}
+    \caption{Resultados de simulaciones en CST.}
     \label{fig:sma_simulations_results}
 \end{figure}
 

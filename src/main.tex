@@ -22,7 +22,16 @@
 
 \includepdf{src/CARATULA_Tesis_Grado_2023.pdf}
 
-\tableofcontents
+\input{src/resumen.tex}
+
+\input{src/agradecimientos.tex}
+
+{
+    \hypersetup{linkcolor=black}
+    \tableofcontents
+    \listoffigures
+    \listoftables
+}
 
 \input{src/capitulo_01.tex}
 \newpage
