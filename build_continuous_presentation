@@ -1,0 +1,2 @@
+#!/bin/sh
+latexmk -pvc -auxdir=./aux -jobname=presentacion -emulate-aux-dir -pdf src/presentacion.tex
