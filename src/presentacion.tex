@@ -82,8 +82,21 @@
 
 \subsection{UWB}
 
+% maximizar figuras, pagina 8, pagina 13
+% dedicarle menos tiempo al driver
+% No hablar tanto de cómo se calculo el stub, directamente "obtuvimos esto"
+% Slide 23
+    % Como la capa es más fina, todo es más fino, el ancho del stub, entonce
+    % queda menos desaptado el ancho del SMA y los componentes con las pistas
+    % Tiene menos pérdidas
+    % La constante dieléctrica está mejor controlada que en el FR4, pero sin el
+    % costo de un sustrato rogers
+% SMA
+    % Mencionar que lo que se ve en S21 es por la reflexión, no por pérdidas
+    % Lo que hace es adaptar el conector, por eso mejora S21
+
 \begin{frame}{Introducción a UWB}
-  \begin{block}{UWB}
+  \begin{block}{UWB Impulsivo}
     \begin{itemize}
       \item Ancho de banda muy elevado $\leftrightarrow$ duración temporal muy
           corta.
@@ -709,7 +722,7 @@
             \begin{itemize}
                 \item Para $Z_0 = \qty{50}{\ohm}$, $W =
                     \qty{0.4}{\milli\meter}$.
-                \item Con $\kappa_{\text{eff}} = 2.753$, para un $T_d =
+                \item Con $\kappa_{\text{eff}} = 2.753$, para un $2 \cdot T_d =
                     \qty{120}{\pico\second}$, $L = \qty{10.85}{\milli\meter}$
             \end{itemize}
         \end{block}
